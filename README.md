@@ -6,7 +6,7 @@
  
  Curso 2023/24
  
- #Descripción general del proyecto
+ # Descripción general del proyecto
 
 SportBuddy, es una aplicacion donde los usuarios crean eventos deportivos, para buscar compañeros y poder realizar esa actividad juntos.Los usuarios podran indicar los deportes que estan interesados y dentro de sus perfiles tendra valoraciones sobre los usuarios que han jugado o participado en ese evento.
 
