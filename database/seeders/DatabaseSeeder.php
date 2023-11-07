@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Deporte;
+use App\Models\Superficie;
+use App\Models\Ubicacion;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +22,16 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $this->call([
+            DeporteSeeder::class,
+            EquipoSeeder::class,
+            UbicacionSeeder::class,
+            SuperficieSeeder::class,
+            PistaSeeder::class,
+            UserSeeder::class,
+            // Hago Referencia para crear los seeders y crear los datos
+        ]);
+
     }
 }

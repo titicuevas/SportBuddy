@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Partido;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,10 @@ class PartidoSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+    
+
+
     }
+
+
 }
