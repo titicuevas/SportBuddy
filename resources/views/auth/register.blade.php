@@ -67,6 +67,7 @@
     <x-input-label for="foto">Foto</x-input-label>
     <input  type="file" name="foto" id="foto" class="form-control">
 
+
     </div>
 
 
