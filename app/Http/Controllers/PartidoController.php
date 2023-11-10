@@ -13,7 +13,9 @@ class PartidoController extends Controller
      */
     public function index()
     {
-        //
+        $partidos = Partido::all();
+
+        return view('partidos.index', compact('partidos'));
     }
 
     /**
@@ -21,7 +23,7 @@ class PartidoController extends Controller
      */
     public function create()
     {
-        //
+        return view('partidos.create');
     }
 
     /**
@@ -29,15 +31,40 @@ class PartidoController extends Controller
      */
     public function store(StorePartidoRequest $request)
     {
-        //
+        $request->validate([
+            'fecha' => 'required|date',
+            'hora' => 'required|time',
+            'equipo1' => 'required|integer',
+            'equipo2' => 'required|integer',
+            'user_id' => 'required|integer',
+            'resultado' => 'required|string',
+            'ubicacion_id' => 'required|integer',
+            'deporte_id' => 'required|integer',
+        ]);
+
+        $partido = new Partido();
+        $partido->fecha = $request->input('fecha');
+        $partido->hora = $request->input('hora');
+        $partido->equipo1 = $request->input('equipo1');
+        $partido->equipo2 = $request->input('equipo2');
+        $partido->user_id = $request->input('user_id');
+        $partido->resultado = $request->input('resultado');
+        $partido->ubicacion_id = $request->input('ubicacion_id');
+        $partido->deporte_id = $request->input('deporte_id');
+
+        $partido->save();
+
+        return redirect()->route('partidos.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Partido $partido)
+    public function show(Partido $partido ,$id)
     {
-        //
+        $partido = Partido::findOrFail($id);
+
+        return view('partidos.show', compact('partido'));
     }
 
     /**
@@ -51,9 +78,33 @@ class PartidoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePartidoRequest $request, Partido $partido)
+    public function update(UpdatePartidoRequest $request, Partido $partido,$id)
     {
-        //
+        $partido = Partido::findOrFail($id);
+
+        $request->validate([
+            'fecha' => 'required|date',
+            'hora' => 'required|time',
+            'equipo1' => 'required|integer',
+            'equipo2' => 'required|integer',
+            'user_id' => 'required|integer',
+            'resultado' => 'required|string',
+            'ubicacion_id' => 'required|integer',
+            'deporte_id' => 'required|integer',
+        ]);
+
+        $partido->fecha = $request->input('fecha');
+        $partido->hora = $request->input('hora');
+        $partido->equipo1 = $request->input('equipo1');
+        $partido->equipo2 = $request->input('equipo2');
+        $partido->user_id = $request->input('user_id');
+        $partido->resultado = $request->input('resultado');
+        $partido->ubicacion_id = $request->input('ubicacion_id');
+        $partido->deporte_id = $request->input('deporte_id');
+
+        $partido->save();
+
+        return redirect()->route('partidos.index');
     }
 
     /**

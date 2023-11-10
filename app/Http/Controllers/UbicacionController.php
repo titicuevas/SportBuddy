@@ -29,7 +29,16 @@ class UbicacionController extends Controller
      */
     public function store(StoreUbicacionRequest $request)
     {
-        //
+
+        $ubicacion = new Ubicacion();
+
+        $ubicacion->nombre = $request->input('nombre');
+        $ubicacion->direccion = $request->input('direccion');
+
+        $ubicacion->save();
+
+
+
     }
 
     /**

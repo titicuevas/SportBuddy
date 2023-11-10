@@ -13,7 +13,9 @@ class DeporteController extends Controller
      */
     public function index()
     {
-        //
+        $deportes = Deporte::all();
+
+        return view('deportes.index', compact('deportes'));
     }
 
     /**
@@ -29,15 +31,26 @@ class DeporteController extends Controller
      */
     public function store(StoreDeporteRequest $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string',
+        ]);
+
+        $deporte = new Deporte();
+        $deporte->nombre = $request->input('nombre');
+
+        $deporte->save();
+
+        return redirect()->route('deportes.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Deporte $deporte)
+    public function show(Deporte $deporte , $id)
     {
-        //
+        $deporte = Deporte::findOrFail($id);
+
+        return view('deportes.show', compact('deporte'));
     }
 
     /**
@@ -51,16 +64,28 @@ class DeporteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDeporteRequest $request, Deporte $deporte)
+    public function update(UpdateDeporteRequest $request, Deporte $deporte ,$id)
     {
-        //
+        $deporte = Deporte::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'required|string',
+        ]);
+
+        $deporte->nombre = $request->input('nombre');
+
+        $deporte->save();
+
+        return redirect()->route('deportes.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Deporte $deporte)
+    public function destroy(Deporte $deporte ,$id)
     {
-        //
+        $deporte = Deporte::findOrFail($id);
+
+        $deporte->delete();
     }
 }

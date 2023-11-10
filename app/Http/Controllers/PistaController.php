@@ -29,7 +29,22 @@ class PistaController extends Controller
      */
     public function store(StorePistaRequest $request)
     {
-        //
+        $request->validate([
+            'ubicacion_id' => 'required|integer',
+            'superficie_id' => 'required|integer',
+            'numero' => 'required|integer',
+            'tipo' => 'required|string',
+        ]);
+
+        $pista = new Pista();
+        $pista->ubicacion_id = $request->input('ubicacion_id');
+        $pista->superficie_id = $request->input('superficie_id');
+        $pista->numero = $request->input('numero');
+        $pista->tipo = $request->input('tipo');
+
+        $pista->save();
+
+        return redirect()->route('pistas.index');
     }
 
     /**

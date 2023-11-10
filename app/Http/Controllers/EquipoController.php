@@ -13,7 +13,9 @@ class EquipoController extends Controller
      */
     public function index()
     {
-        //
+        $equipos = Equipo::all();
+
+        return view('equipos.index', compact('equipos'));
     }
 
     /**
@@ -21,7 +23,7 @@ class EquipoController extends Controller
      */
     public function create()
     {
-        //
+        return view('equipos.create');
     }
 
     /**
@@ -29,7 +31,16 @@ class EquipoController extends Controller
      */
     public function store(StoreEquipoRequest $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string',
+        ]);
+
+        $equipo = new Equipo();
+        $equipo->nombre = $request->input('nombre');
+
+        $equipo->save();
+
+        return redirect()->route('equipos.index');
     }
 
     /**
@@ -45,7 +56,9 @@ class EquipoController extends Controller
      */
     public function edit(Equipo $equipo)
     {
-        //
+        $equipo = Equipo::findOrFail($equipo);
+
+        return view('equipos.edit', compact('equipo'));
     }
 
     /**
@@ -53,7 +66,16 @@ class EquipoController extends Controller
      */
     public function update(UpdateEquipoRequest $request, Equipo $equipo)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string',
+        ]);
+
+        $equipo = Equipo::findOrFail($equipo);
+        $equipo->nombre = $request->input('nombre');
+
+        $equipo->save();
+
+        return redirect()->route('equipos.index');
     }
 
     /**

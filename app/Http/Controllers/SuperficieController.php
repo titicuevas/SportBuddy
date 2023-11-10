@@ -29,7 +29,12 @@ class SuperficieController extends Controller
      */
     public function store(StoreSuperficieRequest $request)
     {
-        //
+        $tipo = $request->input('tipo');
+
+        $superficie = new Superficie();
+        $superficie->tipo = $tipo;
+        $superficie->save();
+
     }
 
     /**
