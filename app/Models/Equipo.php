@@ -10,4 +10,14 @@ class Equipo extends Model
     use HasFactory;
 
     public $timestamps = false;
+
+
+    protected $fillable = [
+        'nombre',
+    ];
+
+    public function partidos()
+    {
+        return $this->belongsToMany('App\Models\Partido', 'equipos_partidos', 'equipos_id', 'partidos_id');
+    }
 }

@@ -11,6 +11,16 @@ class Deporte extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'nombre',
+    ];
+
+    public function partidos()
+    {
+        return $this->hasMany('App\Models\Partido');
+    }
+    public function ubicaciones()
+    {
+        return $this->belongsToMany('App\Models\Ubicacion');
+    }
 }
-
-
