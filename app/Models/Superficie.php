@@ -14,4 +14,10 @@ class Superficie extends Model
         'tipo',
     ];
 
+
+    public function superficie()
+    {
+        return $this->belongsTo('App\Models\Superficie');
+    }
+
 }
