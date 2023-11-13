@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePartidoRequest;
 use App\Http\Requests\UpdatePartidoRequest;
 use App\Models\Partido;
+use App\Models\Equipo;
+use App\Models\Deporte;
+use App\Models\Ubicacion;
+
 
 class PartidoController extends Controller
 {
@@ -23,7 +27,13 @@ class PartidoController extends Controller
      */
     public function create()
     {
-        return view('partidos.create');
+
+        $ubicaciones = ubicacion::all();
+        $deportes = Deporte::all();
+
+       return view('partidos.create', ['ubicaciones' => $ubicaciones, 'deportes' => $deportes]);
+
+
     }
 
     /**
@@ -31,13 +41,14 @@ class PartidoController extends Controller
      */
     public function store(StorePartidoRequest $request)
     {
-        $request->validate([
+       $request->validate([
+
             'fecha' => 'required|date',
-            'hora' => 'required|time',
+            'time' => 'required|date_format:H:i',
             'equipo1' => 'required|integer',
             'equipo2' => 'required|integer',
             'user_id' => 'required|integer',
-            'resultado' => 'required|string',
+            'resultado' => 'string',
             'ubicacion_id' => 'required|integer',
             'deporte_id' => 'required|integer',
         ]);
@@ -45,17 +56,14 @@ class PartidoController extends Controller
         $partido = new Partido();
         $partido->fecha = $request->input('fecha');
         $partido->hora = $request->input('hora');
-        $partido->equipo1 = $request->input('equipo1');
-        $partido->equipo2 = $request->input('equipo2');
-        $partido->user_id = $request->input('user_id');
-        $partido->resultado = $request->input('resultado');
+        $partido->equipo1 = Equipo::find(1);
+        $partido->equipo2 = Equipo::find(2);
+        $partido->user_id = auth()->user()->name;
         $partido->ubicacion_id = $request->input('ubicacion_id');
         $partido->deporte_id = $request->input('deporte_id');
 
         $partido->save();
-
-        return redirect()->route('partidos.index');
-    }
+        return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');    }
 
     /**
      * Display the specified resource.
@@ -112,6 +120,8 @@ class PartidoController extends Controller
      */
     public function destroy(Partido $partido)
     {
-        //
+        $partido->delete();
+
+    return redirect()->route('partidos.index');
     }
 }

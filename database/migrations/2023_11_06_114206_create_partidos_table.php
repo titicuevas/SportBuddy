@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('equipo1');
             $table->bigInteger('equipo2');
             $table->foreignId('user_id')->constrained();
-            $table->string('resultado');
+            $table->string('resultado')->nullable();
             $table->foreign('equipo1')->references('id')->on('equipos')->onDelete('cascade');
             $table->foreign('equipo2')->references('id')->on('equipos')->onDelete('cascade');
             $table->foreignId('ubicacion_id')->constrained('ubicaciones');
