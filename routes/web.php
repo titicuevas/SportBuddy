@@ -31,7 +31,9 @@ Route::get('/dashboard', function () {
 Route::get('/partidos/crear', [PartidoController::class,'create'])->name('partidos.create');
 Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.store');
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');
-Route::get('/partidos/{id}', 'PartidosController@show');
+Route::get('/partidos/{id}', ['PartidosController@show'])->name('partidos.show');
+Route::delete('/partidos/{partido}', 'PartidosController@destroy')->name('partidos.destroy');
+
 
 
 

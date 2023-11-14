@@ -18,10 +18,13 @@ class PartidoController extends Controller
      */
     public function index()
     {
-        $partidos = Partido::all();
+        $partidos = Partido::with('user')->get();
+
+        // $partidos = Partido::with('ubicacion')->get();
 
         return view('partidos.index', compact('partidos'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -136,6 +139,8 @@ class PartidoController extends Controller
     public function destroy(Partido $partido)
     {
         $partido->delete();
+
+        // Mensaje de confirmación
 
         return redirect()->route('partidos.index');
     }

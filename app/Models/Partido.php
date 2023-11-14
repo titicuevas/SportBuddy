@@ -24,7 +24,7 @@ class Partido extends Model
 
     public function ubicacion()
     {
-        return $this->hasMany('App\Models\Ubicacion', 'ubicacion_id');
+        return $this->belongsTo('App\Models\Ubicacion','id');
     }
 
 
@@ -34,9 +34,14 @@ class Partido extends Model
     }
 
     public function asignaciones()
-    {   
+    {
         return $this->belongsToMany(Asignamiento::class, 'asignaciones');
     }
+
+    public function user()
+{
+    return $this->belongsTo(\App\Models\User::class);
+}
 
 
 
