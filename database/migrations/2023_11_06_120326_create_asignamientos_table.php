@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asignamiento', function (Blueprint $table) {
-            $table->id();
+        Schema::create('asignamientos', function (Blueprint $table) {
             $table->foreignId('partido_id')->constrained();
             $table->foreignId('equipo_id')->constrained();
             $table->foreignId('user_id')->constrained();
+            $table->primary(['partido_id', 'equipo_id', 'user_id']);
         });
     }
 

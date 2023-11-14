@@ -11,7 +11,6 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <form action="{{ route('partidos.store') }}" method="post">
                         @csrf
-
                         <div class="form-group">
                             <label for="fecha">Fecha</label>
                             <input type="date" class="form-control" id="fecha" name="fecha"

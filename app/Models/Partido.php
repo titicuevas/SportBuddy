@@ -33,6 +33,11 @@ class Partido extends Model
         return $this->belongsTo('App\Models\Deporte' , 'deporte_id');
     }
 
+    public function asignaciones()
+    {   
+        return $this->belongsToMany(Asignamiento::class, 'asignaciones');
+    }
+
 
 
 

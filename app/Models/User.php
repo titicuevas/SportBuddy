@@ -45,4 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function asignaciones()
+    {
+        return $this->belongsToMany(Partido::class, 'asignaciones', 'usuario_id', 'partido_id');
+    }
 }

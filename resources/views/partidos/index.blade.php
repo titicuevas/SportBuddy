@@ -1,3 +1,7 @@
 <x-app-layout>
-    <h1>Hola</h1>
+
+
+{{$partidos}}
+
+
 </x-app-layout>
