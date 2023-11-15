@@ -28,11 +28,11 @@ Route::get('/dashboard', function () {
 
 //Router de Partidos
 
-Route::get('/partidos/crear', [PartidoController::class,'create'])->name('partidos.create');
+Route::get('/partidos/crear', [PartidoController::class, 'create'])->name('partidos.create');
 Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.store');
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');
-Route::get('/partidos/{id}', ['PartidosController@show'])->name('partidos.show');
-Route::delete('/partidos/{partido}', 'PartidosController@destroy')->name('partidos.destroy');
+Route::get('/partidos/{partido}', [PartidoController::class, 'show'])->name('partidos.show');
+Route::delete('/partidos/{partido}', [PartidoController::class, 'destroy'])->name('partidos.destroy');
 
 
 

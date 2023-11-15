@@ -11,6 +11,21 @@ class Partido extends Model
     public $timestamps = false;
 
 
+    public function printAsignaciones()
+    {
+        for ($i = 0; $i < $this->asignaciones->count(); $i++) {
+            $asignacion = $this->asignaciones[$i];
+
+            // Imprime el nombre del jugador
+            echo $asignacion->jugador->name;
+
+            // Imprime el nombre del deporte
+            echo $asignacion->deporte->getNombre();
+        }
+    }
+
+
+
 
     public function equipo1()
     {
@@ -33,16 +48,25 @@ class Partido extends Model
         return $this->belongsTo('App\Models\Deporte' , 'deporte_id');
     }
 
-    public function asignaciones()
+    public function asignamientos()
     {
-        return $this->belongsToMany(Asignamiento::class, 'asignaciones');
+        return $this->hasMany(Asignamiento::class);
     }
 
     public function user()
 {
-    return $this->belongsTo(\App\Models\User::class);
+    return $this->belongsTo(User::class, 'user_id');
 }
 
+public function pista()
+{
+    return $this->belongsTo(Pista::class, 'pista_id');
+}
+
+public function superficie()
+{
+    return $this->belongsTo(Superficie::class, 'superficie_id');
+}
 
 
 
@@ -52,6 +76,8 @@ class Partido extends Model
         'equipo1',
         'equipo2',
         'user_id',
+        'partido_id',
+        'superficie_id',
         'resultado',
         'ubicacion_id',
         'deporte_id'

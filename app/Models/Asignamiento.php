@@ -18,14 +18,18 @@ class Asignamiento extends Model
         'equipo_id',
     ];
 
-
     public function partido()
     {
-        return $this->belongsTo(Partido::class);
+        return $this->belongsTo(Partido::class, 'partido_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function equipo()
     {
-        return $this->belongsTo(Equipo::class);
+        return $this->belongsTo(Equipo::class, 'equipo_id');
     }
 }

@@ -20,4 +20,10 @@ class Equipo extends Model
     {
         return $this->belongsToMany('App\Models\Partido', 'equipos_partidos', 'equipos_id', 'partidos_id');
     }
+
+    public function asignamientos()
+    {
+        return $this->hasMany('App\Models\Asignamiento','equipo_id');
+    }
+
 }

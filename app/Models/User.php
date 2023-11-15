@@ -46,8 +46,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function asignaciones()
+    public function asignamientos()
     {
-        return $this->belongsToMany(Partido::class, 'asignaciones', 'usuario_id', 'partido_id');
+        return $this->hasMany(Partido::class, 'user_id');
+    }
+
+    public function partidos()
+    {
+        return $this->hasMany(Partido::class);
     }
 }

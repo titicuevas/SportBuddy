@@ -61,6 +61,8 @@ class PartidoController extends Controller
             'equipo1' => $equipo1->id, //Le asignamos el id del equipo1
             'equipo2' => $equipo2->id, //Le asignamos el id del equipo2
             'user_id' => $user,
+            'superficie_id' => $request->input('superficie_id'),
+            'pista_id' => $request->input('pista_id'),
             'ubicacion_id' => $request->input('ubicacion_id'),
             'deporte_id' => $request->input('deporte_id'),
         ]);
@@ -86,11 +88,9 @@ class PartidoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Partido $partido, $id)
+    public function show(Partido $partido)
     {
-        $partido = Partido::findOrFail($id);
-
-        return view('partidos.show', compact('partido'));
+        return view('partidos.show', ['partido' => $partido]);
     }
 
     /**
@@ -124,6 +124,8 @@ class PartidoController extends Controller
         $partido->equipo1 = $request->input('equipo1');
         $partido->equipo2 = $request->input('equipo2');
         $partido->user_id = $request->input('user_id');
+        $partido->superficie_id = $request->input('superficie_id');
+        $partido->pista_id = $request->input('pista_id');
         $partido->resultado = $request->input('resultado');
         $partido->ubicacion_id = $request->input('ubicacion_id');
         $partido->deporte_id = $request->input('deporte_id');
@@ -137,11 +139,20 @@ class PartidoController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Partido $partido)
-    {
-        $partido->delete();
+{
+    // Elimina todas las asignaciones asociadas al partido
+    $partido = Partido::find($partido->id);
+    $asignaciones = $partido->asignamientos;
+/*     foreach ($asignaciones as $asignacion) {
+        $asignacion->delete();
+    } */
 
-        // Mensaje de confirmación
+    // Ahora puedes eliminar el partido
+    //$partido->delete();
 
-        return redirect()->route('partidos.index');
-    }
+    // Mensaje de confirmación
+
+    return $asignaciones;
+}
+
 }
