@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 // Controladores Añadidos
 use App\Http\Controllers\PartidoController;
 
-
+//Controlador Email
+use App\Mail\CantactanosMailable;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,5 +47,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+//Correo electronico
+
+Route::get('contactanos', function () {
+
+    Mail::to('enriquecuevas1989@gmail.com')->send(new CantactanosMailable);
+
+
+    return "Mensaje Enviado";
+})->name('contactanos');
+
+
 
 require __DIR__ . '/auth.php';
