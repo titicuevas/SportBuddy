@@ -30,6 +30,10 @@ class Pista extends Model
         return $this->hasMany('App\Models\Pista');
     }
 
+    public function partidos()
+    {
+        return $this->hasMany(Partido::class);
+    }
 
     protected $fillable = [
         'numero',

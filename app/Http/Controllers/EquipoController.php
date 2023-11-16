@@ -66,6 +66,7 @@ class EquipoController extends Controller
      */
     public function update(UpdateEquipoRequest $request, Equipo $equipo)
     {
+        
         $request->validate([
             'nombre' => 'required|string',
         ]);

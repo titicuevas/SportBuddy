@@ -15,9 +15,14 @@ class Superficie extends Model
     ];
 
 
-    public function superficie()
+    public function pista()
     {
-        return $this->belongsTo('App\Models\Superficie');
+        return $this->belongsTo('App\Models\Pista');
+    }
+
+    public function partidos()
+    {
+        return $this->hasMany(Partido::class);
     }
 
 }
