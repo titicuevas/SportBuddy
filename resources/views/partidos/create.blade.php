@@ -33,6 +33,8 @@
                                 @endforeach
                             </select>
                         </div>
+                        {{--
+
 
                         {{-- Desplegable de las pistas disponibles en la ubicacion seleccionada mediante petición ajax --}}
                         <div class="form-group">
@@ -42,7 +44,7 @@
 
                             </select>
                         </div>
-
+                        --}}
 
 
                         <br><br><br><br><br><br><br>
@@ -54,13 +56,13 @@
 
 
 
-                        <div x-data= " {
+                        {{-- <div
+                            x-data= " {
                             ubicaciones: [],
                             pistas: [],
                             selectedUbicacion: null,
                             selectedPista: null
-
-                        } " >
+                        }">
 
                             <select name="ubicacion_id" id="ubicacion" x-model="ubicacionId"
                                 x-on:change="fetchPistas()">
@@ -80,7 +82,7 @@
                             </div>
 
                             <script>
-                               function fetchPistas() {
+                                function fetchPistas() {
                                     // Obtenemos el ID de la ubicación seleccionada
                                     const ubicacionId = this.selectedUbicacion;
 
@@ -110,7 +112,7 @@
                                 }
                             </script>
                         </div>
-
+ --}}
 
                         <br><br><br><br><br><br><br>
 
