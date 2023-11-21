@@ -33,15 +33,17 @@
                             @if ($user->foto)
                                 <img src="{{ Storage::url($user->foto) }}" alt="{{ $user->name }}">
                             @else
-                                <img src="{{ asset('/public/profile-photo/Foto1.png') }}" alt="{{ $user->name }}">
+                            <img src="https://seeklogo.com/images/S/spider-man-comic-new-logo-322E9DE914-seeklogo.com.png" alt="Foto de perfil" width="100" height="100">
                             @endif
 
                         </div>
 
-                        <button type="button" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Editar
-                            imagen</button>
+
                     </div>
+
                 </div>
+
+                <a href="/resources/views/profile/edit.blade.php"><button type="button" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Editar Datos</button></a>
             </div>
         </div>
     </div>

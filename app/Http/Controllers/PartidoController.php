@@ -95,8 +95,6 @@ class PartidoController extends Controller
         $partido = Partido::find($id);
 
         return view('partidos.show', ['partido' => $partido]);
-
-
     }
 
 

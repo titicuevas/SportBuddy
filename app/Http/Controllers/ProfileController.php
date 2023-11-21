@@ -20,10 +20,23 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
+        $fotoPerfil = $user->foto;
+
+        if ($fotoPerfil) {
+            $fotoPerfilURL = Storage::url($fotoPerfil);
+        } else {
+            $fotoPerfilURL = asset('img/default-profile-image.png');
+        }
+
         return view('profile.show', [
-            'user' => $user
+            'user' => $user,
+            'fotoPerfilURL' => $fotoPerfilURL,
         ]);
     }
+
+
+    //Mostrar la imagen Profile
+
 
 
 
