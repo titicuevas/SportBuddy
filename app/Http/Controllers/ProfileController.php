@@ -8,9 +8,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+
+
+    //Show Profile
+
+    public function show()
+    {
+        $user = Auth::user();
+
+        $fotoPerfil = $user->foto;
+
+        if ($fotoPerfil) {
+            $fotoPerfilURL = Storage::url($fotoPerfil);
+        } else {
+            $fotoPerfilURL = asset('img/default-profile-image.png');
+        }
+
+        return view('profile.show', [
+            'user' => $user,
+            'fotoPerfilURL' => $fotoPerfilURL,
+        ]);
+    }
+
+
+    //Mostrar la imagen Profile
+
+
+
+
+    //Editar foto Profile
+
+
+
+
     /**
      * Display the user's profile form.
      */
@@ -27,6 +61,24 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
+
+
+        //Foto user
+        $request->validateWithBag('profileUpdate', [
+            'foto' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $path = $foto->storeAs('public/profile-photos', $user->id . '.' . $foto->getClientOriginalExtension());
+
+            $user->foto = Storage::url($path);
+        }
+
+        $user->fill($request->validated());
+
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

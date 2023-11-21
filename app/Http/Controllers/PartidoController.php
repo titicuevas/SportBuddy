@@ -9,6 +9,7 @@ use App\Models\Equipo;
 use App\Models\Deporte;
 use App\Models\Ubicacion;
 use App\Models\Asignamiento;
+use App\Models\User;
 
 
 class PartidoController extends Controller
@@ -88,10 +89,17 @@ class PartidoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Partido $partido)
+    public function show(int $id)
     {
+
+        $partido = Partido::find($id);
+
         return view('partidos.show', ['partido' => $partido]);
     }
+
+
+    // Intento ver el perfil del usuario
+
 
     /**
      * Show the form for editing the specified resource.
@@ -139,20 +147,19 @@ class PartidoController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Partido $partido)
-{
-    // Elimina todas las asignaciones asociadas al partido
-    $partido = Partido::find($partido->id);
-    $asignaciones = $partido->asignamientos;
-/*     foreach ($asignaciones as $asignacion) {
+    {
+        // Elimina todas las asignaciones asociadas al partido
+        $partido = Partido::find($partido->id);
+        $asignaciones = $partido->asignamientos;
+        /*     foreach ($asignaciones as $asignacion) {
         $asignacion->delete();
     } */
 
-    // Ahora puedes eliminar el partido
-    //$partido->delete();
+        // Ahora puedes eliminar el partido
+        //$partido->delete();
 
-    // Mensaje de confirmación
+        // Mensaje de confirmación
 
-    return $asignaciones;
-}
-
+        return $asignaciones;
+    }
 }
