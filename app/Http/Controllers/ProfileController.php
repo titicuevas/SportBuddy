@@ -16,9 +16,8 @@ class ProfileController extends Controller
 
     //Show Profile
 
-    public function show()
+    public function show($user)
     {
-        $user = Auth::user();
 
         $fotoPerfil = $user->foto;
 

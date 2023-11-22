@@ -89,7 +89,7 @@ class PartidoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(user $id)
     {
 
         $partido = Partido::find($id);
