@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage/public',
+            'url' => env('APP_URL').'/storage/app/public/profile-photo',
             'visibility' => 'public',
             'throw' => false,
         ],

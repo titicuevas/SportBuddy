@@ -18,7 +18,9 @@
                     <tr id="partido-{{ $partido->id }}">
                         <td class="text-gray-800">{{ $partido->fecha }}</td>
                         <td class="text-gray-800">{{ $partido->hora }}</td>
-                        <td class="text-gray-800">{{ $partido->user->name }} <a href="{{ route('profile.show', $partido->user->id) }}" class="text-blue-500 hover:text-blue-700 underline">Ver perfil</a></td>
+                        <td class="text-gray-800">{{ $partido->user->name }} <a
+                                href="{{ route('user.show', $partido->user) }}"
+                                class="text-blue-500 hover:text-blue-700 underline">Ver perfil</a></td>
                         <td class="text-gray-800">{{ $partido->ubicacion->nombre }}</td>
                         <td class="text-gray-800">{{ $partido->deporte->nombre }}</td>
 

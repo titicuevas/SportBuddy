@@ -31,9 +31,12 @@
                     <div class="flex justify-end items-center p-6 bg-neutral-700">
                         <div>
                             @if ($user->foto)
-                                <img src="{{ Storage::url($user->foto) }}" alt="{{ $user->name }}">
+                                <img class="h-48 w-48 border-2 border-black rounded-t" id="imgPerfil"
+                                    src="{{ $user->foto ? Storage::url($user->foto) : 'https://mastermdi.com/files/students/noImage.jpg' }}"
+                                    alt="usuario" />
                             @else
-                            <img src="https://seeklogo.com/images/S/spider-man-comic-new-logo-322E9DE914-seeklogo.com.png" alt="Foto de perfil" width="100" height="100">
+                                <img src="https://seeklogo.com/images/S/spider-man-comic-new-logo-322E9DE914-seeklogo.com.png"
+                                    alt="Foto de perfil" width="100" height="100">
                             @endif
 
                         </div>
@@ -43,7 +46,8 @@
 
                 </div>
 
-                <a href="/resources/views/profile/edit.blade.php"><button type="button" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Editar Datos</button></a>
+                <a href="{{ route('profile.edit') }}"><button type="button"
+                        class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Editar Datos</button></a>
             </div>
         </div>
     </div>

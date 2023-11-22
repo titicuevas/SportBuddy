@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -28,16 +29,28 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
+
         $request->validate([
+
+
             'name' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
             'telefono' => ['required', 'string', 'max:9'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()]
 
         ]);
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto')->store('public/photoProfile');
+
+            // Resto del código...
+        } else {
+            // Manejar el caso en el que no se envió ningún archivo
+            return "Foto vacia";
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -45,7 +58,7 @@ class RegisteredUserController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'foto' => $request->foto,
+            'foto' => $foto,
 
         ]);
 
