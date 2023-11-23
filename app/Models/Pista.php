@@ -21,9 +21,9 @@ class Pista extends Model
     }
 
     public function superficie()
-    {
-        return $this->belongsTo('App\Models\Superficie');
-    }
+{
+    return $this->belongsTo(Superficie::class, 'superficie_id');
+}
 
     public function pistas()
     {

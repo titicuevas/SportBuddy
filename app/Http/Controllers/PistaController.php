@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Requests\StorePistaRequest;
 use App\Http\Requests\UpdatePistaRequest;
 use App\Models\Pista;
@@ -54,6 +53,26 @@ class PistaController extends Controller
     {
         //
     }
+
+
+    /*
+        Para encontrar la ubicacion de la pista y sacar el numero
+    */
+
+    public function pistasPorUbicacion($ubicacionId)
+    {
+        $pistas = Pista::where('ubicacion_id', $ubicacionId)->pluck('numero');
+        return response()->json($pistas);
+    }
+
+    public function superficiePorUbicacion($ubicacionId)
+{
+    $pistas = Pista::with('superficie')->where('ubicacion_id', $ubicacionId)->get();
+
+    return response()->json($pistas);
+}
+
+
 
     /**
      * Show the form for editing the specified resource.

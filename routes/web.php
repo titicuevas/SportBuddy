@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Mail;
 
 // Controlador User
 use App\Http\Controllers\UserController;
+
+// Controlador de pistas
+
+use App\Http\Controllers\PistaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +41,11 @@ Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.st
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');
 Route::get('/partidos/{partido}', [PartidoController::class, 'show'])->name('partidos.show');
 Route::delete('/partidos/{partido}', [PartidoController::class, 'destroy'])->name('partidos.destroy');
+
+//Sacar la el numero para la ubicacion
+Route::get('/pistas-por-ubicacion/{ubicacionId}', [PistaController::class, 'pistasPorUbicacion']);
+
+
 
 
 
