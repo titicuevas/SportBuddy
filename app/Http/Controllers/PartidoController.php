@@ -9,6 +9,7 @@ use App\Models\Equipo;
 use App\Models\Deporte;
 use App\Models\Ubicacion;
 use App\Models\Asignamiento;
+use App\Models\Superficie;
 use App\Models\User;
 
 
@@ -44,12 +45,18 @@ class PartidoController extends Controller
      */
     public function store(StorePartidoRequest $request)
     {
-        $request->validate([
 
-            'fecha' => 'required|date',
-            /*     'time' => 'required', */ //preguntar a ricardo
-            'ubicacion_id' => 'required|integer',
-            'deporte_id' => 'required|integer',
+
+        $superficie = Superficie::where('tipo', $request->input('tipo_superficie'))->first();
+
+        $deporte = Deporte::where('nombre', $request->input('deporte'))->first();
+
+
+        $request->validate([
+            'fecha' => 'required',
+                 'hora' => 'required', //preguntar a ricardo
+            'ubicacion_id' => 'required',
+            'deporte' => 'required',
         ]);
 
         $user = auth()->user()->id;
@@ -62,10 +69,10 @@ class PartidoController extends Controller
             'equipo1' => $equipo1->id, //Le asignamos el id del equipo1
             'equipo2' => $equipo2->id, //Le asignamos el id del equipo2
             'user_id' => $user,
-            'superficie_id' => $request->input('superficie_id'),
+            'superficie_id' => $superficie->id,
             'pista_id' => $request->input('pista_id'),
             'ubicacion_id' => $request->input('ubicacion_id'),
-            'deporte_id' => $request->input('deporte_id'),
+            'deporte_id' => $deporte->id,
         ]);
 
 

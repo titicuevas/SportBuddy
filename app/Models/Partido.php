@@ -10,6 +10,20 @@ class Partido extends Model
     use HasFactory;
     public $timestamps = false;
 
+    protected $fillable = [
+        'fecha',
+        'hora',
+        'equipo1',
+        'equipo2',
+        'user_id',
+        'partido_id',
+        'superficie_id',
+        'resultado',
+        'ubicacion_id',
+        'deporte_id',
+        'pista_id'
+    ];
+
 
     public function printAsignaciones()
     {
@@ -39,7 +53,7 @@ class Partido extends Model
 
     public function ubicacion()
     {
-        return $this->belongsTo('App\Models\Ubicacion','id');
+        return $this->belongsTo('App\Models\Ubicacion','ubicacion_id');
     }
 
 
@@ -70,17 +84,5 @@ public function superficie()
 
 
 
-    protected $fillable = [
-        'fecha',
-        'hora',
-        'equipo1',
-        'equipo2',
-        'user_id',
-        'partido_id',
-        'superficie_id',
-        'resultado',
-        'ubicacion_id',
-        'deporte_id'
 
-    ];
 }

@@ -46,11 +46,16 @@
 
                 </div>
 
-                <a href="{{ route('profile.edit') }}"><button type="button"
-                        class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Editar Datos</button></a>
+
             </div>
         </div>
     </div>
 
 
+
+
+
+
+
+    
 </x-app-layout>

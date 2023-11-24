@@ -96,6 +96,10 @@ class PistaController extends Controller
         $pista = Pista::findOrFail($pistaId);
         $deporte = $pista->deporte;
 
+
+
+
+
         return response()->json(['nombre' => $deporte ? $deporte->nombre : 'Desconocido']);
     }
 

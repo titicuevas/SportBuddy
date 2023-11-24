@@ -56,7 +56,7 @@ Route::get('/pistas/{pista}', [PistaController::class, 'show']);
 
 
 
-Route::get('/pistas/{pista}/deporte', [PistaController::class, 'deportePorPista']);
+Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista']);
 
 
 

@@ -35,14 +35,11 @@
                             </select>
                         </div>
 
-                        <!-- Agregado para mostrar el mensaje -->
-                        <div x-text="mensaje" class="text-red-500"></div>
-
                         <!-- Desplegable para el número de pista -->
                         <div x-show="pistas.length > 0">
                             <div class="form-group">
                                 <label for="pista_id">Número de Pista</label>
-                                <select class="form-control" id="pista_numero" name="pista_" x-model="pistaId"
+                                <select class="form-control" id="pista_numero" name="pista_id" x-model="pistaId"
                                     x-on:change="cargarTipoSuperficie" required>
                                     <option value="" disabled selected>Seleccione su pista</option>
                                     <template x-for="(pista, index) in pistas" :key="index">
@@ -53,26 +50,35 @@
 
                             <!-- Desplegable para el tipo de superficie -->
                             <div class="form-group mt-2">
-                                <label for="tipo_superficie">Tipo de Superficie</label>
+
+
+                                {{-- <label for="tipo_superficie">Tipo de Superficie</label>
                                 <select class="form-control" id="tipo_superficie" name="tipo_superficie"
                                     x-model="tipoSuperficie" required>
                                     <template x-for="tipo in tiposSuperficie" :key="tipo">
                                         <option :value="tipo" x-text="tipo"></option>
                                     </template>
-                                </select>
-                            </div>
-                        </div>
+                                </select> --}}
 
-                        <!-- Desplegable para el deporte -->
-                        <div x-show="deportes.length > 0">
+
+
+
+
+
+                                    <label for="Tipo_superficie">Tipo de Superficie</label>
+                                    <input type="text" id="tipo_superficie" name="tipo_superficie" x-model="tipoSuperficie"
+                                        x-bind:value="tipoSuperficie">
+
+                            </div>
+
+
+
+
+                            <!-- Input para el deporte -->
                             <div class="form-group mt-2">
                                 <label for="deporte">Deporte</label>
-                                <select class="form-control" id="deporte" name="deporte" x-model="deporteId" required>
-                                    <option value="" disabled selected>Seleccione su deporte</option>
-                                    <template x-for="(deporte, index) in deportes" :key="index">
-                                        <option :value="deporte.id" x-text="deporte.nombre"></option>
-                                    </template>
-                                </select>
+                                <input type="text" id="deporte" name="deporte" x-model="deporte"
+                                    x-bind:value="deporte">
                             </div>
                         </div>
 
@@ -91,7 +97,7 @@
                                 tiposSuperficie: [],
                                 pistaId: null,
                                 tipoSuperficie: '',
-                                deportes: [], // Inicializar como un array vacío
+                                deporte: null, // Inicializar como un array vacío
                                 deporteId: null,
 
                                 cargarPistas: async function() {
@@ -155,20 +161,8 @@
                                                     );
                                                 }
 
-                                                // Verificar si hay datos de deportes
-                                                if (data && data.deportes && Array.isArray(data.deportes) && data.deportes.length > 0) {
-                                                    this.deportes = data.deportes.map(deporte => ({
-                                                        id: deporte.id,
-                                                        nombre: deporte.nombre,
-                                                        // Ajusta las propiedades según la estructura real de los datos de deportes
-                                                    }));
-                                                    console.log('Datos finales de deportes:', this.deportes);
-                                                    this.deporteId = this.deportes.length > 0 ? this.deportes[0].id : null;
-                                                } else {
-                                                    console.warn(
-                                                        'La respuesta de la API no contiene datos de deportes o tiene un formato inesperado.'
-                                                    );
-                                                }
+                                                // Actualizar la carga de deportes
+                                                this.actualizarDeportes();
                                             } else {
                                                 console.error('Error al obtener el tipo de superficie:', response.status);
                                                 console.log('Respuesta del servidor:', await response.text());
@@ -177,13 +171,46 @@
                                     } catch (error) {
                                         console.error('Error al obtener el tipo de superficie:', error);
                                     }
+                                },
+
+                                actualizarDeportes: async function() {
+                                    try {
+                                        if (this.pistaId !== null) {
+                                            // Cargar los deportes relacionados con la pista seleccionada
+                                            const response = await fetch(`/pistas/${this.pistaId}/deportes`);
+                                            if (response.ok) {
+                                                const data = await response.json();
+                                                console.log('Datos completos de la respuesta de deportes:', data);
+
+
+                                                // Verificar si hay datos de deportes
+                                                if (data) {
+
+
+                                                    this.deporte = data.nombre;
+                                                    // Mostrar información en la consola
+                                                    console.log(this.deporte);
+                                                } else {
+                                                    console.warn(
+                                                        'La respuesta de la API no contiene datos de deportes relacionados con la pista o tiene un formato inesperado.'
+                                                    );
+
+                                                    // Mostrar información en la consola
+                                                    console.log('No hay datos de deportes');
+                                                }
+                                            } else {
+                                                console.error('Error al obtener deportes relacionados con la pista:', response.status);
+                                                console.log('Respuesta del servidor:', await response.text());
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Error al obtener deportes relacionados con la pista:', error);
+                                    }
                                 }
 
                             };
                         }
                     </script>
-
-
                 </div>
             </div>
         </div>
