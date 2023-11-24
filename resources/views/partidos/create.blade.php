@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <form action="{{ route('partidos.store') }}" method="POST" x-data="pistasComponent()">
+                    <form action="{{ route('partidos.store') }}" method="POST" x-data="pistasComponent()"
+                        x-init="cargarPistas">
                         @csrf
                         <div class="form-group">
                             <label for="fecha">Fecha</label>
@@ -33,62 +34,93 @@
                                 @endforeach
                             </select>
                         </div>
-                        <br>
-                        <br>
 
                         <!-- Agregado para mostrar el mensaje -->
                         <div x-text="mensaje" class="text-red-500"></div>
 
-                        <!-- Agregado para ocultar el select si no hay pistas -->
+                        <!-- Desplegable para el número de pista -->
                         <div x-show="pistas.length > 0">
                             <div class="form-group">
-                                <label for="pista_id">Pista</label>
+                                <label for="pista_id">Número de Pista</label>
                                 <select class="form-control" id="pista_numero" name="pista_" x-model="pistaId"
-                                    required>
-                                    <template x-for="pista in pistas" :key="pista.id">
+                                    x-on:change="cargarTipoSuperficie" required>
+                                    <option value="" disabled selected>Seleccione su pista</option>
+                                    <template x-for="(pista, index) in pistas" :key="index">
                                         <option :value="pista.id" x-text="`Pista ${pista.numero}`"></option>
                                     </template>
                                 </select>
                             </div>
 
-                            <!-- Agregamos otro select para mostrar el tipo de superficie -->
+                            <!-- Desplegable para el tipo de superficie -->
                             <div class="form-group mt-2">
                                 <label for="tipo_superficie">Tipo de Superficie</label>
-                                <select class="form-control" id="tipo_superficie" name="tipo_superficie" x-model="tipoSuperficie" required>
-                                    <template x-for="pista in pistas" :key="pista.id">
-                                        <option :value="pista.superficie.tipo" x-text="pista.superficie.tipo"></option>
+                                <select class="form-control" id="tipo_superficie" name="tipo_superficie"
+                                    x-model="tipoSuperficie" required>
+                                    <template x-for="tipo in tiposSuperficie" :key="tipo">
+                                        <option :value="tipo" x-text="tipo"></option>
                                     </template>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Agregado para mostrar el mensaje -->
+                        <!-- Desplegable para el deporte -->
+                        <div x-show="deportes.length > 0">
+                            <div class="form-group mt-2">
+                                <label for="deporte">Deporte</label>
+                                <select class="form-control" id="deporte" name="deporte" x-model="deporteId" required>
+                                    <option value="" disabled selected>Seleccione su deporte</option>
+                                    <template x-for="(deporte, index) in deportes" :key="index">
+                                        <option :value="deporte.id" x-text="deporte.nombre"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
                         <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500"></div>
 
                         <button type="submit" class="btn btn-primary">Crear</button>
+                        <!-- Resto de tu formulario... -->
                     </form>
 
                     <script>
                         function pistasComponent() {
                             return {
-                                pistas: [],
                                 ubicacionId: null,
+                                mensaje: '',
+                                pistas: [],
+                                tiposSuperficie: [],
                                 pistaId: null,
-                                mensaje: '', // Nuevo estado para el mensaje
-                                tipoSuperficie: '', // Nuevo estado para el tipo de superficie
+                                tipoSuperficie: '',
+                                deportes: [], // Inicializar como un array vacío
+                                deporteId: null,
 
-                                async cargarPistas() {
+                                cargarPistas: async function() {
                                     try {
-                                        if (this.ubicacionId) {
+                                        if (this.ubicacionId !== null) {
                                             const response = await fetch(`/pistas-por-ubicacion/${this.ubicacionId}`);
                                             if (response.ok) {
+                                                console.log('Respuesta de la API para pistas:', response);
                                                 const data = await response.json();
+
+                                                // Actualizar la lógica para manejar diferentes estructuras de datos
                                                 this.pistas = data.map(pista => ({
-                                                    id: pista,
-                                                    numero: pista,
-                                                    superficie: { tipo: 'TipoSuperficieDummy' }, // Reemplaza 'TipoSuperficieDummy' con la lógica real para obtener el tipo de superficie
+                                                    id: pista.id,
+                                                    numero: pista.numero !== null ? pista.numero : 'Número Desconocido',
                                                 }));
+
                                                 this.mensaje = this.pistas.length ? '' : 'No hay pistas disponibles';
+
+                                                // Agregar la opción "Seleccione su pista" si hay pistas disponibles
+                                                if (this.pistas.length > 0) {
+                                                    this.pistas.unshift({
+                                                        id: null,
+                                                        numero: 'Seleccione su pista'
+                                                    });
+
+                                                    // Llamamos a cargarTipoSuperficie con la primera pista en la lista
+                                                    this.pistaId = this.pistas[0].id;
+                                                    this.cargarTipoSuperficie();
+                                                }
                                             } else {
                                                 console.error('Error al obtener pistas:', response.status);
                                                 console.log('Respuesta del servidor:', await response.text());
@@ -101,10 +133,57 @@
                                         console.error('Error al obtener pistas:', error);
                                         this.mensaje = 'Hubo un error al cargar las pistas';
                                     }
+                                },
+
+                                async cargarTipoSuperficie() {
+                                    try {
+                                        if (this.pistaId !== null) {
+                                            const response = await fetch(`/pistas/${this.pistaId}`);
+                                            console.log('Respuesta de la API para tipo de superficie y deportes:', response);
+
+                                            if (response.ok) {
+                                                const data = await response.json();
+                                                console.log('Datos obtenidos:', data);
+
+                                                // Verificar si hay datos de superficie
+                                                if (data && data.tipo_superficie) {
+                                                    this.tiposSuperficie = [data.tipo_superficie];
+                                                    this.tipoSuperficie = this.tiposSuperficie[0] || '';
+                                                } else {
+                                                    console.warn(
+                                                        'La respuesta de la API no contiene datos de tipo de superficie o tiene un formato inesperado.'
+                                                    );
+                                                }
+
+                                                // Verificar si hay datos de deportes
+                                                if (data && data.deportes && Array.isArray(data.deportes) && data.deportes.length > 0) {
+                                                    this.deportes = data.deportes.map(deporte => ({
+                                                        id: deporte.id,
+                                                        nombre: deporte.nombre,
+                                                        // Ajusta las propiedades según la estructura real de los datos de deportes
+                                                    }));
+                                                    console.log('Datos finales de deportes:', this.deportes);
+                                                    this.deporteId = this.deportes.length > 0 ? this.deportes[0].id : null;
+                                                } else {
+                                                    console.warn(
+                                                        'La respuesta de la API no contiene datos de deportes o tiene un formato inesperado.'
+                                                    );
+                                                }
+                                            } else {
+                                                console.error('Error al obtener el tipo de superficie:', response.status);
+                                                console.log('Respuesta del servidor:', await response.text());
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Error al obtener el tipo de superficie:', error);
+                                    }
                                 }
+
                             };
                         }
                     </script>
+
+
                 </div>
             </div>
         </div>

@@ -17,23 +17,27 @@ class Pista extends Model
 
     public function ubicacion()
     {
-        return $this->belongsTo('App\Models\Ubicacion');
+        return $this->belongsTo(Ubicacion::class);
     }
 
     public function superficie()
-{
-    return $this->belongsTo(Superficie::class, 'superficie_id');
-}
-
-    public function pistas()
     {
-        return $this->hasMany('App\Models\Pista');
+        return $this->belongsTo(Superficie::class);
     }
+
 
     public function partidos()
     {
         return $this->hasMany(Partido::class);
     }
+
+
+    public function deporte()
+    {
+        return $this->belongsTo(Deporte::class, 'deporte_id');
+    }
+
+
 
     protected $fillable = [
         'numero',

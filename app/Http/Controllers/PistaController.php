@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\StorePistaRequest;
 use App\Http\Requests\UpdatePistaRequest;
 use App\Models\Pista;
@@ -51,8 +52,15 @@ class PistaController extends Controller
      */
     public function show(Pista $pista)
     {
-        //
+        // Asegúrate de cargar la relación 'superficie'
+        $pista->load('superficie');
+
+        return response()->json([
+            'numero' => $pista->numero,
+            'tipo_superficie' => $pista->superficie ? $pista->superficie->tipo : 'Tipo Desconocido',
+        ]);
     }
+
 
 
     /*
@@ -61,16 +69,55 @@ class PistaController extends Controller
 
     public function pistasPorUbicacion($ubicacionId)
     {
-        $pistas = Pista::where('ubicacion_id', $ubicacionId)->pluck('numero');
-        return response()->json($pistas);
+        try {
+            $pistas = Pista::where('ubicacion_id', $ubicacionId)->get(['id', 'numero']);
+            return response()->json($pistas);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Hubo un error al obtener pistas'], 500);
+        }
     }
 
-    public function superficiePorUbicacion($ubicacionId)
-{
-    $pistas = Pista::with('superficie')->where('ubicacion_id', $ubicacionId)->get();
+    /* Para encontrar la superficie de la pista */
 
-    return response()->json($pistas);
+    public function superficiePorUbicacion($ubicacionId)
+    {
+        try {
+            $pistas = Pista::with('superficie')->where('ubicacion_id', $ubicacionId)->get(['id', 'numero', 'superficie.tipo']);
+            return response()->json($pistas);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+    public function deportePorPista($pistaId)
+    {
+        $pista = Pista::findOrFail($pistaId);
+        $deporte = $pista->deporte;
+
+        return response()->json(['nombre' => $deporte ? $deporte->nombre : 'Desconocido']);
+    }
+
+
+
+
+    public function cargarTipoSuperficie($pistaId)
+{
+    try {
+        if ($pistaId !== null) {
+            $pista = Pista::findOrFail($pistaId);
+            $tipoSuperficie = $pista->superficie ? $pista->superficie->tipo : 'Tipo Desconocido';
+
+            return response()->json(['tipo_superficie' => $tipoSuperficie]);
+        }
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 }
+
+
+
 
 
 

@@ -20,7 +20,8 @@ class PistaSeeder extends Seeder
      $pista = Pista::create([
         'ubicacion_id' => 1,
         'superficie_id'=>1,
-        'numero'=>1
+        'numero'=>1,
+        'deporte_id'=>1,
      ]);
 
     }

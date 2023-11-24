@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ubicacion_id')->constrained('ubicaciones');
             $table->foreignId('superficie_id')->constrained();
+            $table->foreignId('deporte_id')->constrained('deportes'); // Agrega esta línea
             $table->integer('numero');
 
         });

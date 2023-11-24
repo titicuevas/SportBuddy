@@ -47,7 +47,16 @@ Route::get('/pistas-por-ubicacion/{ubicacionId}', [PistaController::class, 'pist
 
 
 
+Route::get('/superficie-por-ubicacion/{superficieId}', [PistaController::class, 'pistasPorUbicacion']);
 
+Route::get('/deporte-por-ubicacion/{deporteId}', [PistaController::class, 'pistasPorUbicacion']);
+
+
+Route::get('/pistas/{pista}', [PistaController::class, 'show']);
+
+
+
+Route::get('/pistas/{pista}/deporte', [PistaController::class, 'deportePorPista']);
 
 
 
