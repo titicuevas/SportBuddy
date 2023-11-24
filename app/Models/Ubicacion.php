@@ -31,6 +31,15 @@ class Ubicacion extends Model
         return $this->hasMany('App\Models\Pista');
     }
 
+    public function getImagePathAttribute()
+    {
+        // Asegúrate de que estás accediendo a la columna correcta en la base de datos
+        return asset('storage/imagen/' . $this->attributes['imagen']);
+    }
+
+
+
+
 
     //Para que me coja la tabla ubicaciones que cambiamos ya que es un plural que no admite.
     protected $table = 'ubicaciones';
@@ -38,6 +47,7 @@ class Ubicacion extends Model
     protected $fillable = [
         'nombre',
         'direccion',
-        'ubicacion_id'
+        'ubicacion_id',
+        'imagen'
     ];
 }

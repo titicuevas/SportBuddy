@@ -9,7 +9,7 @@
             <article id="partido" class="card card2 w-96">
                 <a href="{{ route('partidos.show', $partido->id) }}" class="btn btn-sm btn-primary">
                     <header class="card__header bg-cover h-72"
-                        style="background-image: url('{{ $partido->deporte->image_path }}');">
+                        style="background-image: url('{{ $partido->ubicacion->image_path }}');">
                         <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->ubicacion->nombre }}</h1>
 
                         <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->deporte->nombre }}</h1>
@@ -23,7 +23,8 @@
                             </path>
                         </svg>
                         <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2">
-                           <a href="https://acortar.link/YZ84uE"target="_blank"> {{ $partido->ubicacion->direccion }}</a>
+                            <a href="https://acortar.link/YZ84uE"target="_blank">
+                                {{ $partido->ubicacion->direccion }}</a>
                         </div>
                     </div>
                     <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
