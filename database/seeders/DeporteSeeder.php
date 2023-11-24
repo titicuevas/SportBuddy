@@ -22,13 +22,15 @@ class DeporteSeeder extends Seeder
         ]);
 
         $deporte2 = Deporte::create([
-            'nombre' => 'Futbol Sala'
+            'nombre' => 'Futbol Sala',
+            'imagen' => 'cesped_poli.jpeg',
 
 
         ]);
 
         $deporte3 = Deporte::create([
-            'nombre' => 'Padel'
+            'nombre' => 'Padel',
+            'imagen' => 'pista_pade_poli.jpg',
 
 
         ]);

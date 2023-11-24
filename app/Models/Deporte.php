@@ -13,6 +13,7 @@ class Deporte extends Model
 
     protected $fillable = [
         'nombre',
+        'imagen',
     ];
 
     public function partidos()
@@ -23,4 +24,14 @@ class Deporte extends Model
     {
         return $this->belongsToMany('App\Models\Ubicacion');
     }
+
+
+    public function getImagePathAttribute()
+    {
+        // Asegúrate de que estás accediendo a la columna correcta en la base de datos
+        return asset('storage/imagen/' . $this->attributes['imagen']);
+    }
+
+
+
 }

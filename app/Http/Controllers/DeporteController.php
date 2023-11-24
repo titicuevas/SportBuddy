@@ -46,12 +46,16 @@ class DeporteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Deporte $deporte , $id)
+    public function show(Deporte $deporte, $id)
     {
         $deporte = Deporte::findOrFail($id);
 
         return view('deportes.show', compact('deporte'));
     }
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -64,7 +68,7 @@ class DeporteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDeporteRequest $request, Deporte $deporte ,$id)
+    public function update(UpdateDeporteRequest $request, Deporte $deporte, $id)
     {
         $deporte = Deporte::findOrFail($id);
 
@@ -82,7 +86,7 @@ class DeporteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Deporte $deporte ,$id)
+    public function destroy(Deporte $deporte, $id)
     {
         $deporte = Deporte::findOrFail($id);
 

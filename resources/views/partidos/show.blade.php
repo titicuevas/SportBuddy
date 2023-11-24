@@ -27,6 +27,7 @@
             <label for="deporte" class="block mb-2 text-sm font-medium text-gray-900">Deporte:</label>
             <p class="text-gray-700">{{ $partido->deporte->nombre }}</p>
         </div>
+
     </div>
 
 </x-app-layout>

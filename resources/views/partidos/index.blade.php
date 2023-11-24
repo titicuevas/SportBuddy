@@ -6,31 +6,32 @@
                                 href="{{ route('user.show', $partido->user) }}"
                                 class="text-blue-500 hover:text-blue-700 underline">Ver perfil</a> --}}
 
-                <article id="partido" class="card card2 w-96">
-                    <a href="{{ route('partidos.show', $partido->id) }}" class="btn btn-sm btn-primary">
-                        <header class="card__header bg-cover h-72"
-                            style="background-image: url('https://res.cloudinary.com/playtomic/image/upload/c_limit,w_1600/v1/pro/tenants/da766c17-43b3-11e8-8674-52540049669c/padelcross_0001');">
-                            <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->ubicacion->nombre }}</h1>
-                        </header>
-                    </a>
-                    <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
-                        <div class="card__address flex">
-                            <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
-                                <path
-                                    d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
-                                </path>
-                            </svg>
-                            <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2">
-                                {{ $partido->ubicacion->direccion }}
-                            </div>
-                        </div>
-                        <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                            <div>{{ $partido->fecha }}</div>
-                            <div>{{ $partido->hora }}</div>
+            <article id="partido" class="card card2 w-96">
+                <a href="{{ route('partidos.show', $partido->id) }}" class="btn btn-sm btn-primary">
+                    <header class="card__header bg-cover h-72"
+                        style="background-image: url('{{ $partido->deporte->image_path }}');">
+                        <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->ubicacion->nombre }}</h1>
+
+                        <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->deporte->nombre }}</h1>
+                    </header>
+                </a>
+                <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
+                    <div class="card__address flex">
+                        <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
+                            <path
+                                d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
+                            </path>
+                        </svg>
+                        <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2">
+                           <a href="https://acortar.link/YZ84uE"target="_blank"> {{ $partido->ubicacion->direccion }}</a>
                         </div>
                     </div>
-                </article>
-        
+                    <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
+                        <div>{{ $partido->fecha }}</div>
+                        <div>{{ $partido->hora }}</div>
+                    </div>
+                </div>
+            </article>
         @endforeach
     </div>
 

@@ -62,6 +62,12 @@ class Partido extends Model
         return $this->belongsTo('App\Models\Deporte' , 'deporte_id');
     }
 
+
+    public function getImagePathAttribute()
+{
+    return asset('storage/' . $this->deporte->imagen);
+}
+
     public function asignamientos()
     {
         return $this->hasMany(Asignamiento::class);
