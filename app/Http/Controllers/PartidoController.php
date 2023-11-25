@@ -54,7 +54,7 @@ class PartidoController extends Controller
 
         $request->validate([
             'fecha' => 'required',
-                 'hora' => 'required', //preguntar a ricardo
+            'hora' => 'required', //preguntar a ricardo
             'ubicacion_id' => 'required',
             'deporte' => 'required',
         ]);

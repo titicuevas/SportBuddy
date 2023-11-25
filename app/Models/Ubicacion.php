@@ -12,6 +12,19 @@ class Ubicacion extends Model
 
 
 
+    //Para que me coja la tabla ubicaciones que cambiamos ya que es un plural que no admite.
+    protected $table = 'ubicaciones';
+
+    protected $fillable = [
+        'nombre',
+        'direccion',
+        'ubicacion_id',
+        'imagen',
+        'enlace_maps',
+    ];
+
+
+
 
     public function deportes()
     {
@@ -41,13 +54,4 @@ class Ubicacion extends Model
 
 
 
-    //Para que me coja la tabla ubicaciones que cambiamos ya que es un plural que no admite.
-    protected $table = 'ubicaciones';
-
-    protected $fillable = [
-        'nombre',
-        'direccion',
-        'ubicacion_id',
-        'imagen'
-    ];
 }

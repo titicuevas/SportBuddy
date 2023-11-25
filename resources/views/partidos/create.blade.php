@@ -1,92 +1,93 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Añadir partido
+        <h2 class="font-semibold text-3xl text-gray-800 leading-tight">
+            ¡Añade un Nuevo Partido!
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <form action="{{ route('partidos.store') }}" method="POST" x-data="pistasComponent()"
-                        x-init="cargarPistas">
-                        @csrf
-                        <div class="form-group">
-                            <label for="fecha">Fecha</label>
-                            <input type="date" class="form-control" id="fecha" name="fecha"
-                                value="{{ old('fecha') }}" required>
-                        </div>
+    <div class="py-8">
+        <div class="max-w-lg mx-auto bg-white rounded-md overflow-hidden shadow-lg">
+            <div class="p-6">
+                <form action="{{ route('partidos.store') }}" method="POST" x-data="pistasComponent()" x-init="cargarPistas">
+                    @csrf
 
-                        <div class="form-group">
-                            <label for="hora">Hora</label>
-                            <input type="time" class="form-control" id="hora" name="hora"
-                                value="{{ old('hora') }}" required>
-                        </div>
+                    <div class="mb-4">
+                        <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" x-model="fecha" class="input-field" required>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="ubicacion_id">Ubicación</label>
-                            <select name="ubicacion_id" id="ubicacion" x-model="ubicacionId" x-on:change="cargarPistas"
-                                class="'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:ring focus:ring-black focus:ring-opacity-100 focus:border-transparent">
-                                <option value="">Selecciona una ubicación</option>
-                                @foreach ($ubicaciones as $ubicacion)
-                                    <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
-                                @endforeach
+                    <div class="mb-4">
+                        <label for="hora" class="block text-gray-700 text-sm font-bold mb-2">Hora</label>
+                        <input type="time" id="hora" name="hora" x-model="hora" class="input-field" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ubicacion_id" class="block text-gray-700 text-sm font-bold mb-2">Ubicación</label>
+                        <select name="ubicacion_id" id="ubicacion" x-model="ubicacionId" x-on:change="cargarPistas" class="input-field">
+                            <option value="">Selecciona una ubicación</option>
+                            @foreach ($ubicaciones as $ubicacion)
+                                <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Desplegable para el número de pista -->
+                    <div x-show="pistas.length > 0">
+                        <div class="mb-4">
+                            <label for="pista_id" class="block text-gray-700 text-sm font-bold mb-2">Número de Pista</label>
+                            <select id="pista_numero" name="pista_id" x-model="pistaId" x-on:change="cargarTipoSuperficie" class="input-field" required>
+                                <option value="" disabled selected>Seleccione su pista</option>
+                                <template x-for="(pista, index) in pistas" :key="index">
+                                    <option :value="pista.id" x-text="`Pista ${pista.numero}`"></option>
+                                </template>
                             </select>
                         </div>
 
-                        <!-- Desplegable para el número de pista -->
-                        <div x-show="pistas.length > 0">
-                            <div class="form-group">
-                                <label for="pista_id">Número de Pista</label>
-                                <select class="form-control" id="pista_numero" name="pista_id" x-model="pistaId"
-                                    x-on:change="cargarTipoSuperficie" required>
-                                    <option value="" disabled selected>Seleccione su pista</option>
-                                    <template x-for="(pista, index) in pistas" :key="index">
-                                        <option :value="pista.id" x-text="`Pista ${pista.numero}`"></option>
-                                    </template>
-                                </select>
-                            </div>
-
-                            <!-- Desplegable para el tipo de superficie -->
-                            <div class="form-group mt-2">
-
-
-                                {{-- <label for="tipo_superficie">Tipo de Superficie</label>
-                                <select class="form-control" id="tipo_superficie" name="tipo_superficie"
-                                    x-model="tipoSuperficie" required>
-                                    <template x-for="tipo in tiposSuperficie" :key="tipo">
-                                        <option :value="tipo" x-text="tipo"></option>
-                                    </template>
-                                </select> --}}
-
-
-
-
-
-
-                                    <label for="Tipo_superficie">Tipo de Superficie</label>
-                                    <input type="text" id="tipo_superficie" name="tipo_superficie" x-model="tipoSuperficie"
-                                        x-bind:value="tipoSuperficie">
-
-                            </div>
-
-
-
-
-                            <!-- Input para el deporte -->
-                            <div class="form-group mt-2">
-                                <label for="deporte">Deporte</label>
-                                <input type="text" id="deporte" name="deporte" x-model="deporte"
-                                    x-bind:value="deporte">
-                            </div>
+                        <!-- Cuadro de texto para el tipo de superficie -->
+                        <div class="mb-4">
+                            <label for="tipo_superficie" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Superficie</label>
+                            <input type="text" id="tipo_superficie" name="tipo_superficie" x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field" required>
                         </div>
 
-                        <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500"></div>
+                        <!-- Cuadro de texto para el deporte -->
+                        <div class="mb-4">
+                            <label for="deporte" class="block text-gray-700 text-sm font-bold mb-2">Deporte</label>
+                            <input type="text" id="deporte" name="deporte" x-model="deporte" x-bind:value="deporte" class="input-field">
+                        </div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary">Crear</button>
-                        <!-- Resto de tu formulario... -->
-                    </form>
+                    <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500 mb-4"></div>
+
+                    <button type="submit" class="btn-primary">Crear Partido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+
 
                     <script>
                         function pistasComponent() {

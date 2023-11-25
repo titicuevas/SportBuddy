@@ -34,11 +34,9 @@ class UbicacionController extends Controller
 
         $ubicacion->nombre = $request->input('nombre');
         $ubicacion->direccion = $request->input('direccion');
+        $ubicacion->enlace_maps = $request->input('enlace_maps');
 
         $ubicacion->save();
-
-
-
     }
 
     /**

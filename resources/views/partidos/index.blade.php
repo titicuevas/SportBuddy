@@ -23,13 +23,17 @@
                             </path>
                         </svg>
                         <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2">
-                            <a href="https://acortar.link/YZ84uE"target="_blank">
+
+                            <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
+
                                 {{ $partido->ubicacion->direccion }}</a>
                         </div>
                     </div>
                     <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                        <div>{{ $partido->fecha }}</div>
-                        <div>{{ $partido->hora }}</div>
+                        <div>
+                            <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}</p>
+                        </div>
+                        <div>{{ \Carbon\Carbon::parse($partido->hora)->format('H:i') }}</div>
                     </div>
                 </div>
             </article>

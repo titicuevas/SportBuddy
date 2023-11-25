@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('direccion');
             $table->string('imagen')->nullable();
+            $table->string('enlace_maps')->nullable();
 
 
         });
