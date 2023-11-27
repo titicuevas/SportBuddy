@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('direccion');
             $table->string('imagen')->nullable();
             $table->string('enlace_maps')->nullable();
+            $table->text('iframe')->nullable();/* Hay que ponerle tipo text porque tiene demasiados caracteres */
 
 
         });
