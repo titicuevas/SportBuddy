@@ -46,10 +46,8 @@ class RegisteredUserController extends Controller
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto')->store('public/photoProfile');
 
-            // Resto del código...
-        } else {
-            // Manejar el caso en el que no se envió ningún archivo
-            return "Foto vacia";
+        }else {
+            $foto = null;
         }
 
         $user = User::create([

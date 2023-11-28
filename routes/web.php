@@ -37,10 +37,17 @@ Route::get('/dashboard', function () {
 //Router de Partidos
 
 Route::get('/partidos/crear', [PartidoController::class, 'create'])->name('partidos.create');
+
+/* Apuntarse */
+Route::post('/partidos/apuntarse/{partido}', [PartidoController::class, 'inscribirPartido'])->name('partidos.apuntarse');
+
 Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.store');
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');
 Route::get('/partidos/{partido}', [PartidoController::class, 'show'])->name('partidos.show');
 Route::delete('/partidos/{partido}', [PartidoController::class, 'destroy'])->name('partidos.destroy');
+
+
+
 
 //Sacar la el numero para la ubicacion
 Route::get('/pistas-por-ubicacion/{ubicacionId}', [PistaController::class, 'pistasPorUbicacion']);
@@ -57,6 +64,8 @@ Route::get('/pistas/{pista}', [PistaController::class, 'show']);
 
 
 Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista']);
+
+
 
 
 

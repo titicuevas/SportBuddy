@@ -104,12 +104,8 @@ class PartidoController extends Controller
     */
 
 
-    public function show(int $id)
+    public function show(Partido $partido)
     {
-
-        $partido = Partido::find($id);
-
-
         return view('partidos.show', ['partido' => $partido]);
     }
 
@@ -177,5 +173,79 @@ class PartidoController extends Controller
         // Mensaje de confirmación
 
         return $asignaciones;
+    }
+
+
+    public function inscribirPartido(Partido $partido)
+    {
+        $user = auth()->user()->id;
+
+        // Verificar si el usuario ya está inscrito en el partido
+        $inscrito = Asignamiento::where('user_id', $user)->where('partido_id', $partido->id)->first();
+        if ($inscrito) {
+            return redirect()->route('partidos.show', $partido)->with('success', 'Ya estás inscrito en el partido.');
+        }
+
+        // Verificar si el partido ya está completo
+        $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
+        $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
+
+        if ($totalJugadores >= $limite) {
+            return redirect()->route('partidos.show', $partido)->with('error', 'El partido está completo. No es posible inscribirse.');
+        }
+
+        // Resto de la lógica para asignar al usuario a un equipo
+        $equipos = [
+            Equipo::find(1),
+            Equipo::find(2),
+        ];
+
+        $num_equipo1 = 0;
+        $num_equipo2 = 0;
+
+        foreach ($equipos[0]->asignamientos as $asignamiento) {
+            if ($asignamiento['partido_id'] == $partido->id) {
+                if ($num_equipo1 < $limite) {
+                    $asignamiento['equipo_id'] = 1;
+                    $num_equipo1++;
+                }
+            }
+        }
+
+        foreach ($equipos[1]->asignamientos as $asignamiento) {
+            if ($asignamiento['partido_id'] == $partido->id) {
+                if ($num_equipo2 < $limite) {
+                    $asignamiento['equipo_id'] = 2;
+                    $num_equipo2++;
+                }
+            }
+        }
+
+        // Seleccionar aleatoriamente uno de los equipos (en caso de que no se haya llenado por completo)
+        $equipoAleatorio = $equipos[array_rand($equipos)];
+
+        // Crear un nuevo registro en la tabla de asignamientos
+        Asignamiento::create([
+            'partido_id' => $partido->id,
+            'equipo_id' => $equipoAleatorio->id,
+            'user_id' => $user,
+        ]);
+
+        return redirect()->route('partidos.show', $partido)->with('success', 'Te has inscrito al partido correctamente');
+    }
+
+    // Función para obtener el límite según el deporte
+    private function obtenerLimitePorDeporte($deporte)
+    {
+        switch ($deporte) {
+            case 'Futbol 7':
+                return 7;
+            case 'Futbol Sala':
+                return 5;
+            case 'Padel':
+                return 2; // Cambiado a 2 jugadores por equipo para pádel
+            default:
+                return 0; // Valor predeterminado
+        }
     }
 }

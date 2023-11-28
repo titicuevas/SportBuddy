@@ -53,6 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function partidos()
     {
-        return $this->hasMany(Partido::class);
+        return $this->hasMany(Partido::class, 'partido_id');
     }
 }
