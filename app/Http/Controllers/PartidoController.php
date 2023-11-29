@@ -178,10 +178,10 @@ class PartidoController extends Controller
 
     public function inscribirPartido(Partido $partido)
     {
-        $user = auth()->user()->id;
+        $user = auth()->user();
 
         // Verificar si el usuario ya está inscrito en el partido
-        $inscrito = Asignamiento::where('user_id', $user)->where('partido_id', $partido->id)->first();
+        $inscrito = Asignamiento::where('user_id', $user->id)->where('partido_id', $partido->id)->first();
         if ($inscrito) {
             return redirect()->route('partidos.show', $partido)->with('success', 'Ya estás inscrito en el partido.');
         }
@@ -190,49 +190,42 @@ class PartidoController extends Controller
         $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
         $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
 
-        if ($totalJugadores >= $limite) {
+        if ($totalJugadores >= $limite * 2) {
             return redirect()->route('partidos.show', $partido)->with('error', 'El partido está completo. No es posible inscribirse.');
         }
 
-        // Resto de la lógica para asignar al usuario a un equipo
-        $equipos = [
-            Equipo::find(1),
-            Equipo::find(2),
-        ];
+        // Obtener los equipos del partido
+        $equipo1 = Equipo::find(1);
+        $equipo2 = Equipo::find(2);
 
-        $num_equipo1 = 0;
-        $num_equipo2 = 0;
+        // Contadores de jugadores en cada equipo
+        $num_equipo1 = $equipo1->asignamientos->where('partido_id', $partido->id)->count();
+        $num_equipo2 = $equipo2->asignamientos->where('partido_id', $partido->id)->count();
 
-        foreach ($equipos[0]->asignamientos as $asignamiento) {
-            if ($asignamiento['partido_id'] == $partido->id) {
-                if ($num_equipo1 < $limite) {
-                    $asignamiento['equipo_id'] = 1;
-                    $num_equipo1++;
-                }
-            }
+        // Seleccionar aleatoriamente uno de los equipos disponibles
+        if ($num_equipo1 < $limite && $num_equipo2 < $limite) {
+            $equiposDisponibles = [$equipo1, $equipo2];
+        } elseif ($num_equipo1 < $limite) {
+            $equiposDisponibles = [$equipo1];
+        } elseif ($num_equipo2 < $limite) {
+            $equiposDisponibles = [$equipo2];
+        } else {
+            return redirect()->route('partidos.show', $partido)->with('error', 'No se pudo asignar a un equipo. El partido puede estar completo.');
         }
 
-        foreach ($equipos[1]->asignamientos as $asignamiento) {
-            if ($asignamiento['partido_id'] == $partido->id) {
-                if ($num_equipo2 < $limite) {
-                    $asignamiento['equipo_id'] = 2;
-                    $num_equipo2++;
-                }
-            }
-        }
-
-        // Seleccionar aleatoriamente uno de los equipos (en caso de que no se haya llenado por completo)
-        $equipoAleatorio = $equipos[array_rand($equipos)];
+        // Seleccionar aleatoriamente uno de los equipos disponibles
+        $equipoAleatorio = $equiposDisponibles[array_rand($equiposDisponibles)];
 
         // Crear un nuevo registro en la tabla de asignamientos
         Asignamiento::create([
             'partido_id' => $partido->id,
             'equipo_id' => $equipoAleatorio->id,
-            'user_id' => $user,
+            'user_id' => $user->id,
         ]);
 
         return redirect()->route('partidos.show', $partido)->with('success', 'Te has inscrito al partido correctamente');
     }
+
 
     // Función para obtener el límite según el deporte
     private function obtenerLimitePorDeporte($deporte)

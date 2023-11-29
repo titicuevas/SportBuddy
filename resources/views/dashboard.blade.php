@@ -1,7 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
+        <style>
+            <link rel="stylesheet" href="{{ asset('/public/fonts/knucklehead-slab.otf') }}">{{-- Preguntar a Ignacio --}}
+        </style>
         <h2 class="font-knucklehead-slab text-xl text-gray-800 leading-tight text-center">
-            <link rel="stylesheet" href="{{ asset('/public/fonts/knucklehead-slab.otf') }}">  {{-- Preguntar a Ignacio --}}
 
             {{ __('SportBuddy') }}
         </h2>
