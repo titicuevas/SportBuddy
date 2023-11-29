@@ -39,7 +39,12 @@ Route::get('/dashboard', function () {
 Route::get('/partidos/crear', [PartidoController::class, 'create'])->name('partidos.create');
 
 /* Apuntarse */
-Route::post('/partidos/apuntarse/{partido}', [PartidoController::class, 'inscribirPartido'])->name('partidos.apuntarse');
+Route::post('/partidos/{partido}/inscribirse', [PartidoController::class, 'inscribirPartido'])->name('partidos.inscribirse');
+
+/* Desapuntarse */
+Route::post('/partidos/{partido}/desapuntarse', [PartidoController::class, 'desapuntarse'])->name('partidos.desapuntarse');
+
+
 
 Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.store');
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');

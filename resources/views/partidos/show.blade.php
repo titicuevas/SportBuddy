@@ -41,12 +41,46 @@
                     </div>
                 </div>
 
+
+
                 {{-- Boton de Unirse al partido --}}
-                <form method="POST" action="{{ route('partidos.apuntarse', $partido) }}" x-data="{ showModal: false }">
+                <form method="POST" action="{{ route('partidos.inscribirse', $partido) }}" x-data="{ showModal: false }">
                     @csrf
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">Unirse al partido</button>
-                   
+                    {{-- Verificar si el usuario está inscrito --}}
+                    @if ($inscrito)
+                        <button type="button"
+                            class="bg-gray-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed" disabled>Ya
+                            estás inscrito</button>
+                    @elseif ($partidoCompleto)
+                        <button type="button"
+                            class="bg-red-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed"
+                            disabled>Partido Completo</button>
+                    @else
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">Unirse
+                            al partido</button>
+                    @endif
                 </form>
+
+                {{-- Boton de Desapuntarse --}}
+                <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}" x-data="{ showModal: false }">
+                    @csrf
+                    {{-- Verificar si el usuario está inscrito para mostrar el botón de Desapuntarse --}}
+                    @if ($inscrito)
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-red">Desapuntarse
+                            del partido</button>
+                    @endif
+                </form>
+
+
+
+
+
+
+
+
+
 
             </div>
 

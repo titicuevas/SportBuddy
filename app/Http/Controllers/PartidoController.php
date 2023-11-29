@@ -105,9 +105,26 @@ class PartidoController extends Controller
 
 
     public function show(Partido $partido)
-    {
-        return view('partidos.show', ['partido' => $partido]);
-    }
+{
+    // Obtener el usuario actual
+    $usuarioActual = auth()->user();
+
+    // Verificar si el usuario actual está inscrito en el partido
+    $inscrito = Asignamiento::where('user_id', $usuarioActual->id)->where('partido_id', $partido->id)->first();
+
+    // Verificar si el partido está completo
+    $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
+    $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
+    $partidoCompleto = $totalJugadores >= $limite * 2;
+
+    return view('partidos.show', [
+        'partido' => $partido,
+        'usuarioActual' => $usuarioActual,
+        'inscrito' => $inscrito,
+        'partidoCompleto' => $partidoCompleto,
+    ]);
+}
+
 
 
     // Intento ver el perfil del usuario
@@ -161,18 +178,11 @@ class PartidoController extends Controller
     public function destroy(Partido $partido)
     {
         // Elimina todas las asignaciones asociadas al partido
-        $partido = Partido::find($partido->id);
         $asignaciones = $partido->asignamientos;
-        /*     foreach ($asignaciones as $asignacion) {
-        $asignacion->delete();
-    } */
-
-        // Ahora puedes eliminar el partido
-        //$partido->delete();
+        $partido->delete();
 
         // Mensaje de confirmación
-
-        return $asignaciones;
+        return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
     }
 
 
@@ -227,6 +237,33 @@ class PartidoController extends Controller
     }
 
 
+
+    /* Desapuntarse */
+
+    public function desapuntarse(Partido $partido)
+    {
+        $usuario = auth()->user();
+
+        // Buscar la asignación del usuario en el partido
+        $asignacion = $partido->asignamientos()->where('user_id', $usuario->id)->first();
+
+        // Eliminar la asignación
+        if ($asignacion) {
+            $asignacion->delete();
+        }
+
+        return redirect()->route('partidos.show', $partido)->with('success', 'Te has desapuntado del partido correctamente.');
+    }
+
+
+
+
+
+
+
+
+
+
     // Función para obtener el límite según el deporte
     private function obtenerLimitePorDeporte($deporte)
     {
@@ -240,5 +277,14 @@ class PartidoController extends Controller
             default:
                 return 0; // Valor predeterminado
         }
+    }
+
+
+
+    private function usuarioApuntado($partido)
+    {
+        $usuario = auth()->user();
+
+        return $partido->asignamientos()->where('user_id', $usuario->id)->exists();
     }
 }
