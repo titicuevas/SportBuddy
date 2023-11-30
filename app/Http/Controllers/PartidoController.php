@@ -105,25 +105,25 @@ class PartidoController extends Controller
 
 
     public function show(Partido $partido)
-{
-    // Obtener el usuario actual
-    $usuarioActual = auth()->user();
+    {
+        // Obtener el usuario actual
+        $usuarioActual = auth()->user();
 
-    // Verificar si el usuario actual está inscrito en el partido
-    $inscrito = Asignamiento::where('user_id', $usuarioActual->id)->where('partido_id', $partido->id)->first();
+        // Verificar si el usuario actual está inscrito en el partido
+        $inscrito = Asignamiento::where('user_id', $usuarioActual->id)->where('partido_id', $partido->id)->first();
 
-    // Verificar si el partido está completo
-    $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
-    $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
-    $partidoCompleto = $totalJugadores >= $limite * 2;
+        // Verificar si el partido está completo
+        $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
+        $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
+        $partidoCompleto = $totalJugadores >= $limite * 2;
 
-    return view('partidos.show', [
-        'partido' => $partido,
-        'usuarioActual' => $usuarioActual,
-        'inscrito' => $inscrito,
-        'partidoCompleto' => $partidoCompleto,
-    ]);
-}
+        return view('partidos.show', [
+            'partido' => $partido,
+            'usuarioActual' => $usuarioActual,
+            'inscrito' => $inscrito,
+            'partidoCompleto' => $partidoCompleto,
+        ]);
+    }
 
 
 
@@ -179,6 +179,7 @@ class PartidoController extends Controller
     {
         // Elimina todas las asignaciones asociadas al partido
         $asignaciones = $partido->asignamientos;
+
         $partido->delete();
 
         // Mensaje de confirmación
@@ -242,14 +243,14 @@ class PartidoController extends Controller
 
     public function desapuntarse(Partido $partido)
     {
-        $usuario = auth()->user();
-
-        // Buscar la asignación del usuario en el partido
-        $asignacion = $partido->asignamientos()->where('user_id', $usuario->id)->first();
+        $user = auth()->user()->id;
+        $asignamiento =  Asignamiento::where('partido_id', $partido->id)
+            ->where('user_id', $user)->first();
 
         // Eliminar la asignación
-        if ($asignacion) {
-            $asignacion->delete();
+        if ($asignamiento) {
+            Asignamiento::where('partido_id', $partido->id)
+            ->where('user_id', $asignamiento->user_id)->where('equipo_id', $asignamiento->equipo_id)->delete();
         }
 
         return redirect()->route('partidos.show', $partido)->with('success', 'Te has desapuntado del partido correctamente.');
