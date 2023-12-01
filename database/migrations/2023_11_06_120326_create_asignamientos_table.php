@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('asignamientos', function (Blueprint $table) {
-            $table->foreignId('partido_id')->constrained();
-            $table->foreignId('equipo_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('partido_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
+            $table->foreignId('equipo_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
             $table->primary(['partido_id', 'equipo_id', 'user_id']);
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asignamiento');
+        Schema::dropIfExists('asignamientos');
     }
 };

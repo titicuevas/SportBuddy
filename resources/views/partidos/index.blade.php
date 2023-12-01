@@ -1,9 +1,9 @@
 <x-app-layout>
     <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
         @forelse ($partidos as $partido)
-
             <article id="partido" class="card card2 w-96">
-                <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido" class="btn btn-sm btn-primary">
+                <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
+                    class="btn btn-sm btn-primary">
                     <header class="card__header bg-cover h-72"
                         style="background-image: url('{{ $partido->ubicacion->image_path }}');">
                         <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->ubicacion->nombre }}</h1>
@@ -68,18 +68,18 @@
 
 
 
-{{-- Ventana externa abierta --}}
+    {{-- Ventana externa abierta --}}
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('a[target="_blank"]').forEach(function(link) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.open(this.getAttribute('href'), '_blank', 'width=600,height=400');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[target="_blank"]').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.open(this.getAttribute('href'), '_blank', 'width=600,height=400');
+                });
             });
         });
-    });
-</script>
+    </script>
 
 
 

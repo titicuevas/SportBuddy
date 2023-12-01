@@ -49,11 +49,14 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    public function destroy($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
+    public function destroy(User $user)
+{
+    // Eliminar partidos creados por el usuario
+    $user->partidosCreados()->delete();
 
-        return redirect()->route('users.index');
-    }
+    // Eliminar el usuario
+    $user->delete();
+
+    return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado exitosamente.');
+}
 }

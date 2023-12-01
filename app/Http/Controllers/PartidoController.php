@@ -176,15 +176,22 @@ class PartidoController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Partido $partido)
-    {
-        // Elimina todas las asignaciones asociadas al partido
-        $asignaciones = $partido->asignamientos;
+{
+    // Elimina todas las asignaciones asociadas al partido
+    Asignamiento::where('partido_id', $partido->id)->delete();
 
-        $partido->delete();
+    // Elimina el partido
+    $partido->delete();
 
-        // Mensaje de confirmación
-        return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
-    }
+    // Mensaje de confirmación
+    return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
+}
+
+
+
+
+
+
 
 
     public function inscribirPartido(Partido $partido)
@@ -250,7 +257,7 @@ class PartidoController extends Controller
         // Eliminar la asignación
         if ($asignamiento) {
             Asignamiento::where('partido_id', $partido->id)
-            ->where('user_id', $asignamiento->user_id)->where('equipo_id', $asignamiento->equipo_id)->delete();
+                ->where('user_id', $asignamiento->user_id)->where('equipo_id', $asignamiento->equipo_id)->delete();
         }
 
         return redirect()->route('partidos.show', $partido)->with('success', 'Te has desapuntado del partido correctamente.');
