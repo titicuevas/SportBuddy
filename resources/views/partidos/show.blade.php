@@ -139,7 +139,7 @@
                 const weatherInfoDiv = document.getElementById('weather-info');
 
                 if (data.main && data.weather && data.weather.length > 0) {
-                    const temperaturaCelsius = data.main.temp;
+                    const temperaturaCelsius =Math.round(data.main.temp);
                     const descripcion = traducirDescripcion(data.weather[0].description);
                     const fecha = fechaPartido; // Utiliza la fecha del partido
                     const icono = obtenerIconoClima(data.weather[0].icon);
