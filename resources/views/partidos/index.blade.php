@@ -64,4 +64,26 @@
             }
         }
     </script>
+
+
+
+
+{{-- Ventana externa abierta --}}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('a[target="_blank"]').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open(this.getAttribute('href'), '_blank', 'width=600,height=400');
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
 </x-app-layout>
