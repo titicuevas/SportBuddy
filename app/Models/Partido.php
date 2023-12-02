@@ -21,7 +21,9 @@ class Partido extends Model
         'resultado',
         'ubicacion_id',
         'deporte_id',
-        'pista_id'
+        'pista_id',
+        'precio'
+
     ];
 
 

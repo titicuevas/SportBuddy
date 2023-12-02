@@ -39,7 +39,14 @@
                         <label for="deporte" class="block mb-2 text-lg font-bold text-black">Deporte:</label>
                         <p class="text-gray-700">{{ $partido->deporte->nombre }}</p>
                     </div>
+
+                    <div class="mb-6">
+                        <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio Pista:</label>
+                        <p class="text-gray-700">{{ $partido->precio }}€</p>
+                    </div>
                 </div>
+
+
 
 
 
@@ -65,13 +72,14 @@
                 {{-- Boton de Desapuntarse --}}
                 <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}" x-data="{ showModal: false }">
                     @csrf
-                    {{-- Verificar si el usuario está inscrito para mostrar el botón de Desapuntarse --}}
-                    @if ($inscrito)
+                    {{-- Verificar si el usuario está inscrito y no es el creador del partido --}}
+                    @if ($inscrito && $partido->user_id !== auth()->user()->id)
                         <button type="submit"
                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-red">Desapuntarse
                             del partido</button>
                     @endif
                 </form>
+
 
 
                 {{-- Boton Borrarse del partido el creador --}}

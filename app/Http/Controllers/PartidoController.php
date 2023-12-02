@@ -57,6 +57,8 @@ class PartidoController extends Controller
             'hora' => 'required', //preguntar a ricardo
             'ubicacion_id' => 'required',
             'deporte' => 'required',
+            'precio' => 'required',
+
         ]);
 
         $user = auth()->user()->id;
@@ -73,6 +75,8 @@ class PartidoController extends Controller
             'pista_id' => $request->input('pista_id'),
             'ubicacion_id' => $request->input('ubicacion_id'),
             'deporte_id' => $deporte->id,
+            'precio' => $request->input('precio'),
+
         ]);
 
 
@@ -91,6 +95,9 @@ class PartidoController extends Controller
         //Con este metodo el usuario que crea el partido se le asignaria al partido
 
         return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
+        return response()->json(['message' => 'Partido creado exitosamente.'], 200);
+
+
     }
 
     /**

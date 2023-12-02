@@ -28,13 +28,53 @@
                             <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}</p>
                         </div>
                         <div>{{ \Carbon\Carbon::parse($partido->hora)->format('H:i') }}</div>
+                        <div><label>Precio Pista: {{ $partido->precio }} €</label></div>
                     </div>
+
                 </div>
             </article>
         @empty
             <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>
         @endforelse
     </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aquí puedes verificar si la ventana modal ya está presente y si no, crearla.
+            // Luego, muestra el mensaje obtenido de la respuesta JSON.
+
+            // Ejemplo de cómo mostrar un mensaje en una ventana modal usando JavaScript puro
+            const showModalWithMessage = (message) => {
+                // Muestra la ventana modal y establece el mensaje
+                // Aquí deberías usar el código específico de tu biblioteca/modal.
+                alert(message);
+            };
+
+            // Escucha la respuesta del servidor después de crear el partido
+            const url = '{{ route('partidos.store') }}';
+            fetch(url, {
+                    method: 'POST',
+                    // ... (Agrega las opciones necesarias, como headers y body)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Muestra la ventana modal con el mensaje
+                    showModalWithMessage(data.message);
+                })
+                .catch(error => {
+                    console.error('Error al crear el partido:', error);
+                    // Maneja errores si es necesario
+                });
+        });
+    </script>
+
+
+
+
+    {{-- Boton Delete --}}
 
     <script>
         $(document).ready(function() {

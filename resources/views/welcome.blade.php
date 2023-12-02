@@ -1,3 +1,4 @@
+<x-guest-layout>
 <!DOCTYPE html>
 
 <head>
@@ -63,3 +64,4 @@
 </footer>
 
 </html>
+</x-guest-layout>

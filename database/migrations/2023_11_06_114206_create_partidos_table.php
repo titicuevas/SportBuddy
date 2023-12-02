@@ -25,6 +25,9 @@ return new class extends Migration
             $table->foreign('equipo2')->references('id')->on('equipos')->onDelete('cascade');//para borrar los partidos si un usuario lo crea y lo quiere borrar
             $table->foreignId('ubicacion_id')->constrained('ubicaciones')->onDelete('cascade'); // Añadido onDelete('cascade') , para borrar los partidos si un usuario lo crea y lo quiere borrar
             $table->foreignId('deporte_id')->constrained()->onDelete('cascade'); // Añadido onDelete('cascade')//para borrar los partidos si un usuario lo crea y lo quiere borrar
+            $table->decimal('precio', 8, 2)->nullable();
+
+
         });
     }
 

@@ -57,8 +57,8 @@ class UbicacionSeeder extends Seeder
             'nombre' => 'Club de pádel La Via',
             'direccion' => 'Av. Al-Andalus, 123, 11540 Sanlúcar de Barrameda, Cádiz',
             'imagen' => 'padel_la_via.jpg',
-            'enlace_maps' => 'https://maps.app.goo.gl/tgjnYzSDV2t1qhVZA',
-            'iframe' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3195.410189554468!2d-6.341243123671423!3d36.78471446857167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd0dde1e084674f1%3A0xa55c701631a75f31!2sClub%20de%20p%C3%A1del%20La%20Via!5e0!3m2!1ses!2ses!4v1701036553780!5m2!1ses!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+            'enlace_maps' => 'https://maps.app.goo.gl/PnvnnkfD586oUFpe9',
+            'iframe' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3195.410189554468!2d-6.341243123671382!3d36.78471446857167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd0dde1e084674f1%3A0xa55c701631a75f31!2sClub%20de%20p%C3%A1del%20La%20Via!5e0!3m2!1ses!2ses!4v1701476524186!5m2!1ses!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
 
 
 

@@ -1,12 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
         <style>
-            <link rel="stylesheet" href="{{ asset('/public/fonts/knucklehead-slab.otf') }}">{{-- Preguntar a Ignacio --}}
-        </style>
-        <h2 class="font-knucklehead-slab text-xl text-gray-800 leading-tight text-center">
+            @font-face {
+                font-family: 'Knucklehead Slab';
+                src: url('{{ asset('fonts/knucklehead-slab.otf') }}') format('opentype');
+            }
 
+            .font-knucklehead-slab {
+                font-family: 'Knucklehead Slab', sans-serif;
+            }
+        </style>
+        <h1 class="font-knucklehead-slab text-xl text-gray-800 leading-tight text-center">
             {{ __('SportBuddy') }}
-        </h2>
+        </h1>
     </x-slot>
 
     <div class="py-12">

@@ -61,6 +61,13 @@
                             <input type="text" id="deporte" name="deporte" x-model="deporte"
                                 x-bind:value="deporte" class="input-field">
                         </div>
+
+                        <div class="mb-4">
+                            <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio Pista:</label>
+                            <input type="number" name="precio" id="precio" step="0.01"
+                                placeholder="Ingrese el precio" required>
+                        </div>
+
                     </div>
 
                     <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500 mb-4"></div>
