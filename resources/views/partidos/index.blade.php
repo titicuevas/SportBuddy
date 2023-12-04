@@ -28,7 +28,7 @@
                             <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}</p>
                         </div>
                         <div>{{ \Carbon\Carbon::parse($partido->hora)->format('H:i') }}</div>
-                        <div><label>Precio Pista: {{ $partido->precio }} €</label></div>
+                        {{-- <div><label>Precio Pista: {{ $partido->precio }} €</label></div> --}}
                     </div>
 
                 </div>

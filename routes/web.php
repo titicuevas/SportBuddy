@@ -15,6 +15,11 @@ use App\Http\Controllers\UserController;
 // Controlador de pistas
 
 use App\Http\Controllers\PistaController;
+
+// Contrrolador de Paypal
+use App\Http\Controllers\PaypalController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,6 +74,16 @@ Route::get('/pistas/{pista}', [PistaController::class, 'show']);
 
 
 Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista']);
+
+
+// Pago con paypal
+
+// routes/.php
+
+Route::post('/payment/create', [PaypalController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/success', [PaypalController::class, 'successPayment'])->name('payment.success');
+Route::get('/payment/cancel', [PaypalController::class, 'cancelPayment'])->name('payment.cancel');
+Route::get('/payment/error', [PaypalController::class, 'errorPayment'])->name('payment.error');
 
 
 

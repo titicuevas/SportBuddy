@@ -43,6 +43,36 @@
                     <div class="mb-6">
                         <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio Pista:</label>
                         <p class="text-gray-700">{{ $partido->precio }}€</p>
+
+
+                        {{-- Boton paypal --}}
+                        <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
+                        <script>
+                            paypal.Buttons({
+                                createOrder: function(data, actions) {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            amount: {
+                                                value: '{{ $partido->precio }}',
+                                                currency_code: 'EUR'
+                                            }
+                                        }]
+                                    });
+                                },
+                                onApprove: function(data, actions) {
+                                    return actions.order.capture().then(function(details) {
+                                        // Aquí puedes realizar acciones adicionales después de que el pago sea aprobado
+                                        alert('Pago completado por ' + details.payer.name.given_name);
+                                    });
+                                }
+                            }).render('#paypal-button-container');
+                        </script>
+
+                        <!-- Contenedor para el botón de PayPal Checkout -->
+                        <div id="paypal-button-container"></div>
+
+
+
                     </div>
                 </div>
 
@@ -95,6 +125,12 @@
                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-red">
                             Eliminar partido
                         </button>
+
+
+
+
+
+
 
                         <!-- Ventana modal de confirmación -->
                         <div x-show="showModal" class="fixed inset-0 z-10 overflow-y-auto" style="display: none;">
