@@ -1,4 +1,11 @@
 <x-app-layout>
+
+    <head>
+        <!-- importaciones para implementar el chat con alpine y tailwind -->
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    </head>
+
     <div class="flex flex-col space-y-4">
 
         <!-- Parte 1 con fondo azul -->
@@ -339,6 +346,89 @@
                     @endforeach
                 </div>
             </div>
+
+
+            <!-- Chat -->
+            <div class="bg-pink-200 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-black mb-4">Chat del Partido</h2>
+
+                <!-- Mostrar mensajes existentes -->
+                <ul id="chat-messages" class="list-none"></ul>
+
+                <!-- Entrada de nuevo mensaje -->
+                <div class="flex items-center space-x-2 mt-4">
+                    <input id="newMessage" type="text" class="border rounded px-2 py-1 flex-1" x-model="newMessage"
+                        @keydown.enter="sendMessage">
+
+                    <button onclick="sendMessage()" class="bg-blue-500 text-white px-4 py-2 rounded">Enviar</button>
+                </div>
+
+                <script nonce="random_nonce_value">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const chatId = {!! json_encode($partido->id) !!};
+                        const user = {!! json_encode(auth()->user()->name) !!};
+
+                        const chat = {
+                            messages: JSON.parse(localStorage.getItem(`chat_${chatId}`)) || [],
+                            newMessage: '',
+                        };
+
+                        window.sendMessage = function() {
+                            const newMessage = document.getElementById('newMessage').value.trim();
+                            if (newMessage !== '') {
+                                const message = {
+                                    user: user,
+                                    content: newMessage,
+                                    timestamp: new Date().toLocaleTimeString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }),
+                                };
+
+                                chat.messages.push(message);
+
+                                localStorage.setItem(`chat_${chatId}`, JSON.stringify(chat.messages));
+
+                                displayMessages();
+                                document.getElementById('newMessage').value = ''; // Limpiar el campo de nuevo mensaje
+                            }
+                        };
+
+                        function displayMessages() {
+                            const chatMessages = document.getElementById('chat-messages');
+                            chatMessages.innerHTML = ''; // Limpiar mensajes anteriores
+
+                            chat.messages.forEach((message, index) => {
+                                const li = document.createElement('li');
+                                li.textContent = `${message.user} (${message.timestamp}): ${message.content}`;
+                                chatMessages.appendChild(li);
+                            });
+                        }
+
+                        // Mostrar mensajes existentes al cargar la página
+                        displayMessages();
+
+                        window.displayMessages = displayMessages;
+                    });
+                </script>
+
+                <style>
+                    #chat-messages {
+                        max-height: 300px;
+                        overflow-y: auto;
+                    }
+                </style>
+            </div>
+
+
+
+
+            {{-- FIN CHAT --}}
         </div>
+
+
+
+
+    </div>
     </div>
 </x-app-layout>
