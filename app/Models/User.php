@@ -23,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'telefono',
         'email',
         'password',
-        'foto'
+        'foto',
+        'roles_id'
     ];
 
     /**
@@ -59,5 +60,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function partidosCreados()
     {
         return $this->hasMany(Partido::class, 'user_id');
+    }
+
+
+
+    public function esAdmin(): bool
+    {
+        // Reemplaza 1 con el valor real del rol de administrador
+        return $this->rol_id === 1;
     }
 }

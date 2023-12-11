@@ -39,6 +39,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::get('/admin', function () {
+    return view('admin.index');
+})->middleware(['auth', 'verified'])->name('admin.index');
+
 //Router de Partidos
 
 Route::get('/partidos/crear', [PartidoController::class, 'create'])->name('partidos.create');

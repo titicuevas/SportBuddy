@@ -13,13 +13,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $user0 = User::create([
+            'name' => 'Enrique Admin',
+            'apellidos' => 'Cuevas Garcia',
+            'telefono' => '661096250',
+            'password' => '12345678',
+            'email' => 'admin@gmail.com',
+            'foto' => '',
+            'rol_id' =>1,
+
+        ]);
+
+
+
+
         $user1 = User::create([
             'name' => 'Enrique',
             'apellidos' => 'Cuevas Garcia',
             'telefono' => '661096250',
             'password' => '12345678',
             'email' => 'enrique@gmail.com',
-            'foto' => ''
+            'foto' => '',
+
 
         ]);
 
@@ -29,7 +45,8 @@ class UserSeeder extends Seeder
             'telefono' => '66146250',
             'password' => '12345678',
             'email' => 'juan@gmail.com',
-            'foto' => ''
+            'foto' => '',
+
 
         ]);
 
@@ -39,7 +56,8 @@ class UserSeeder extends Seeder
             'telefono' => '691096250',
             'password' => '12345678',
             'email' => 'antonio@gmail.com',
-            'foto' => ''
+            'foto' => '',
+
 
         ]);
 
@@ -50,7 +68,8 @@ class UserSeeder extends Seeder
             'telefono' => '695096250',
             'password' => '12345678',
             'email' => 'agustin@gmail.com',
-            'foto' => ''
+            'foto' => '',
+
 
         ]);
 
@@ -62,7 +81,8 @@ class UserSeeder extends Seeder
             'telefono' => '695196250',
             'password' => '12345678',
             'email' => 'carlos@gmail.com',
-            'foto' => ''
+            'foto' => '',
+
 
         ]);
     }
