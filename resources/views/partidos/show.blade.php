@@ -53,7 +53,6 @@
 
 
                         {{-- Imprimir el valor de PAYPAL_CLIENT_ID --}}
-                        {{ env('PAYPAL_CLIENT_ID') }}
 
                         {{-- Boton paypal --}}
                         <div id="paypal-button-container"></div>
