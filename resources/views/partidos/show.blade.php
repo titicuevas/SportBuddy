@@ -1,10 +1,5 @@
 <x-app-layout>
 
-    <head>
-        <!-- importaciones para implementar el chat con alpine y tailwind -->
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
-    </head>
 
     <div class="flex flex-col space-y-4">
 
@@ -351,55 +346,7 @@
                 </div>
             </div>
 
-            {{-- Chat --}}
-            <div class="bg-pink-200 p-6 rounded-lg" x-data="{ chat: { messages: [], newMessage: '' } }">
-                <h2 class="text-2xl font-bold text-black mb-4">Chat del Partido</h2>
 
-                <!-- Mostrar mensajes existentes -->
-                <ul>
-                    <template x-for="message in chat.messages" :key="message.id">
-                        <li x-text="message.user + ': ' + message.content"></li>
-                    </template>
-                </ul>
-
-                <!-- Entrada de nuevo mensaje -->
-                <div class="flex items-center space-x-2 mt-4">
-                    <input x-model="chat.newMessage"
-                        @keydown.enter="chat.messages.push({ user: 'NombreUsuario', content: chat.newMessage.trim(), id: chat.messages.length + 1 }); chat.newMessage = ''"
-                        type="text" class="border rounded px-2 py-1 flex-1">
-                    <button
-                        @click="chat.messages.push({ user: 'NombreUsuario', content: chat.newMessage.trim(), id: chat.messages.length + 1 }); chat.newMessage = ''"
-                        class="bg-blue-500 text-white px-4 py-2 rounded">Enviar</button>
-                </div>
-            </div>
-
-
-
-            <script nonce="random_nonce_value">
-                function initChat() {
-                    return {
-                        chat: {
-                            messages: [],
-                            newMessage: '',
-                            sendMessage: function() {
-                                if (this.chat.newMessage.trim() !== '') {
-                                    this.chat.messages.push({
-                                        user: 'NombreUsuario',
-                                        content: this.chat.newMessage.trim(),
-                                        id: this.chat.messages.length + 1,
-                                    });
-
-                                    this.chat.newMessage = '';
-                                }
-                            },
-                        },
-                    };
-                }
-            </script>
-        </div>
-
-
-        {{-- FIN CHAT --}}
     </div>
 
 
@@ -408,3 +355,7 @@
     </div>
     </div>
 </x-app-layout>
+
+<head>
+    <!-- importaciones para implementar el chat con alpine y tailwind -->
+</head>
