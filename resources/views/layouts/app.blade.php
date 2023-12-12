@@ -9,11 +9,11 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
  <!-- Scripts -->
- <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+{{--  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+ --}}
 
 
-
- {{-- PREGUNTAR A ANTONIO --}}{{-- <script src="{{ mix('js/app.js') }}" defer></script>
+ {{-- <script src="{{ mix('js/app.js') }}" defer></script>
  @livewireScripts --}}
 
     <!-- Scripts (Vite) -->

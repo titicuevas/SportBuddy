@@ -91,9 +91,18 @@ Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista
 
 Route::middleware('auth')->group(function () {
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('user.show');
+
+    // Rutas para editar y actualizar el perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Rutas para editar y actualizar la foto del perfil
+    Route::get('/profile/edit-foto', [ProfileController::class, 'editFoto'])->name('profile.edit-foto');
+    Route::post('/profile/update-foto', [ProfileController::class, 'updateFoto'])->name('profile.update-foto');
+
+    // Ruta para mostrar el perfil después de la actualización de la foto
+    Route::get('/profile/show/{user}', [ProfileController::class, 'show'])->name('profile.show');
 });
 
 

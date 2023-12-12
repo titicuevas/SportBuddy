@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,12 +13,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-
-
-    //Show Profile
-
+    // Función para mostrar el perfil del usuario
     public function show($user)
     {
+        $user = User::find($user); // Asegurarse de obtener un usuario válido
+
+        if (!$user) {
+            abort(404); // Manejar el caso en que no se encuentre el usuario
+        }
 
         $fotoPerfil = $user->foto;
 
@@ -34,19 +37,7 @@ class ProfileController extends Controller
     }
 
 
-    //Mostrar la imagen Profile
-
-
-
-
-    //Editar foto Profile
-
-
-
-
-    /**
-     * Display the user's profile form.
-     */
+    // Función para mostrar el formulario de editar perfil
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -54,43 +45,35 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    // Función para actualizar el perfil del usuario
+    public function updateFoto(Request $request)
     {
-        $request->user()->fill($request->validated());
-
-
-        //Foto user
-        $request->validateWithBag('profileUpdate', [
+        $request->validate([
             'foto' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $user = $request->user();
 
+        // Verificar si se proporcionó una nueva foto
         if ($request->hasFile('foto')) {
+            // Eliminar la foto actual si existe
+            if ($user->foto) {
+                Storage::delete($user->foto);
+            }
+
+            // Almacenar la nueva foto
             $foto = $request->file('foto');
             $path = $foto->storeAs('public/profile-photos', $user->id . '.' . $foto->getClientOriginalExtension());
-
-            $user->foto = Storage::url($path);
+            $user->foto = $path;
+            $user->save(); // Guardar cambios en la base de datos
         }
 
-        $user->fill($request->validated());
-
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        // Redirigir a la página de perfil con el ID del usuario
+        return response()->json(['status' => 'foto-updated', 'fotoPerfilURL' => Storage::url($user->foto)]);
     }
 
-    /**
-     * Delete the user's account.
-     */
+
+    // Función para eliminar la cuenta del usuario
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

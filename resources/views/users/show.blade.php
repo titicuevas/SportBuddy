@@ -28,27 +28,25 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end items-center p-6 bg-neutral-700">
-                        <div>
-                            @if ($user->foto)
-                                <img class="h-48 w-48 border-2 border-black rounded-t" id="imgPerfil"
-                                    src="{{ $user->foto ? Storage::url($user->foto) : 'https://mastermdi.com/files/students/noImage.jpg' }}"
-                                    alt="usuario" />
-                            @else
-                                <img src="https://seeklogo.com/images/S/spider-man-comic-new-logo-322E9DE914-seeklogo.com.png"
-                                    alt="Foto de perfil" width="100" height="100">
-                            @endif
-
-                        </div>
-
-
+                    <!-- Vista previa de la foto -->
+                    <div class="flex justify-center items-center mb-4">
+                        @if ($user->foto)
+                            <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
+                                src="{{ Storage::url($user->foto) }}" alt="Foto de perfil" />
+                        @else
+                            <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
+                                src="https://mastermdi.com/files/students/noImage.jpg" alt="usuario" />
+                        @endif
                     </div>
+
 
                 </div>
 
-
             </div>
+
+
         </div>
+    </div>
     </div>
 
 
