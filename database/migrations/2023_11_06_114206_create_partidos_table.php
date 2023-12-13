@@ -13,21 +13,22 @@ return new class extends Migration
     {
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha');
-            $table->time('hora');
+            $table->timestamp('fecha_hora')->useCurrent(); // Cambiado a timestamp
             $table->bigInteger('equipo1');
             $table->bigInteger('equipo2');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Añadido onDelete('cascade')//para borrar los partidos si un usuario lo crea y lo quiere borrar
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('superficie_id')->constrained();
             $table->foreignId('pista_id')->constrained();
             $table->string('resultado')->nullable();
-            $table->foreign('equipo1')->references('id')->on('equipos')->onDelete('cascade');//para borrar los partidos si un usuario lo crea y lo quiere borrar
-            $table->foreign('equipo2')->references('id')->on('equipos')->onDelete('cascade');//para borrar los partidos si un usuario lo crea y lo quiere borrar
-            $table->foreignId('ubicacion_id')->constrained('ubicaciones')->onDelete('cascade'); // Añadido onDelete('cascade') , para borrar los partidos si un usuario lo crea y lo quiere borrar
-            $table->foreignId('deporte_id')->constrained()->onDelete('cascade'); // Añadido onDelete('cascade')//para borrar los partidos si un usuario lo crea y lo quiere borrar
+            $table->foreign('equipo1')->references('id')->on('equipos')->onDelete('cascade');
+            $table->foreign('equipo2')->references('id')->on('equipos')->onDelete('cascade');
+            $table->foreignId('ubicacion_id')->constrained('ubicaciones')->onDelete('cascade');
+            $table->foreignId('deporte_id')->constrained()->onDelete('cascade');
             $table->decimal('precio', 8, 2)->nullable();
+            $table->boolean('pista_tiene_luz')->default(false); // Columna para indicar si la pista tiene luz en el partido
+            $table->decimal('precio_con_luz', 8, 2)->nullable(); // Columna para el precio con luz en el partido
 
-
+            $table->timestamps();
         });
     }
 

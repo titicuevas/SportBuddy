@@ -41,5 +41,7 @@ class Pista extends Model
 
     protected $fillable = [
         'numero',
+        'horas_disponibles', // Agrega esta línea si planeas asignar masivamente horas_disponibles
+
     ];
 }

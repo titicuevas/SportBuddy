@@ -15,9 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ubicacion_id')->constrained('ubicaciones');
             $table->foreignId('superficie_id')->constrained();
-            $table->foreignId('deporte_id')->constrained('deportes'); // Agrega esta línea
+            $table->foreignId('deporte_id')->constrained('deportes');
             $table->integer('numero');
+            $table->boolean('tiene_luz')->default(false); // Columna para indicar si la pista tiene luz
+            $table->decimal('precio_con_luz', 8, 2)->nullable(); // Columna para el precio con luz, puede ser NULL si no aplica
+            $table->decimal('precio_sin_luz', 8, 2); // Precio sin luz
+            $table->json('horas_disponibles')->nullable(); // Nuevas horas disponibles
 
+            // Puedes agregar otras columnas según sea necesario
+
+            $table->timestamps();
         });
     }
 

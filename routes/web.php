@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 // Controladores Añadidos
@@ -104,6 +105,12 @@ Route::middleware('auth')->group(function () {
     // Ruta para mostrar el perfil después de la actualización de la foto
     Route::get('/profile/show/{user}', [ProfileController::class, 'show'])->name('profile.show');
 });
+
+
+
+/* Intento Chat */
+
+Route::get('/chat', [HomeController::class, 'index'])->name('chat.index');
 
 
 //Correo electronico
