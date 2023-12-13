@@ -10,6 +10,7 @@ use App\Models\Deporte;
 use App\Models\Ubicacion;
 use App\Models\Asignamiento;
 use App\Models\Superficie;
+use App\Models\Pista;
 use App\Models\User;
 
 
@@ -45,60 +46,57 @@ class PartidoController extends Controller
      */
     public function store(StorePartidoRequest $request)
     {
-
-
         $superficie = Superficie::where('tipo', $request->input('tipo_superficie'))->first();
-
         $deporte = Deporte::where('nombre', $request->input('deporte'))->first();
-
 
         $request->validate([
             'fecha' => 'required',
-            'hora' => 'required', //preguntar a ricardo
+            'hora' => 'required',
             'ubicacion_id' => 'required',
             'deporte' => 'required',
             'precio' => 'required',
-
         ]);
 
         $user = auth()->user()->id;
         $equipo1 = Equipo::find(1);
         $equipo2 = Equipo::find(2);
 
+        // Obtén la pista seleccionada por el usuario
+        $pista = Pista::find($request->pista_id);
+
+        // Calcula el precio según la elección del usuario
+        $precioSeleccionado = $request->precio;
+
+        // Opcional: Puedes validar que el precio seleccionado sea uno de los valores permitidos
+        // Puedes agregar lógica adicional según tus necesidades
+
         Partido::create([
-            'fecha' => $request->input('fecha'),
-            'hora' => $request->input('hora'),
-            'equipo1' => $equipo1->id, //Le asignamos el id del equipo1
-            'equipo2' => $equipo2->id, //Le asignamos el id del equipo2
+            'fecha_hora' => $request->input('fecha') . ' ' . $request->input('hora'), // Combina fecha y hora
+            'equipo1' => $equipo1->id,
+            'equipo2' => $equipo2->id,
             'user_id' => $user,
             'superficie_id' => $superficie->id,
             'pista_id' => $request->input('pista_id'),
             'ubicacion_id' => $request->input('ubicacion_id'),
             'deporte_id' => $deporte->id,
-            'precio' => $request->input('precio'),
-
+            'precio' => $precioSeleccionado, // Usar el precio seleccionado por el usuario
         ]);
 
-
-        //TODO: hay que meter en la tabla asignamiento el usuario que crea el partido al azar en un equipo
+        // TODO: hay que meter en la tabla asignamiento el usuario que crea el partido al azar en un equipo
         $ultimoPartido = Partido::orderBy('id', 'desc')->first();
 
-
-        //TODO: hay que coger uno de los dos equipos aleatoriamente para asignarselo a la tabla asignamiento
+        // TODO: hay que coger uno de los dos equipos aleatoriamente para asignarselo a la tabla asignamiento
         Asignamiento::create([
             'partido_id' => $ultimoPartido->id,
             'equipo_id' => $equipo1->id,
             'user_id' => $user,
         ]);
 
-
-        //Con este metodo el usuario que crea el partido se le asignaria al partido
-
+        // Con este método, el usuario que crea el partido se le asignaría al partido
         return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
         return response()->json(['message' => 'Partido creado exitosamente.'], 200);
-
-
     }
+
 
     /**
      * Display the specified resource.
@@ -183,16 +181,16 @@ class PartidoController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Partido $partido)
-{
-    // Elimina todas las asignaciones asociadas al partido
-    Asignamiento::where('partido_id', $partido->id)->delete();
+    {
+        // Elimina todas las asignaciones asociadas al partido
+        Asignamiento::where('partido_id', $partido->id)->delete();
 
-    // Elimina el partido
-    $partido->delete();
+        // Elimina el partido
+        $partido->delete();
 
-    // Mensaje de confirmación
-    return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
-}
+        // Mensaje de confirmación
+        return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
+    }
 
 
 

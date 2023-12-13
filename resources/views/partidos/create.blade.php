@@ -11,16 +11,36 @@
                 <form action="{{ route('partidos.store') }}" method="POST" x-data="pistasComponent()" x-init="cargarPistas">
                     @csrf
 
+                    {{-- FECHA --}}
+
+
                     <div class="mb-4">
                         <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">Fecha</label>
                         <input type="date" id="fecha" name="fecha" x-model="fecha" class="input-field"
-                            required>
+                            :min="obtenerFechaActual()" required>
+                        <p x-show="fecha && fecha > obtenerFechaActual()" class="text-red-500 text-sm mt-2">
+                            La fecha no puede ser anterior a hoy.
+                        </p>
                     </div>
 
+
+
+                    {{-- Horas --}}
                     <div class="mb-4">
                         <label for="hora" class="block text-gray-700 text-sm font-bold mb-2">Hora</label>
-                        <input type="time" id="hora" name="hora" x-model="hora" class="input-field" required>
+                        <select id="hora" name="hora" x-model="hora" class="input-field" required
+                            x-on:change="actualizarHora">
+                            <option value="" disabled selected>Selecciona una hora</option>
+                            <template x-for="franja in franjasHorarias" :key="franja">
+                                <option x-text="franja" :value="franja"></option>
+                            </template>
+                        </select>
                     </div>
+
+
+
+
+
 
                     <div class="mb-4">
                         <label for="ubicacion_id" class="block text-gray-700 text-sm font-bold mb-2">Ubicación</label>
@@ -62,17 +82,22 @@
                                 x-bind:value="deporte" class="input-field">
                         </div>
 
+                        {{-- PRECIO --}}
+                        <!-- Cuadro de selección para el precio -->
                         <div class="mb-4">
                             <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio Pista:</label>
-                            <input type="number" name="precio" id="precio" step="0.01"
-                                placeholder="Ingrese el precio" required>
+                            <select name="precio" id="precio" x-model="precio" class="input-field" required>
+                                <option value="" disabled selected>Selecciona un precio</option>
+                                <template x-for="opcion in opcionesPrecio" :key="opcion.valor">
+                                    <option :value="opcion.valor" x-text="opcion.etiqueta"></option>
+                                </template>
+                            </select>
                         </div>
 
-                    </div>
 
-                    <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500 mb-4"></div>
+                        <div x-show="pistas.length === 0" x-text="mensaje" class="text-red-500 mb-4"></div>
 
-                    <button type="submit" class="btn-primary">Crear Partido</button>
+                        <button type="submit" class="btn-primary">Crear Partido</button>
                 </form>
             </div>
         </div>
@@ -102,7 +127,6 @@
     </style>
 
 
-
     <script>
         function pistasComponent() {
             return {
@@ -112,18 +136,44 @@
                 tiposSuperficie: [],
                 pistaId: null,
                 tipoSuperficie: '',
-                deporte: null, // Inicializar como un array vacío
+                deporte: null,
                 deporteId: null,
+                fecha: '',
+                hora: '',
+                franjasHorarias: [],
+                precio: '',
+                opcionesPrecio: [],
 
+                // Función para obtener el precio por hora
+                obtenerPrecioPorHora: function(hora) {
+                    // Puedes ajustar esta lógica según los datos reales de tu base de datos
+                    // Aquí estoy utilizando una lógica de ejemplo
+                    let precioConLuz, precioSinLuz;
+                    if (hora >= '09:00' && hora < '10:30') {
+                        precioConLuz = 10.00;
+                        precioSinLuz = 8.00;
+                    } else if (hora >= '11:00' && hora < '12:30') {
+                        precioConLuz = 15.00;
+                        precioSinLuz = 12.00;
+                    } else {
+                        precioConLuz = 20.00;
+                        precioSinLuz = 18.00;
+                    }
+
+                    // Devuelve un objeto con ambos precios
+                    return {
+                        conLuz: precioConLuz,
+                        sinLuz: precioSinLuz
+                    };
+                },
+
+                // Función para cargar las pistas
                 cargarPistas: async function() {
                     try {
                         if (this.ubicacionId !== null) {
                             const response = await fetch(`/pistas-por-ubicacion/${this.ubicacionId}`);
                             if (response.ok) {
-                                console.log('Respuesta de la API para pistas:', response);
                                 const data = await response.json();
-
-                                // Actualizar la lógica para manejar diferentes estructuras de datos
                                 this.pistas = data.map(pista => ({
                                     id: pista.id,
                                     numero: pista.numero !== null ? pista.numero : 'Número Desconocido',
@@ -131,14 +181,12 @@
 
                                 this.mensaje = this.pistas.length ? '' : 'No hay pistas disponibles';
 
-                                // Agregar la opción "Seleccione su pista" si hay pistas disponibles
                                 if (this.pistas.length > 0) {
                                     this.pistas.unshift({
                                         id: null,
-                                        numero: 'Seleccione su pista'
+                                        numero: 'Seleccione su pista',
                                     });
 
-                                    // Llamamos a cargarTipoSuperficie con la primera pista en la lista
                                     this.pistaId = this.pistas[0].id;
                                     this.cargarTipoSuperficie();
                                 }
@@ -153,20 +201,18 @@
                     } catch (error) {
                         console.error('Error al obtener pistas:', error);
                         this.mensaje = 'Hubo un error al cargar las pistas';
+                    } finally {
+                        this.cargarFranjasYPrecio();
                     }
                 },
 
-                async cargarTipoSuperficie() {
+                // Función para cargar el tipo de superficie
+                cargarTipoSuperficie: async function() {
                     try {
                         if (this.pistaId !== null) {
                             const response = await fetch(`/pistas/${this.pistaId}`);
-                            console.log('Respuesta de la API para tipo de superficie y deportes:', response);
-
                             if (response.ok) {
                                 const data = await response.json();
-                                console.log('Datos obtenidos:', data);
-
-                                // Verificar si hay datos de superficie
                                 if (data && data.tipo_superficie) {
                                     this.tiposSuperficie = [data.tipo_superficie];
                                     this.tipoSuperficie = this.tiposSuperficie[0] || '';
@@ -176,7 +222,6 @@
                                     );
                                 }
 
-                                // Actualizar la carga de deportes
                                 this.actualizarDeportes();
                             } else {
                                 console.error('Error al obtener el tipo de superficie:', response.status);
@@ -188,29 +233,19 @@
                     }
                 },
 
+                // Función para actualizar deportes
                 actualizarDeportes: async function() {
                     try {
                         if (this.pistaId !== null) {
-                            // Cargar los deportes relacionados con la pista seleccionada
                             const response = await fetch(`/pistas/${this.pistaId}/deportes`);
                             if (response.ok) {
                                 const data = await response.json();
-                                console.log('Datos completos de la respuesta de deportes:', data);
-
-
-                                // Verificar si hay datos de deportes
                                 if (data) {
-
-
                                     this.deporte = data.nombre;
-                                    // Mostrar información en la consola
-                                    console.log(this.deporte);
                                 } else {
                                     console.warn(
                                         'La respuesta de la API no contiene datos de deportes relacionados con la pista o tiene un formato inesperado.'
                                     );
-
-                                    // Mostrar información en la consola
                                     console.log('No hay datos de deportes');
                                 }
                             } else {
@@ -221,11 +256,91 @@
                     } catch (error) {
                         console.error('Error al obtener deportes relacionados con la pista:', error);
                     }
-                }
+                },
 
+                // Función para obtener la fecha actual en el formato esperado
+                obtenerFechaActual: function() {
+                    const ahora = new Date();
+                    const ano = ahora.getFullYear();
+                    const mes = (ahora.getMonth() + 1).toString().padStart(2, '0');
+                    const dia = ahora.getDate().toString().padStart(2, '0');
+                    return `${ano}-${mes}-${dia}`;
+                },
+
+                // Función para cargar las franjas horarias y calcular el precio
+                cargarFranjasYPrecio: function() {
+                    this.franjasHorarias = this.obtenerFranjasHorarias();
+                    this.actualizarPrecio(); // Llamamos a la función para calcular el precio
+                },
+
+                obtenerPrecioPorHora: function(hora) {
+                    let precioBaseConLuz, precioBaseSinLuz;
+
+                    // Definir precios base según corresponda
+                    if (hora >= '09:00' && hora < '10:30') {
+                        precioBaseConLuz = 10.00;
+                        precioBaseSinLuz = 8.00;
+                    } else if (hora >= '11:00' && hora < '12:30') {
+                        precioBaseConLuz = 15.00;
+                        precioBaseSinLuz = 12.00;
+                    } else {
+                        precioBaseConLuz = 20.00;
+                        precioBaseSinLuz = 18.00;
+                    }
+
+                    // Ajustar precio según la presencia de luz
+                    const precioConLuz = this.pistaTieneLuz ? precioBaseConLuz + 5.00 : precioBaseConLuz;
+                    const precioSinLuz = precioBaseSinLuz;
+
+                    // Devolver un objeto con ambos precios
+                    return {
+                        conLuz: precioConLuz,
+                        sinLuz: precioSinLuz
+                    };
+                },
+
+
+
+                // Función para obtener las franjas horarias
+                obtenerFranjasHorarias: function() {
+                    const franjas = [];
+                    const intervalo = 90; // 90 minutos en cada franja
+                    const horasDisponibles = 22 - 9; // Total de horas disponibles
+
+                    for (let i = 0; i < horasDisponibles * 60; i += intervalo) {
+                        const hora = Math.floor(i / 60) + 9;
+                        const minuto = i % 60;
+                        const horaFormateada = hora.toString().padStart(2, '0');
+                        const minutoFormateado = minuto.toString().padStart(2, '0');
+                        franjas.push(`${horaFormateada}:${minutoFormateado}`);
+                    }
+
+                    return franjas;
+                },
+
+
+                // Propiedad computada para obtener las opciones de precio
+                opcionesPrecio: function() {
+                    const opciones = [];
+                    if (this.hora) {
+                        const precios = this.obtenerPrecioPorHora(this.hora);
+                        opciones.push({
+                            valor: precios.conLuz,
+                            etiqueta: `Con luz: €${precios.conLuz.toFixed(2)}`
+                        });
+                        opciones.push({
+                            valor: precios.sinLuz,
+                            etiqueta: `Sin luz: €${precios.sinLuz.toFixed(2)}`
+                        });
+                    }
+                    return opciones;
+                },
             };
         }
     </script>
+
+
+
     </div>
     </div>
     </div>

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('fecha_hora')->useCurrent(); // Cambiado a timestamp
+            $table->timestamp('fecha_hora')->useCurrent();
             $table->bigInteger('equipo1');
             $table->bigInteger('equipo2');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -25,9 +25,9 @@ return new class extends Migration
             $table->foreignId('ubicacion_id')->constrained('ubicaciones')->onDelete('cascade');
             $table->foreignId('deporte_id')->constrained()->onDelete('cascade');
             $table->decimal('precio', 8, 2)->nullable();
-            $table->boolean('pista_tiene_luz')->default(false); // Columna para indicar si la pista tiene luz en el partido
-            $table->decimal('precio_con_luz', 8, 2)->nullable(); // Columna para el precio con luz en el partido
-
+            $table->boolean('pista_tiene_luz')->default(false);
+            $table->decimal('precio_con_luz', 8, 2)->nullable();
+            $table->timestamp('hora_partido')->nullable(); // Nueva columna
             $table->timestamps();
         });
     }
