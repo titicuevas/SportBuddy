@@ -24,14 +24,21 @@
                         </div>
                     </div>
                     <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                        <div>
-                            <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}</p>
+                        <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
+                            <div>
+                                <label for="fecha" class="block mb-2 text-lg font-bold text-black">Fecha:</label>
+                                <p class="text-gray-700">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}</p>
+                            </div>
+                            <div>
+                                <label for="hora" class="block mb-2 text-lg font-bold text-black">Hora:</label>
+                                <p class="text-gray-700">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}</p>
+                            </div>
+                            {{-- <div><label>Precio Pista: {{ $partido->precio }} €</label></div> --}}
                         </div>
-                        <div>{{ \Carbon\Carbon::parse($partido->hora)->format('H:i') }}</div>
-                        {{-- <div><label>Precio Pista: {{ $partido->precio }} €</label></div> --}}
-                    </div>
 
-                </div>
+                    </div>
             </article>
         @empty
             <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>

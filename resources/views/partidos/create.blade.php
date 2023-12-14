@@ -18,21 +18,23 @@
                         <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">Fecha</label>
                         <input type="date" id="fecha" name="fecha" x-model="fecha" class="input-field"
                             :min="obtenerFechaActual()" required>
-                        <p x-show="fecha && fecha > obtenerFechaActual()" class="text-red-500 text-sm mt-2">
-                            La fecha no puede ser anterior a hoy.
                         </p>
                     </div>
 
 
 
                     {{-- Horas --}}
+
+
                     <div class="mb-4">
                         <label for="hora" class="block text-gray-700 text-sm font-bold mb-2">Hora</label>
-                        <select id="hora" name="hora" x-model="hora" class="input-field" required
-                            x-on:change="actualizarHora">
+                        <select id="hora" name="hora" x-model="hora" class="input-field" required>
                             <option value="" disabled selected>Selecciona una hora</option>
-                            <template x-for="franja in franjasHorarias" :key="franja">
-                                <option x-text="franja" :value="franja"></option>
+                            <template x-for="franja in franjasHorarias" :key="franja.hora">
+                                <option :value="franja.hora" :class="{ 'ocupada': franja.ocupada }">
+                                    <span x-text="franja.hora"></span> - <span
+                                        x-text="franja.ocupada ? 'No disponible' : ''"></span>
+                                </option>
                             </template>
                         </select>
                     </div>
@@ -302,6 +304,17 @@
 
 
                 // Función para obtener las franjas horarias
+                horaOcupada: function(hora) {
+                    // Aquí deberías tener la lógica para determinar si la hora está ocupada
+                    // Puedes obtener la información de ocupación desde tu backend o donde la tengas almacenada
+                    // En este ejemplo, asumiré que tienes un array de horas ocupadas
+                    const horasOcupadas = [10, 14, 16];
+
+                    // Verifica si la hora está en el array de horas ocupadas
+                    return horasOcupadas.includes(hora);
+                },
+
+                // Modificación en el método para obtener las franjas horarias
                 obtenerFranjasHorarias: function() {
                     const franjas = [];
                     const intervalo = 90; // 90 minutos en cada franja
@@ -312,7 +325,14 @@
                         const minuto = i % 60;
                         const horaFormateada = hora.toString().padStart(2, '0');
                         const minutoFormateado = minuto.toString().padStart(2, '0');
-                        franjas.push(`${horaFormateada}:${minutoFormateado}`);
+
+                        // Simulamos que algunas franjas están ocupadas
+                        const ocupada = Math.random() < 0.3; // Ajusta este valor según tus necesidades
+
+                        franjas.push({
+                            hora: `${horaFormateada}:${minutoFormateado}`,
+                            ocupada: ocupada,
+                        });
                     }
 
                     return franjas;
@@ -335,6 +355,8 @@
                     }
                     return opciones;
                 },
+
+
             };
         }
     </script>

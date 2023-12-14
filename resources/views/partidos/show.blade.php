@@ -13,12 +13,12 @@
 
                     <div class="mb-6">
                         <label for="fecha" class="block mb-2 text-lg font-bold text-black">Fecha:</label>
-                        <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}</p>
+                        <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}</p>
                     </div>
 
                     <div class="mb-6">
                         <label for="hora" class="block mb-2 text-lg font-bold text-black">Hora:</label>
-                        <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->hora)->format('H:i') }}</p>
+                        <p class="text-gray-700">{{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}</p>
                     </div>
 
                     <div class="mb-6">
@@ -350,13 +350,13 @@
 
 
 
-    </div>
+        </div>
 
 
-    {{-- Chat --}}
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Chat
-    </button>
+        {{-- Chat --}}
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Chat
+        </button>
 
 
 

@@ -12,6 +12,15 @@ use App\Models\Asignamiento;
 use App\Models\Superficie;
 use App\Models\Pista;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Support\Facades\Validator;
+use App\Rules\UniquePistaHoraRule; // Asegúrate de importar la regla personalizada
+use Illuminate\Support\Facades\Log;
+
+use Carbon\Carbon;
+
+
 
 
 class PartidoController extends Controller
@@ -32,15 +41,51 @@ class PartidoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
-
-        $ubicaciones = ubicacion::all();
+        $ubicaciones = Ubicacion::all();
         $deportes = Deporte::all();
 
-        return view('partidos.create', ['ubicaciones' => $ubicaciones, 'deportes' => $deportes]);
+        // Obtén la fecha y hora actual
+        $now = Carbon::now();
+
+        // Filtra las horas que ya han pasado
+        $horasDisponibles = $this->obtenerHorasDisponibles($now);
+
+        return view('partidos.create', [
+
+            'ubicaciones' => $ubicaciones,
+            'deportes' => $deportes,
+            'horasDisponibles' => $horasDisponibles,
+        ]);
     }
 
+    // Función para obtener las horas disponibles a partir de la fecha y hora actuales
+    private function obtenerHorasDisponibles($now)
+    {
+        $horasDisponibles = [];
+
+        // Lógica para obtener las horas disponibles, puede variar según la implementación específica
+        // Puedes verificar la disponibilidad de la pista para cada hora y filtrar las disponibles
+
+        // Ejemplo: Obtener todas las horas desde ahora hasta las 22:00
+        $horasPosibles = collect(range($now->hour, 22));
+
+        // Filtra las horas que ya han pasado
+        $horasFiltradas = $horasPosibles->filter(function ($hora) use ($now) {
+            return ($hora > $now->hour) || ($hora == $now->hour && $hora > $now->minute);
+        });
+
+        // Ejemplo: Filtrar las horas que están disponibles
+        foreach ($horasFiltradas as $hora) {
+            // Lógica para verificar la disponibilidad de la pista a esa hora
+            // Agrega la hora a $horasDisponibles si está disponible
+            $horasDisponibles[] = $hora . ':00';
+        }
+
+        return $horasDisponibles;
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -55,6 +100,7 @@ class PartidoController extends Controller
             'ubicacion_id' => 'required',
             'deporte' => 'required',
             'precio' => 'required',
+            new UniquePistaHoraRule('partidos', $request->input('hora'), $request->input('pista_id')),
         ]);
 
         $user = auth()->user()->id;
@@ -67,11 +113,20 @@ class PartidoController extends Controller
         // Calcula el precio según la elección del usuario
         $precioSeleccionado = $request->precio;
 
-        // Opcional: Puedes validar que el precio seleccionado sea uno de los valores permitidos
-        // Puedes agregar lógica adicional según tus necesidades
+        // Obtén la fecha y hora seleccionadas por el usuario
+        $fechaHoraSeleccionada = Carbon::parse($request->input('fecha') . ' ' . $request->input('hora'));
 
-        Partido::create([
-            'fecha_hora' => $request->input('fecha') . ' ' . $request->input('hora'), // Combina fecha y hora
+        // Verifica si la hora seleccionada es igual o posterior a la hora actual
+        $now = Carbon::now();
+        if ($fechaHoraSeleccionada <= $now) {
+            return redirect()->back()->with('error', 'La hora seleccionada debe ser posterior a la hora actual.');
+        }
+
+        Log::info('Fecha y Hora Seleccionadas:', ['fechaHoraSeleccionada' => $fechaHoraSeleccionada]);
+
+        // Intenta insertar directamente usando el constructor de consultas
+        DB::table('partidos')->insert([
+            'fecha_hora' => $fechaHoraSeleccionada,
             'equipo1' => $equipo1->id,
             'equipo2' => $equipo2->id,
             'user_id' => $user,
@@ -79,22 +134,20 @@ class PartidoController extends Controller
             'pista_id' => $request->input('pista_id'),
             'ubicacion_id' => $request->input('ubicacion_id'),
             'deporte_id' => $deporte->id,
-            'precio' => $precioSeleccionado, // Usar el precio seleccionado por el usuario
+            'precio' => $precioSeleccionado,
         ]);
 
         // TODO: hay que meter en la tabla asignamiento el usuario que crea el partido al azar en un equipo
         $ultimoPartido = Partido::orderBy('id', 'desc')->first();
 
-        // TODO: hay que coger uno de los dos equipos aleatoriamente para asignarselo a la tabla asignamiento
+        // TODO: hay que coger uno de los dos equipos aleatoriamente para asignárselo a la tabla asignamiento
         Asignamiento::create([
             'partido_id' => $ultimoPartido->id,
             'equipo_id' => $equipo1->id,
             'user_id' => $user,
         ]);
 
-        // Con este método, el usuario que crea el partido se le asignaría al partido
         return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
-        return response()->json(['message' => 'Partido creado exitosamente.'], 200);
     }
 
 

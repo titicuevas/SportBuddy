@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('fecha_hora')->useCurrent();
+            $table->timestamp('fecha_hora')->nullable();
             $table->bigInteger('equipo1');
             $table->bigInteger('equipo2');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -27,7 +27,6 @@ return new class extends Migration
             $table->decimal('precio', 8, 2)->nullable();
             $table->boolean('pista_tiene_luz')->default(false);
             $table->decimal('precio_con_luz', 8, 2)->nullable();
-            $table->timestamp('hora_partido')->nullable(); // Nueva columna
             $table->timestamps();
         });
     }

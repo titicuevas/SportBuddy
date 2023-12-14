@@ -135,6 +135,8 @@ return [
     'required_without'     => 'El campo :attribute es obligatorio cuando :values no está presente.',
     'required_without_all' => 'El campo :attribute es obligatorio cuando ninguno de los campos :values están presentes.',
     'same'                 => 'Los campos :attribute y :other deben coincidir.',
+    'unique_pista_hora' => 'La pista ya está reservada a esa hora.',
+
     'size'                 => [
         'numeric' => 'El campo :attribute debe ser :size.',
         'file'    => 'El archivo :attribute debe pesar :size kilobytes.',
