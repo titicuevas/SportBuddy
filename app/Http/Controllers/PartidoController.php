@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\StorePartidoRequest;
 use App\Http\Requests\UpdatePartidoRequest;
 use App\Models\Partido;
@@ -13,9 +14,11 @@ use App\Models\Superficie;
 use App\Models\Pista;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Events\MensajeEnviado;
+use App\Models\Mensaje;
 
 use Illuminate\Support\Facades\Validator;
-use App\Rules\UniquePistaHoraRule; // Asegúrate de importar la regla personalizada
+use App\Rules\UniquePistaHoraRule;
 use Illuminate\Support\Facades\Log;
 
 use Carbon\Carbon;
@@ -269,6 +272,22 @@ class PartidoController extends Controller
         if ($totalJugadores >= $limite * 2) {
             return redirect()->route('partidos.show', $partido)->with('error', 'El partido está completo. No es posible inscribirse.');
         }
+
+        // Después de inscribir al usuario, puedes enviar un mensaje
+        $contenidoMensaje = '¡Nuevo jugador inscrito! ' . $user->name . ' se ha unido al partido.';
+
+/*
+        // Crea el mensaje en la base de datos
+        $mensaje = Mensaje::create([
+            'partido_id' => $partido->id,
+            'user_id' => $user->id,
+            'contenido' => $contenidoMensaje,
+        ]);
+
+        // Emite el evento para que se transmita a través de Pusher
+
+        broadcast(new MensajeEnviado($mensaje));
+        return redirect()->route('partidos.show', $partido)->with('success', 'Te has inscrito al partido correctamente'); */
 
         // Obtener los equipos del partido
         $equipo1 = Equipo::find(1);

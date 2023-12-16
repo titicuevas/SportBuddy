@@ -8,16 +8,23 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
- <!-- Scripts -->
-{{--  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
- --}}
-
-
- {{-- <script src="{{ mix('js/app.js') }}" defer></script>
- @livewireScripts --}}
 
     <!-- Scripts (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Tu código HTML aquí -->
+
+    <script>
+        window.Echo.channel('chat').listen('NewChatMessage', (event) => {
+            appendMessage(event.user.name, event.message);
+        });
+
+        // Resto de tu script
+    </script>
+
+    <!-- Resto de tu código HTML -->
+
+
 
 </head>
 

@@ -1,27 +1,26 @@
 <?php
 
-// app/Models/Mensaje.php
-
 namespace App\Models;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Notifiable;
 
-class Mensaje extends Model
+class Mensaje extends Model implements ShouldBroadcast
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = ['partido_id', 'user_id', 'contenido'];
 
-    // Relación con el partido
-    public function partido()
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
     {
-        return $this->belongsTo(Partido::class);
-    }
-
-    // Relación con el usuario que envió el mensaje
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return new Channel('partido.'.$this->partido_id);
     }
 }

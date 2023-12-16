@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('partido.{partidoId}', function ($user, $partidoId) {
+    // Lógica de autorización, por ejemplo, verificar si el usuario pertenece al partido
+    return true; // O devuelve true si todos los usuarios autenticados pueden acceder
+});

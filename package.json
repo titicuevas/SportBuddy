@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "watch": "webpack --watch src"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

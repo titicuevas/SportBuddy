@@ -20,6 +20,10 @@ use App\Http\Controllers\PistaController;
 // Contrrolador de Paypal
 use App\Http\Controllers\PaypalController;
 
+/* Controlador Chat */
+
+use App\Http\Controllers\ChatController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -110,8 +114,9 @@ Route::middleware('auth')->group(function () {
 
 /* Intento Chat */
 
-Route::get('/chat', [HomeController::class, 'index'])->name('chat.index');
+Route::get('/chat/pagina', [ChatController::class, 'mostrarPaginaChat'])->name('pagina_chat');
 
+Route::post('/send-message', [ChatController::class, 'sendMessage']);
 
 //Correo electronico
 
