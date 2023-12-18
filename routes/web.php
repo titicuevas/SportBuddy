@@ -24,6 +24,11 @@ use App\Http\Controllers\PaypalController;
 
 use App\Http\Controllers\ChatController;
 
+/* CONTROLADORES ADMIN */
+use App\Http\Controllers\AdminUserController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +49,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+/* ADMIN */
 Route::get('/admin', function () {
     return view('admin.index');
 })->middleware(['auth', 'verified'])->name('admin.index');
@@ -88,8 +93,21 @@ Route::get('/pistas/{pista}', [PistaController::class, 'show']);
 Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista']);
 
 
+/* Routes para admin */
 
 
+/* Route user Admin */
+Route::view('admin/users/lista', 'admin.users.lista')->name('admin.users.lista');
+Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+
+
+
+/* Route ubicacion Admin */
+Route::view('admin/ubicacion', 'admin.ubicacion')->name('admin.ubicacion');
+
+
+/* Route deporte Admin */
+Route::view('admin/deporte', 'admin.deporte')->name('admin.deporte');
 
 
 
