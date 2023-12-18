@@ -67,7 +67,9 @@ Route::get('/partidos/{partido}', [PartidoController::class, 'show'])->name('par
 Route::delete('/partidos/{partido}', [PartidoController::class, 'destroy'])->name('partidos.destroy');
 
 
+/* Controlar las horas */
 
+Route::get('/obtener-horas-ocupadas/{ubicacionId}', [PartidoController::class, 'obtenerHorasOcupadas']);
 
 //Sacar la el numero para la ubicacion
 Route::get('/pistas-por-ubicacion/{ubicacionId}', [PistaController::class, 'pistasPorUbicacion']);

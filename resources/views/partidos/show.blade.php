@@ -38,6 +38,12 @@
                     </div>
 
                     <div class="mb-6">
+                        <label for="pista_id" class="block mb-2 text-lg font-bold text-black">Numero de Pista:</label>
+                        {{ $partido->pista->numero }}
+
+                    </div>
+
+                    <div class="mb-6">
                         <label for="deporte" class="block mb-2 text-lg font-bold text-black">Deporte:</label>
                         <p class="text-gray-700">{{ $partido->deporte->nombre }}</p>
                     </div>
@@ -47,9 +53,9 @@
                         <p class="text-gray-700">{{ $partido->precio }}€</p>
 
 
-                        {{-- Imprimir el valor de PAYPAL_CLIENT_ID --}}
 
-                        {{-- Boton paypal --}}
+
+                        {{-- Botón de PayPal --}}
                         <div id="paypal-button-container"></div>
                         <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
                         <script nonce="random_nonce_value">
@@ -73,9 +79,6 @@
                             }).render('#paypal-button-container');
                         </script>
 
-
-                        <!-- Contenedor para el botón de PayPal Checkout -->
-                        <div id="paypal-button-container"></div>
 
 
 

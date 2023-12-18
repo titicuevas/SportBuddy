@@ -3,29 +3,53 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\DB;
+use App\Models\Partido;
+use Carbon\Carbon;
 
 class UniquePistaHoraRule implements Rule
 {
-    private $table;
-    private $hora;
+    protected $table;
+    protected $hora;
+    protected $pistaId;
 
-    public function __construct($table, $hora)
+    /**
+     * Create a new rule instance.
+     *
+     * @return void
+     */
+    public function __construct($table, $hora, $pistaId)
     {
         $this->table = $table;
         $this->hora = $hora;
+        $this->pistaId = $pistaId;
     }
 
+    /**
+     * Determine if the validation rule passes.
+     *
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @return bool
+     */
     public function passes($attribute, $value)
     {
-        return !DB::table($this->table)
-            ->where('pista_id', $value)
-            ->where('hora', $this->hora)
+        // Obtener la fecha y hora seleccionadas por el usuario
+        $fechaHoraSeleccionada = Carbon::parse($value . ' ' . $this->hora);
+
+        // Verificar si hay algún partido existente en la misma hora, mismo día y misma pista
+        return !Partido::where('pista_id', $this->pistaId)
+            ->where('fecha_hora', '>=', $fechaHoraSeleccionada)
+            ->where('fecha_hora', '<', $fechaHoraSeleccionada->copy()->addHour()) // Asegurar que no haya superposición exacta
             ->exists();
     }
 
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
     public function message()
     {
-        return 'La pista ya está reservada a esa hora.';
+        return 'Ya hay un partido programado en la misma hora, mismo día y misma pista.';
     }
 }

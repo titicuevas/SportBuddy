@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\MensajeEnviado;
 use App\Models\Mensaje;
 
+
 use Illuminate\Support\Facades\Validator;
 use App\Rules\UniquePistaHoraRule;
 use Illuminate\Support\Facades\Log;
@@ -69,10 +70,7 @@ class PartidoController extends Controller
     {
         $horasDisponibles = [];
 
-        // Lógica para obtener las horas disponibles, puede variar según la implementación específica
-        // Puedes verificar la disponibilidad de la pista para cada hora y filtrar las disponibles
-
-        // Ejemplo: Obtener todas las horas desde ahora hasta las 22:00
+        // Lógica para obtener las horas disponibles, teniendo en cuenta partidos/reservas existentes
         $horasPosibles = collect(range($now->hour, 22));
 
         // Filtra las horas que ya han pasado
@@ -80,22 +78,51 @@ class PartidoController extends Controller
             return ($hora > $now->hour) || ($hora == $now->hour && $hora > $now->minute);
         });
 
-        // Ejemplo: Filtrar las horas que están disponibles
         foreach ($horasFiltradas as $hora) {
-            // Lógica para verificar la disponibilidad de la pista a esa hora
-            // Agrega la hora a $horasDisponibles si está disponible
-            $horasDisponibles[] = $hora . ':00';
+            // Verifica si hay un partido o reserva en esa pista a esa hora y fecha
+            $horaCompleta = $hora . ':00';
+            $partidoEnHora = Partido::where('fecha_hora', $now->format('Y-m-d') . ' ' . $horaCompleta)->exists();
+            $pistaOcupada = Partido::where('fecha_hora', $now->format('Y-m-d') . ' ' . $horaCompleta)
+                ->whereNotNull('pista_id')->exists();
+
+            if (!$partidoEnHora && !$pistaOcupada) {
+                $horasDisponibles[] = $horaCompleta;
+            }
         }
 
         return $horasDisponibles;
     }
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorePartidoRequest $request)
     {
+        //dd($request->all()); // Muestra los datos recibidos antes de la validación
         $superficie = Superficie::where('tipo', $request->input('tipo_superficie'))->first();
         $deporte = Deporte::where('nombre', $request->input('deporte'))->first();
+
+        // Obtén la fecha y hora seleccionadas por el usuario
+        $fechaHoraSeleccionada = Carbon::parse($request->input('fecha') . ' ' . $request->input('hora'));
+
+        // Verifica si hay algún partido existente en la misma hora, mismo día y misma pista
+        if (Partido::where('pista_id', $request->input('pista_id'))
+            ->where('fecha_hora', $fechaHoraSeleccionada)
+            ->exists()
+        ) {
+            return redirect()->back()->with('error', 'Ya hay un partido programado en la misma hora, mismo día y misma pista.');
+        }
+
+        // Verifica si la pista está ocupada en la misma hora y día
+        if (Partido::where('pista_id', $request->input('pista_id'))
+            ->where('fecha_hora', $fechaHoraSeleccionada)
+            ->exists()
+        ) {
+            return redirect()->back()->with('error', 'La pista ya está ocupada en la misma hora y día.');
+        }
+
+
 
         $request->validate([
             'fecha' => 'required',
@@ -276,7 +303,7 @@ class PartidoController extends Controller
         // Después de inscribir al usuario, puedes enviar un mensaje
         $contenidoMensaje = '¡Nuevo jugador inscrito! ' . $user->name . ' se ha unido al partido.';
 
-/*
+        /*
         // Crea el mensaje en la base de datos
         $mensaje = Mensaje::create([
             'partido_id' => $partido->id,
