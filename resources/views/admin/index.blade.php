@@ -38,10 +38,10 @@
             <h1 class="text-4xl text-gray-800 mb-6 text-center">
                 BIENVENIDO AL MODO ADMIN
             </h1>
-            <!-- Aquí se incluirá la vista específica de cada sección -->
             <div id="contenido" class="bg-white p-6 rounded-lg shadow-md">
-
+                {{-- Cargar la vista de usuarios --}}
             </div>
+
 
             <div class="flex justify-center">
 

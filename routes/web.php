@@ -97,8 +97,9 @@ Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista
 
 
 /* Route user Admin */
-Route::view('admin/users/lista', 'admin.users.lista')->name('admin.users.lista');
-Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+
+Route::get('/admin/users/lista', [AdminUserController::class, 'index'])->name('admin.users.index');
+Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
 
 
