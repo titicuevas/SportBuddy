@@ -13,11 +13,11 @@ class AdminUserController extends Controller
         $users = User::orderBy('name')->get();
 
         // Devolver la vista con la variable $users
-        return view('admin.users.lista', compact('users'));
-    }
+        return view('admin.users.index', compact('users'));    }
 
     public function destroy($id)
     {
+
         // Encuentra el usuario por su ID
         $user = User::findOrFail($id);
 

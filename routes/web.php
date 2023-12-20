@@ -27,8 +27,24 @@ use App\Http\Controllers\ChatController;
 /* CONTROLADORES ADMIN */
 use App\Http\Controllers\AdminUserController;
 
+/*Controlador de Admin Deportes
+ */
+use App\Http\Controllers\AdminDeporteController;
 
 
+/* Controler  Admin Ubicacion */
+use App\Http\Controllers\AdminUbicacionController;
+
+
+/* Controler de Admin Superficie */
+
+use App\Http\Controllers\AdminSuperficieController;
+
+/* Controller de Admin Pista */
+use App\Http\Controllers\AdminPistaController;
+
+
+use App\Models\Deporte;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,17 +114,42 @@ Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista
 
 /* Route user Admin */
 
-Route::get('/admin/users/lista', [AdminUserController::class, 'index'])->name('admin.users.index');
+Route::get('/admin/index', [AdminUserController::class, 'index'])->name('admin.users.index');
 Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
 
 
-/* Route ubicacion Admin */
-Route::view('admin/ubicacion', 'admin.ubicacion')->name('admin.ubicacion');
+/* Route Admin Ubicacion */
+
+Route::get('/admin/ubicacion', [AdminUbicacionController::class, 'index'])->name('admin.ubicacion.index');
+Route::get('/admin/ubicacion/create', [AdminUbicacionController::class, 'create'])->name('admin.ubicacion.create');
+Route::post('/admin/ubicacion', [AdminUbicacionController::class, 'store'])->name('admin.ubicacion.store');
 
 
-/* Route deporte Admin */
-Route::view('admin/deporte', 'admin.deporte')->name('admin.deporte');
+
+/* Route Admin Deporte */
+
+Route::get('/admin/deportes', [AdminDeporteController::class, 'index'])->name('admin.deportes.index');
+Route::get('/admin/deportes/create', [AdminDeporteController::class, 'create'])->name('admin.deportes.create');
+Route::post('/admin/deportes', [AdminDeporteController::class, 'store'])->name('admin.deportes.store');
+
+/* Route Admin Superficie   */
+Route::get('/admin/superficie/index', [AdminSuperficieController::class, 'index'])->name('admin.superficie.index');
+Route::get('/admin/superficie/create', [AdminSuperficieController::class, 'create'])->name('admin.superficie.create');
+Route::post('/admin/superficie/store', [AdminSuperficieController::class, 'store'])->name('admin.superficie.store');
+
+/* Route Admin Pistas */
+
+Route::get('/admin/pista/index', [AdminPistaController::class, 'index'])->name('admin.pista.index');
+Route::get('/admin/pista/create', [AdminPistaController::class, 'create'])->name('admin.pista.create');
+Route::post('/admin/pista/store', [AdminPistaController::class, 'store'])->name('admin.pista.store');
+Route::get('/admin/pista/edit/{pista}', [AdminPistaController::class, 'edit'])->name('admin.pista.edit');
+Route::put('/admin/pista/update/{pista}', [AdminPistaController::class, 'update'])->name('admin.pista.update');
+Route::delete('/admin/pista/{pista}', [AdminPistaController::class, 'destroy'])->name('admin.pista.destroy');
+
+
+
+
 
 
 

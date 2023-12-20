@@ -15,7 +15,7 @@ class DeporteController extends Controller
     {
         $deportes = Deporte::all();
 
-        return view('deportes.index', compact('deportes'));
+        return view('admin.deporte.deporte', compact('deportes'));
     }
 
     /**
@@ -23,7 +23,7 @@ class DeporteController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.deporte.create');
     }
 
     /**
