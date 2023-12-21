@@ -2,16 +2,18 @@
 
 
     @section('contenido')
+
+        @if (session('success'))
+            <div x-data="{ show: false }" x-show="show" x-init="() => {
+                show = true;
+                setTimeout(() => show = false, 5000)
+            }"
+                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+                <p class="text-center text-base">{{ session('success') }}</p>
+            </div>
+        @endif
         <div class="flex items-center justify-center">
             <h1 class="text-4xl text-blue-500 mb-6">USUARIOS</h1>
-        </div>
-
-        <div class="h-9">
-            {{-- Mostrar los mensajes de exito. --}}
-            @if (session('success'))
-                <p>{{ session('success') }}</p>
-            @endif
-
         </div>
 
         <table class="min-w-full bg-white border border-gray-300">

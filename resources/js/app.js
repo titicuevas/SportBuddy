@@ -1,6 +1,7 @@
 import Alpine from "alpinejs";
 import Echo from "laravel-echo/dist/echo.common";
 import Pusher from "pusher-js";
+import 'flowbite';
 
 window.Alpine = Alpine;
 Alpine.start();
