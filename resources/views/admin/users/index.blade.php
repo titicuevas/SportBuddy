@@ -1,10 +1,17 @@
 <x-administrador>
 
+
     @section('contenido')
-
-
         <div class="flex items-center justify-center">
             <h1 class="text-4xl text-blue-500 mb-6">USUARIOS</h1>
+        </div>
+
+        <div class="h-9">
+            {{-- Mostrar los mensajes de exito. --}}
+            @if (session('success'))
+                <p>{{ session('success') }}</p>
+            @endif
+
         </div>
 
         <table class="min-w-full bg-white border border-gray-300">
