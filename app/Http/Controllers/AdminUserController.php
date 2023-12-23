@@ -10,10 +10,10 @@ class AdminUserController extends Controller
     public function index()
     {
         // Obtener la lista de usuarios ordenados por nombre
-        $users = User::orderBy('name')->get();
+        $users = User::orderBy('name')->paginate(10); // Puedes ajustar el número de usuarios por página
 
-        // Devolver la vista con la variable $users
-        return view('admin.users.index', compact('users'));    }
+        return view('admin.users.index', compact('users'));
+    }
 
     public function destroy($id)
     {

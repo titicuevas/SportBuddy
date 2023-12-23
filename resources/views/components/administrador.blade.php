@@ -84,8 +84,16 @@
             <h1 class="text-4xl text-gray-800 mb-6 text-center">
                 BIENVENIDO AL MODO ADMIN
             </h1>
+
+
+
+
+
+
             <div id="contenido" class="bg-white p-6 rounded-lg shadow-md">
                 {{-- Contenido de la vista --}}
+
+
                 {{ $slot }}
 
             </div>
