@@ -54,14 +54,14 @@
                     value="{{ $pista->numero }}" required>
             </div>
 
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label for="tiene_luz" class="block text-gray-600 text-sm font-semibold mb-2">¿Tiene Luz?</label>
                 <select name="tiene_luz" id="tiene_luz" class="w-full border-gray-300 rounded-md p-2 border-opacity-50"
                     required>
                     <option value="1" {{ $pista->tiene_luz ? 'selected' : '' }}>Sí</option>
                     <option value="0" {{ !$pista->tiene_luz ? 'selected' : '' }}>No</option>
                 </select>
-            </div>
+            </div> --}}
 
             <div class="mb-4">
                 <label for="precio_con_luz" class="block text-gray-600 text-sm font-semibold mb-2">Precio con Luz</label>

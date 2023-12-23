@@ -15,27 +15,27 @@
         <table class="min-w-full bg-white border border-gray-300">
             <thead>
                 <tr>
-                    <th class="py-2 px-4 border-b">Ubicación</th>
-                    <th class="py-2 px-4 border-b">Superficie</th>
-                    <th class="py-2 px-4 border-b">Deporte</th>
-                    <th class="py-2 px-4 border-b">Número de Pista</th>
-                    <th class="py-2 px-4 border-b">¿Tiene Luz?</th>
-                    <th class="py-2 px-4 border-b">Precio con Luz</th>
-                    <th class="py-2 px-4 border-b">Precio sin Luz</th>
-                    <th class="py-2 px-4 border-b">Acciones</th>
+                    <th class="py-2 px-4 border-b text-center">Ubicación</th>
+                    <th class="py-2 px-4 border-b text-center">Superficie</th>
+                    <th class="py-2 px-4 border-b text-center">Deporte</th>
+                    <th class="py-2 px-4 border-b text-center">Número de Pista</th>
+{{--                     <th class="py-2 px-4 border-b text-center">¿Tiene Luz?</th>
+ --}}                    <th class="py-2 px-4 border-b text-center">Precio con Luz</th>
+                    <th class="py-2 px-4 border-b text-center">Precio sin Luz</th>
+                    <th class="py-2 px-4 border-b text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($pistas as $pista)
                     <tr>
-                        <td class="py-2 px-4 border-b">{{ $pista->ubicacion->nombre }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->superficie->tipo }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->deporte->nombre }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->numero }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->tiene_luz ? 'Sí' : 'No' }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->precio_con_luz ?: 'N/A' }}</td>
-                        <td class="py-2 px-4 border-b">{{ $pista->precio_sin_luz }}</td>
-                        <td class="py-2 px-4 border-b">
+                        <td class="py-2 px-4 border-b text-center">{{ $pista->ubicacion->nombre }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $pista->superficie->tipo }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $pista->deporte->nombre }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $pista->numero }}</td>
+{{--                         <td class="py-2 px-4 border-b text-center">{{ $pista->tiene_luz ? 'Sí' : 'No' }}</td>
+ --}}                        <td class="py-2 px-4 border-b text-center">{{ $pista->precio_con_luz ?: 'N/A' }}</td>
+                        <td class="py-2 px-4 border-b text-center">{{ $pista->precio_sin_luz }}</td>
+                        <td class="py-2 px-4 border-b text-center">
                             <!-- Agrega enlaces para editar y eliminar según sea necesario -->
                             <a href="{{ route('admin.pista.edit', $pista->id) }}"
                                 class="text-blue-500 hover:underline mr-2 bg-blue-200 py-1 px-2 rounded-md hover:bg-blue-300 focus:outline-none">
@@ -59,4 +59,5 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $pistas->links() }}
     </x-administrador>

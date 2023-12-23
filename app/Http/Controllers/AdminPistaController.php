@@ -7,6 +7,7 @@ use App\Models\Ubicacion;
 use App\Models\Superficie;
 use App\Models\Deporte;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminPistaController extends Controller
 {
@@ -15,7 +16,7 @@ class AdminPistaController extends Controller
      */
     public function index()
     {
-        $pistas = Pista::all();
+        $pistas = Pista::paginate(6); // Cambia 10 por el número de pistas que deseas mostrar por página
         return view('admin.pista.index', compact('pistas'));
     }
 
@@ -34,20 +35,56 @@ class AdminPistaController extends Controller
     /**
      * Almacena una nueva pista en la base de datos.
      */
+
     public function store(Request $request)
     {
-        $request->validate([
-            'ubicacion_id' => 'required|exists:ubicaciones,id',
-            'superficie_id' => 'required|exists:superficies,id',
-            'deporte_id' => 'required|exists:deportes,id',
-            'numero' => 'required|integer|min:0',
-            'tiene_luz' => 'required|boolean',
-            'precio_sin_luz' => 'required|numeric|min:0',
-            'precio_con_luz' => 'nullable|numeric|min:0',
-        ]);
+        try {
+            $request->validate([
+                'ubicacion_id' => 'required|exists:ubicaciones,id',
+                'superficie_id' => 'required|exists:superficies,id',
+                'deporte_id' => 'required|exists:deportes,id',
+                'numero' => [
+                    'required',
+                    'integer',
+                    'min:0',
+                    \Illuminate\Validation\Rule::unique('pistas')
+                        ->where('ubicacion_id', $request->ubicacion_id)
+                        ->where('superficie_id', $request->superficie_id)
+                        ->where('deporte_id', $request->deporte_id),
+                ],
+                'precio_sin_luz' => 'required|numeric|min:0',
+                'precio_con_luz' => 'nullable|numeric|min:0',
+            ], [
+                'numero.unique' => 'El número de pista ya está en uso para esta ubicación, superficie y deporte.',
+            ]);
 
-        return redirect()->route('admin.pista.index')->with('success', 'Pista creada exitosamente.');
+            // Crear una nueva instancia de Pista
+            $pista = new Pista();
+
+            // Asignar valores a los atributos de la pista
+            $pista->ubicacion_id = $request->ubicacion_id;
+            $pista->superficie_id = $request->superficie_id;
+            $pista->deporte_id = $request->deporte_id;
+            $pista->numero = $request->numero;
+            $pista->precio_sin_luz = $request->precio_sin_luz;
+            $pista->precio_con_luz = $request->precio_con_luz;
+
+            // Guardar la pista en la base de datos
+            $pista->save();
+
+            // Redirigir a la vista index con un mensaje de éxito
+            return redirect()->route('admin.pista.index')->with('success', 'Pista creada exitosamente.');
+        } catch (\Exception $e) {
+            // Redirigir a la vista create con un mensaje de error
+            return redirect()->route('admin.pista.create')->with('error', 'Error al crear la pista.');
+        }
     }
+
+
+
+
+
+
 
     /**
      * Muestra el formulario para editar una pista.
@@ -75,6 +112,18 @@ class AdminPistaController extends Controller
             'precio_sin_luz' => 'required|numeric|min:0',
             'precio_con_luz' => 'nullable|numeric|min:0',
         ]);
+
+        // Agregar la lógica para actualizar la pista en la base de datos.
+        $pista->update([
+            'ubicacion_id' => $request->ubicacion_id,
+            'superficie_id' => $request->superficie_id,
+            'deporte_id' => $request->deporte_id,
+            'numero' => $request->numero,
+            'tiene_luz' => $request->has('tiene_luz'),
+            'precio_sin_luz' => $request->precio_sin_luz,
+            'precio_con_luz' => $request->precio_con_luz,
+        ]);
+
         return redirect()->route('admin.pista.index')->with('success', 'Pista actualizada exitosamente.');
     }
 

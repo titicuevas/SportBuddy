@@ -40,8 +40,12 @@ class Pista extends Model
 
 
     protected $fillable = [
+        'ubicacion_id',
+        'superficie_id',
+        'deporte_id',
         'numero',
-        'horas_disponibles', // Agrega esta línea si planeas asignar masivamente horas_disponibles
-
+        'tiene_luz',
+        'precio_sin_luz',
+        'precio_con_luz',
     ];
 }

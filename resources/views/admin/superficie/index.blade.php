@@ -4,12 +4,13 @@
             <h1 class="text-4xl text-blue-500 mb-6">Agregar Nueva Superficie</h1>
         </div>
 
-        {{-- Mostrar mensaje de éxito --}}
+        <!-- Mensaje de éxito -->
         @if (session('success'))
-            <div class="bg-green-200 text-green-800 p-3 mb-4 rounded-md">
-                {{ session('success') }}
-            </div>
-        @endif
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+            class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+            <p class="text-center text-base">{{ session('success') }}</p>
+        </div>
+    @endif
 
         <form action="{{ route('admin.superficie.store') }}" method="post">
             @csrf

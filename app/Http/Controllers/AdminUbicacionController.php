@@ -20,30 +20,70 @@ class AdminUbicacionController extends Controller
         return view('admin.ubicacion.create');
     }
 
-    public function store(StoreUbicacionRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string',
             'direccion' => 'required|string',
-            'imagen' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Ajusta según tus necesidades
-            'enlace_maps' => 'nullable|url',
+            'enlace_maps' => 'nullable|string',
             'iframe' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
         ]);
 
-        // Procesar la imagen si se proporciona
-        $imagenPath = null;
+        // Lógica para guardar la ubicación y la imagen
+        $ubicacion = new Ubicacion();
+        $ubicacion->nombre = $request->nombre;
+        $ubicacion->direccion = $request->direccion;
+        $ubicacion->enlace_maps = $request->enlace_maps;
+        $ubicacion->iframe = $request->iframe;
+
         if ($request->hasFile('imagen')) {
-            $imagenPath = $request->file('imagen')->store('imagenes/ubicaciones', 'public');
+            $imagenPath = $request->file('imagen')->store('imagen', 'public');
+            $ubicacion->imagen = $imagenPath;
         }
 
-        Ubicacion::create([
-            'nombre' => $request->input('nombre'),
-            'direccion' => $request->input('direccion'),
-            'imagen' => $imagenPath,
-            'enlace_maps' => $request->input('enlace_maps'),
-            'iframe' => $request->input('iframe'),
+        $ubicacion->save();
+
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada exitosamente.');
+    }
+
+    public function update(Request $request, Ubicacion $ubicacion)
+    {
+        $request->validate([
+            'nombre' => 'required|string',
+            'direccion' => 'required|string',
+            'enlace_maps' => 'nullable|string',
+            'iframe' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
         ]);
 
-        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación agregada exitosamente.');
+        // Actualizar los atributos de la ubicación
+        $ubicacion->nombre = $request->nombre;
+        $ubicacion->direccion = $request->direccion;
+        $ubicacion->enlace_maps = $request->enlace_maps;
+        $ubicacion->iframe = $request->iframe;
+
+        if ($request->hasFile('imagen')) {
+            // Obtener el nombre original del archivo
+            $nombreOriginal = $request->file('imagen')->getClientOriginalName();
+
+            // Almacenar la imagen con el nombre original
+            $imagenPath = $request->file('imagen')->storeAs('imagen', $nombreOriginal, 'public');
+            $ubicacion->imagen = 'imagen/' . $nombreOriginal;
+        }
+
+        $ubicacion->save();
+
+
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación actualizada exitosamente.');
+    }
+
+    public function destroy(Ubicacion $ubicacion)
+    {
+
+
+        $ubicacion->delete();
+
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación eliminada exitosamente.');
     }
 }

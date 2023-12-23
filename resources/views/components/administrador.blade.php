@@ -51,10 +51,10 @@
                 <br>
                 <li>
 
-                <a href="{{ route('admin.superficie.index') }}"
-                    class="block p-2 hover:bg-blue-700 focus:bg-blue-700 focus:outline-none rounded-md transition duration-300">
-                    Superficie
-                </a>
+                    <a href="{{ route('admin.superficie.index') }}"
+                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 focus:outline-none rounded-md transition duration-300">
+                        Superficie
+                    </a>
                 </li>
                 <br>
 
@@ -64,7 +64,15 @@
                         class="block p-2 hover:bg-blue-700 focus:bg-blue-700 focus:outline-none rounded-md transition duration-300">
                         Pista
                     </a>
-                    </li>
+                </li>
+
+                <br>
+
+                <div class="w-3/4 p-6 relative">
+                    <button onclick="location.href='{{ route('dashboard') }}'"
+                        class="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:bg-red-700 focus:outline-none transition duration-300">
+                        Salir modo Admin
+                    </button>
 
 
 
