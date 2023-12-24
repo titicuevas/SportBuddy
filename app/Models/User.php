@@ -69,4 +69,15 @@ class User extends Authenticatable implements MustVerifyEmail
         // Reemplaza 1 con el valor real del rol de administrador
         return $this->rol_id === 1;
     }
+
+    public function chats()
+    {
+        return $this->belongsToMany('App\Models\Chat');
+    }
+
+    public function mensajes()
+    {
+
+        return $this->hasMany('App\Models\Mensajes');
+    }
 }

@@ -10,7 +10,6 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        return "hola";
         $user = auth()->user();
         $message = $request->input('message');
 

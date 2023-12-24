@@ -21,6 +21,17 @@ class Mensaje extends Model implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('partido.'.$this->partido_id);
+        return new Channel('partido.' . $this->partido_id);
+    }
+
+    public function user()
+    {
+
+        return $this->belongsTo('App\Models\User');
+    }
+
+    public function chat()
+    {
+        return $this->belongsTo('App\Models\Chat');
     }
 }

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('partido_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
+            $table->foreignId('partido_id')->constrained()->onDelete('cascade'); //Para borrar si hay otro usuario metido
+            $table->foreignId('chat_id')->constrained()->onDelete('cascade'); //Para borrar si hay otro usuario metido
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); //Para borrar si hay otro usuario metido
             $table->text('contenido');
             $table->timestamps();
         });
