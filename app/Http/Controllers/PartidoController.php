@@ -386,6 +386,12 @@ class PartidoController extends Controller
                 return 5;
             case 'Padel':
                 return 2; // Cambiado a 2 jugadores por equipo para pádel
+            case 'Baloncesto':
+                return 5;
+            case 'Tenis':
+                return 1;
+            case 'Judo':
+                return 1;
             default:
                 return 0; // Valor predeterminado
         }
