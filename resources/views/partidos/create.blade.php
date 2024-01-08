@@ -1,9 +1,19 @@
     <x-app-layout>
         <x-slot name="header">
-            <h2 class="font-semibold text-3xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-3xl text-gray-800 leading-tight text-center">
                 ¡Añade un Nuevo Partido!
             </h2>
         </x-slot>
+
+
+        @if (session('error'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)"
+                class="fixed inset-x-0 mx-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 bg-red-500 text-white rounded-md shadow-md">
+                <p class="text-center text-lg">{{ session('error') }}</p>
+            </div>
+        @endif
+
+
 
         <div class="py-8">
             <div class="max-w-lg mx-auto bg-white rounded-md overflow-hidden shadow-lg">
@@ -13,29 +23,17 @@
                         @csrf
 
                         {{-- FECHA --}}
-
-
                         <div class="mb-4">
-                            <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">Fecha</label>
-                            <input type="date" id="fecha" name="fecha" x-model="fecha" class="input-field"
-                                :min="obtenerFechaActual()" required>
-                            </p>
+                            <label for="fecha" class="block text-gray-700 text-2xl font-bold mb-2">Fecha</label>
+                            <input type="date" id="fecha" name="fecha" x-model="fecha"
+                                class="input-field text-2xl" :min="obtenerFechaActual()" required>
                         </div>
-
-
-
-
-
-
-
-
-
 
                         <div class="mb-4">
                             <label for="ubicacion_id"
-                                class="block text-gray-700 text-sm font-bold mb-2">Ubicación</label>
+                                class="block text-gray-700 text-2xl font-bold mb-2">Ubicación</label>
                             <select name="ubicacion_id" id="ubicacion" x-model="ubicacionId" x-on:change="cargarPistas"
-                                class="input-field">
+                                class="input-field text-2xl">
                                 <option value="">Selecciona una ubicación</option>
                                 @foreach ($ubicaciones as $ubicacion)
                                     <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
@@ -43,16 +41,12 @@
                             </select>
                         </div>
 
-
-
-
-                        <!-- Desplegable para el número de pista -->
                         <div x-show="pistas.length > 0">
                             <div class="mb-4">
-                                <label for="pista_id" class="block text-gray-700 text-sm font-bold mb-2">Número de
+                                <label for="pista_id" class="block text-gray-700 text-2xl font-bold mb-2">Número de
                                     Pista</label>
                                 <select id="pista_numero" name="pista_id" x-model="pistaId"
-                                    x-on:change="cargarTipoSuperficie" class="input-field" required>
+                                    x-on:change="cargarTipoSuperficie" class="input-field text-2xl" required>
                                     <option value="" disabled selected>Seleccione su pista</option>
                                     <template x-for="(pista, index) in pistas" :key="index">
                                         <option :value="pista.id" x-text="`Pista ${pista.numero}`"></option>
@@ -60,49 +54,43 @@
                                 </select>
                             </div>
 
-                            <!-- Cuadro de texto para el tipo de superficie -->
                             <div class="mb-4">
-                                <label for="tipo_superficie" class="block text-gray-700 text-sm font-bold mb-2">Tipo de
+                                <label for="tipo_superficie" class="block text-gray-700 text-2xl font-bold mb-2">Tipo de
                                     Superficie</label>
                                 <input type="text" id="tipo_superficie" name="tipo_superficie"
-                                    x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field" required>
+                                    x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field text-2xl"
+                                    required>
                             </div>
 
-                            <!-- Cuadro de texto para el deporte -->
                             <div class="mb-4">
-                                <label for="deporte" class="block text-gray-700 text-sm font-bold mb-2">Deporte</label>
+                                <label for="deporte"
+                                    class="block text-gray-700 text-2xl font-bold mb-2">Deporte</label>
                                 <input type="text" id="deporte" name="deporte" x-model="deporte"
-                                    x-bind:value="deporte" class="input-field">
+                                    x-bind:value="deporte" class="input-field text-2xl">
                             </div>
 
-
-                            {{-- Horas --}}
-
                             <div class="mb-4">
-                                <label for="hora" class="block text-gray-700 text-sm font-bold mb-2">Hora</label>
-                                <select id="hora" name="hora" x-model="hora" class="input-field" required>
+                                <label for="hora" class="block text-gray-700 text-2xl font-bold mb-2">Hora</label>
+                                <select id="hora" name="hora" x-model="hora" class="input-field text-2xl"
+                                    required>
                                     <option value="" disabled selected>Selecciona una hora</option>
                                     <template x-for="franja in franjasHorarias" :key="franja.hora">
-                                        <option :value="franja.hora" :class="{ 'ocupada': franja.ocupada }"
-                                            :disabled="franja.ocupada">
+                                        <option :value="franja.hora" :disabled="franja.ocupada">
                                             <span x-text="franja.hora"></span> - <span
                                                 x-text="franja.ocupada ? 'No disponible' : ''"></span>
                                         </option>
                                     </template>
                                 </select>
-                                <!-- Agrega un mensaje de error si la hora está ocupada -->
-                                <p x-show="errorHoraOcupada" class="text-red-500">La hora seleccionada está ocupada. Por
-                                    favor, elige otra hora.</p>
+
+                                <p x-show="errorHoraOcupada" class="text-red-500 text-2xl">La hora seleccionada está
+                                    ocupada. Por favor, elige otra hora.</p>
                             </div>
 
-
-
-                            {{-- PRECIO --}}
-                            <!-- Cuadro de selección para el precio -->
                             <div class="mb-4">
-                                <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio
+                                <label for="precio" class="block mb-2 text-2xl font-bold text-black">Precio
                                     Pista:</label>
-                                <select name="precio" id="precio" x-model="precio" class="input-field" required>
+                                <select name="precio" id="precio" x-model="precio" class="input-field text-2xl"
+                                    required>
                                     <option value="" disabled selected>Selecciona un precio</option>
                                     <template x-for="opcion in opcionesPrecio" :key="opcion.valor">
                                         <option :value="opcion.valor" x-text="opcion.etiqueta"></option>
@@ -110,14 +98,15 @@
                                 </select>
                             </div>
 
-
                             <div x-show="pistas.length === 0 || errorHoraOcupada" x-text="mensaje"
-                                class="text-red-500 mb-4"></div>
-                            <button type="submit" class="btn-primary">Crear Partido</button>
+                                class="text-red-500 mb-4 text-2xl"></div>
+                            <button type="submit" class="btn-primary text-2xl">Crear Partido</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
+
 
         <style>
             .input-field {

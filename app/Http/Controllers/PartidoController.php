@@ -111,7 +111,7 @@ class PartidoController extends Controller
             ->where('fecha_hora', $fechaHoraSeleccionada)
             ->exists()
         ) {
-            return redirect()->back()->with('error', 'Ya hay un partido programado en la misma hora, mismo día y misma pista.');
+            return redirect()->route('partidos.create')->with('error', 'Ya hay un partido programado en la misma hora, mismo día y misma pista.');
         }
 
         // Verifica si la pista está ocupada en la misma hora y día
@@ -180,16 +180,6 @@ class PartidoController extends Controller
         return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-
-    /* public function show(user $id)
-
-    Fallaria y no mostraria los partidos
-
-    */
 
 
     public function show(Partido $partido)

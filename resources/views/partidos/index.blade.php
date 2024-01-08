@@ -1,52 +1,61 @@
 <x-app-layout>
+    {{-- Crear la pista con exito --}}
+    @if (session('success'))
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+            class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+            <p class="text-center text-base">{{ session('success') }}</p>
+        </div>
+    @endif
+
     <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
         @forelse ($partidos as $partido)
-            <article id="partido" class="card card2 w-96">
-                <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
-                    class="btn btn-sm btn-primary">
-                    <header class="card__header bg-cover h-72"
-
-                        style="background-image: url('{{ $partido->ubicacion->image_path }}');">
-                        <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->ubicacion->nombre }}</h1>
-                        <h1 class="text-2xl font-bold text-white text-shadow">{{ $partido->deporte->nombre }}</h1>
-                    </header>
-                </a>
-                <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
-                    <div class="card__address flex">
-                        <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
-                            <path
-                                d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
-                            </path>
-                        </svg>
-                        <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2">
-                            <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
-                                {{ $partido->ubicacion->direccion }}
-                            </a>
+            @php
+                $fechaHoraPartido = \Carbon\Carbon::parse($partido->fecha_hora);
+            @endphp
+            @if ($fechaHoraPartido > \Carbon\Carbon::now())
+                <article id="partido" class="card card2 w-96 mb-8">
+                    <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
+                        class="btn btn-sm btn-primary">
+                        <header class="card__header bg-cover h-72"
+                            style="background-image: url('{{ $partido->ubicacion->image_path }}');">
+                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->ubicacion->nombre }}</h1>
+                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->deporte->nombre }}</h1>
+                        </header>
+                    </a>
+                    <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
+                        <div class="card__address flex">
+                            <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
+                                <path
+                                    d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
+                                </path>
+                            </svg>
+                            <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
+                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
+                                    {{ $partido->ubicacion->direccion }}
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
                         <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                            <div>
-                                <label for="fecha" class="block mb-2 text-lg font-bold text-black">Fecha:</label>
-                                <p class="text-gray-700">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}</p>
+                            <div class="text-left">
+                                <label for="fecha" class="block mb-2 text-2xl font-bold text-black">Fecha:</label>
+                                <p class="text-gray-700 text-xl">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
+                                </p>
                             </div>
-                            <div>
-                                <label for="hora" class="block mb-2 text-lg font-bold text-black">Hora:</label>
-                                <p class="text-gray-700">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}</p>
+                            <div class="text-right">
+                                <label for="hora" class="block mb-2 text-2xl font-bold text-black">Hora:</label>
+                                <p class="text-gray-700 text-xl">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
+                                </p>
                             </div>
-                            {{-- <div><label>Precio Pista: {{ $partido->precio }} €</label></div> --}}
                         </div>
-
                     </div>
-            </article>
+                </article>
+            @endif
         @empty
             <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>
         @endforelse
-    </div>
-
-
+    </div>  
 
 
     <script>

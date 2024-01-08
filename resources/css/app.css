@@ -2,28 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @font-face {
-    font-family: 'Knucklehead Slab';
-    src: url('{{ asset("fonts/knucklehead-slab.otf") }}') format('opentype');
-}
-
 @font-face {
-    font-family: 'Knucklehead Slab';
-    src: url('/public/fonts/RobotoMono-Italic-VariableFont_wght.ttf') format('truetype');
-    font-weight: 400;
-    font-style: italic;
+    font-family: "KnuckleheadSlab";
+    src: url("/app//font/knucklehead-slab.otf") format("truetype");
 }
-
-@font-face {
-    font-family: 'Knucklehead Slab';
-    src: url('/public/fonts/RobotoMono-VariableFont_wght.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
-
-body {
-    font-family: 'Knucklehead Slab', sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
- */

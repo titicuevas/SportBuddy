@@ -9,6 +9,10 @@
     </head>
 
     <body class="bg-black">
+
+
+       
+
         <!-- Cabecera -->
         <header class="bg-blue-500 text-white p-4">
             <div class="container mx-auto text-center">
@@ -54,6 +58,10 @@
 
 
     </body>
+
+
+
+
     <!-- Footer -->
     <footer class="mt-auto bg-white text-black p-4">
         <div class="container mx-auto text-center">
