@@ -21,7 +21,8 @@
         @endif
 
 
-        <form action="{{ route('admin.pista.store') }}" method="post">
+
+        <form action="{{ route('admin.pista.store') }}" method="post" class="max-w-md mx-auto">
             @csrf
 
             <div class="mb-4">
@@ -57,13 +58,6 @@
                     required>
             </div>
 
-            <!-- Otros campos del formulario según sea necesario -->
-
-            {{-- <div class="mb-4">
-                <label for="tiene_luz" class="block text-gray-600 text-sm font-semibold mb-2">¿Tiene Luz?</label>
-                <input type="checkbox" name="tiene_luz" id="tiene_luz" class="mr-2">
-            </div> --}}
-
             <div class="mb-4">
                 <label for="precio_con_luz" class="block text-gray-600 text-sm font-semibold mb-2">Precio con Luz</label>
                 <input type="number" name="precio_con_luz" id="precio_con_luz"
@@ -76,19 +70,16 @@
                     class="w-full border rounded-md p-2 border-opacity-50" required>
             </div>
 
-            <div class="mt-4">
-
+            <div class="mt-4 flex justify-between">
                 <button type="submit"
                     class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
                     Agregar Pista
                 </button>
 
                 <a href="{{ route('admin.pista.index') }}"
-                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
-                Volver
-            </a>
-
-
+                    class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
+                    Cancelar
+                </a>
             </div>
         </form>
     </x-administrador>

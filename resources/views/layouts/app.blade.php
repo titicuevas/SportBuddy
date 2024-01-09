@@ -16,16 +16,6 @@
 
     <!-- Tu código HTML aquí -->
 
-    <script>
-        window.Echo.channel('chat').listen('NewChatMessage', (event) => {
-            appendMessage(event.user.name, event.message);
-        });
-
-        // Resto de tu script
-    </script>
-
-    <!-- Resto de tu código HTML -->
-
 
 
 
@@ -50,5 +40,24 @@
         </main>
     </div>
 </body>
+
+
+<!-- Footer -->
+<footer class="mt-auto bg-white text-black p-4">
+    <div class="container mx-auto text-center">
+        <p>&copy; {{ date('Y') }} SportBuddy</p>
+        <p>Creado por: Enrique Cuevas Garcia</p>
+
+        <!-- Iconos de redes sociales -->
+        <div class="flex justify-center mt-4">
+            <a href="https://twitter.com/" class="mx-2"><img src="https://i.ibb.co/QpsLYq0/gorjeo-2.png"
+                    alt="gorjeo-2" border="0"></a>
+            <a href="https://www.facebook.com/" class="mx-2"><img src="https://i.ibb.co/ThMf3fh/instagram-1.png"
+                    alt="instagram-1" border="0"></a>
+            <a href="https://www.instagram.com/" class="mx-2"><img src="https://i.ibb.co/ZW7S02Q/facebook-1.png"
+                    alt="facebook-1" border="0"></a>
+        </div>
+    </div>
+</footer>
 
 </html>

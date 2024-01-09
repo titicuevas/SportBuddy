@@ -4,6 +4,22 @@
             <h1 class="text-4xl text-blue-500 mb-6">Lista de Pistas</h1>
         </div>
 
+        <!-- Mensaje de éxito -->
+        @if (session('success'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+                <p class="text-center text-lg">{{ session('success') }}</p>
+            </div>
+        @endif
+
+        <!-- Mensaje de éxito -->
+        @if (session('success'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-red-700 text-white rounded-md shadow-md">
+                <p class="text-center text-lg">{{ session('success') }}</p>
+            </div>
+        @endif
+
         <!-- Agrega un enlace para ir al formulario de creación -->
         <div class="mb-4">
             <a href="{{ route('admin.pista.create') }}"
@@ -19,8 +35,8 @@
                     <th class="py-2 px-4 border-b text-center">Superficie</th>
                     <th class="py-2 px-4 border-b text-center">Deporte</th>
                     <th class="py-2 px-4 border-b text-center">Número de Pista</th>
-{{--                     <th class="py-2 px-4 border-b text-center">¿Tiene Luz?</th>
- --}}                    <th class="py-2 px-4 border-b text-center">Precio con Luz</th>
+                    {{--                     <th class="py-2 px-4 border-b text-center">¿Tiene Luz?</th>
+ --}} <th class="py-2 px-4 border-b text-center">Precio con Luz</th>
                     <th class="py-2 px-4 border-b text-center">Precio sin Luz</th>
                     <th class="py-2 px-4 border-b text-center">Acciones</th>
                 </tr>
@@ -32,8 +48,9 @@
                         <td class="py-2 px-4 border-b text-center">{{ $pista->superficie->tipo }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $pista->deporte->nombre }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $pista->numero }}</td>
-{{--                         <td class="py-2 px-4 border-b text-center">{{ $pista->tiene_luz ? 'Sí' : 'No' }}</td>
- --}}                        <td class="py-2 px-4 border-b text-center">{{ $pista->precio_con_luz ?: 'N/A' }}</td>
+                        {{--                         <td class="py-2 px-4 border-b text-center">{{ $pista->tiene_luz ? 'Sí' : 'No' }}</td>
+ --}} <td class="py-2 px-4 border-b text-center">
+                            {{ $pista->precio_con_luz ?: 'N/A' }}</td>
                         <td class="py-2 px-4 border-b text-center">{{ $pista->precio_sin_luz }}</td>
                         <td class="py-2 px-4 border-b text-center">
                             <!-- Agrega enlaces para editar y eliminar según sea necesario -->

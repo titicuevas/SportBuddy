@@ -11,21 +11,20 @@
             <p class="text-center text-base">{{ session('success') }}</p>
         </div>
     @endif
-
+    <div class="flex items-center justify-center">
         <form action="{{ route('admin.superficie.store') }}" method="post">
             @csrf
-            <div class="mb-4">
+            <div class="mb-4 text-center">
                 <label for="tipo" class="block text-gray-600 text-sm font-semibold mb-2">Tipo de Superficie</label>
-                <input type="text" name="tipo" id="tipo" class="w-full border rounded-md p-2 border-opacity-50"
-                    required>
+                <input type="text" name="tipo" id="tipo" class="w-48 border rounded-md p-2 border-opacity-50" required>
             </div>
 
-            <div class="mt-4">
-                <button type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+            <div class="mt-4 text-center">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
                     Agregar Superficie
                 </button>
             </div>
         </form>
+    </div>
 
 </x-administrador>

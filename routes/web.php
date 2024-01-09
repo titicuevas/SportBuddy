@@ -61,6 +61,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/* Cookies y Privacidad */
+
+
+Route::get('/cookies_privacidad', function () {
+    return view('cookies_privacidad');
+})->name('politicas.cookies.privacidad');
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

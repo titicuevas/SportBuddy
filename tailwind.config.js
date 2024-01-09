@@ -18,7 +18,6 @@ export default {
             fontFamily: {
                 sans: [
                     "Helvetica Now",
-                    "KnuckleheadSlab",
                     "Figtree",
                     ...defaultTheme.fontFamily.sans,
                 ],

@@ -19,8 +19,9 @@
     <script>
         // Comprueba si las cookies de aceptación están presentes
         if (!document.cookie.includes("cookie_accepted=true")) {
-            // Muestra el overlay y bloquea la interacción con la página
+            // Muestra el overlay oscuro y bloquea la interacción con la página
             document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("dark-overlay").style.display = "block";
                 document.getElementById("cookie-overlay").style.display = "block";
             });
         }
@@ -31,33 +32,68 @@
             document.cookie = "cookie_accepted=true; expires=" + new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
                 .toUTCString();
 
-            // Oculta el overlay
+            // Oculta el overlay oscuro y el banner de cookies
+            document.getElementById("dark-overlay").style.display = "none";
             document.getElementById("cookie-overlay").style.display = "none";
         }
     </script>
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-    <!-- Cookie Overlay -->
-    <div id="cookie-overlay"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 999; color: white; text-align: center; padding: 20px;">
-        <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso de
-            cookies.</p>
-        <button onclick="acceptCookies()"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
-
+    <!-- Dark Overlay -->
+    <div id="dark-overlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 998;">
     </div>
 
+    <!-- Cookie Overlay -->
+    <div id="cookie-overlay"
+        style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); z-index: 999; color: black; text-align: center; padding: 20px;">
+        <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso de cookies.
+        </p>
+        <button onclick="acceptCookies()"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
 
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+        <a href="{{ route('politicas.cookies.privacidad') }}"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Políticas Cookies y
+            Privacidad</a>
+    </div>
+    {{-- <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
         <div>
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
         </div>
 
-        {{ $slot }}
-    </div>
+
+        <!-- Contenido de la página -->
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+            <div>
+                <a href="/">
+                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                </a>
+            </div>
+ --}}
+            {{ $slot }}
+        </div>
 </body>
+
+<!-- Footer -->
+<footer class="mt-auto bg-white text-black p-4">
+    <div class="container mx-auto text-center">
+        <p>&copy; {{ date('Y') }} SportBuddy</p>
+        <p>Creado por: Enrique Cuevas Garcia</p>
+
+        <!-- Iconos de redes sociales -->
+        <div class="flex justify-center mt-4">
+            <a href="https://twitter.com/" class="mx-2"><img src="https://i.ibb.co/QpsLYq0/gorjeo-2.png"
+                    alt="gorjeo-2" border="0"></a>
+            <a href="https://www.facebook.com/" class="mx-2"><img src="https://i.ibb.co/ThMf3fh/instagram-1.png"
+                    alt="instagram-1" border="0"></a>
+            <a href="https://www.instagram.com/" class="mx-2"><img src="https://i.ibb.co/ZW7S02Q/facebook-1.png"
+                    alt="facebook-1" border="0"></a>
+        </div>
+    </div>
+</footer>
+
 
 </html>

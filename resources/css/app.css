@@ -2,7 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: "KnuckleheadSlab";
-    src: url("/app//font/knucklehead-slab.otf") format("truetype");
-}

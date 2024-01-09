@@ -1,12 +1,12 @@
 import Alpine from "alpinejs";
-import Echo from "laravel-echo";
-import Pusher from "pusher-js";
+/* import Echo from "laravel-echo";
+import Pusher from "pusher-js"; */
 import "flowbite";
 
 window.Alpine = Alpine;
 Alpine.start();
 
-window.Pusher = Pusher;
+/* window.Pusher = Pusher;
 
 window.Pusher = require("pusher-js");
 
@@ -17,7 +17,7 @@ window.Echo = new Echo({
     wsPort: 6001,
     forceTLS: false,
     disableStats: true,
-});
+}); */
 
 /* if (typeof process !== "undefined") {
     window.Echo = new Echo({

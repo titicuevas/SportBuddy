@@ -26,41 +26,34 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-2xl leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-2xl leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
-
-                            <div class="ml-1    ">
+                            <div class="ml-1">
                                 <!-- Muestra la imagen del perfil con un tamaño más grande -->
-                                <img src="{{ Storage::url(Auth::user()->foto) }}" alt="Profile Image"
-                                    class="w-11 h-11 rounded-full">
+                                <img src="{{ Storage::url(Auth::user()->foto) }}" class="w-11 h-11 rounded-full">
                             </div>
-
-
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-yellow-200">
+                            {{ __('Perfil') }}
                         </x-dropdown-link>
 
                         @if (Auth::user()->rol_id === 1)
-                            <x-dropdown-link :href="route('admin.index')">
+                            <x-dropdown-link :href="route('admin.index')" class="hover:bg-blue-200">
                                 {{ __('Modo Admin') }}
                             </x-dropdown-link>
                         @endif
-
-
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                            <x-dropdown-link :href="route('logout')" class="hover:bg-red-700"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
+                                {{ __('Cerrar Sesión') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
