@@ -10,6 +10,16 @@
         </div>
     </header>
 
+    {{-- Fondo --}}
+
+
+    <body class="font-sans text-gray-900 antialiased bg-cover bg-center"
+        style="background-image: url('https://www.campinglanoguera.com/uploads/media/pages/pista-de-padel/pista-de-padel.jpg');">
+        <div class="min-h-screen flex justify-center items-center">
+
+            <div class="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg shadow-md">
+
+
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="max-w-md mx-auto mt-4 p-6 bg-white rounded-lg shadow-md">
         @csrf
         <h1 class="text-3xl text-center font-bold">Registro</h1>
@@ -79,5 +89,6 @@
                 {{ __('Registrar') }}
             </x-primary-button>
         </div>
+    </div>
     </form>
 </x-guest-layout>

@@ -12,7 +12,7 @@
     </header>
 
     <body class="font-sans text-gray-900 antialiased bg-cover bg-center"
-        style="background-image: url('https://i.ibb.co/2Z51FxK/Campo.webp');">
+        style="background-image: url('https://fotografias.larazon.es/clipping/cmsimages01/2022/11/01/092ABA32-05C5-444E-A719-26DA4F374734/98.jpg?crop=823,463,x0,y11&width=1900&height=1069&optimize=low&format=webply');">
         <div class="min-h-screen flex justify-center items-center">
 
             <div class="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg shadow-md">

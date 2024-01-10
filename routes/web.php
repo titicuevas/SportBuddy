@@ -59,7 +59,7 @@ use App\Models\Deporte;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 /* Cookies y Privacidad */
 
@@ -67,6 +67,10 @@ Route::get('/', function () {
 Route::get('/cookies_privacidad', function () {
     return view('cookies_privacidad');
 })->name('politicas.cookies.privacidad');
+
+Route::get('/politicas_privacidad', function () {
+    return view('politicas_privacidad');
+})->name('politicas.privacidad');
 
 
 Route::get('/dashboard', function () {

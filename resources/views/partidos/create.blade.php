@@ -66,29 +66,29 @@
 
 
                             {{-- TIPO DE SUPERFICIE --}}
+                            <!-- Cuadro de texto para el tipo de superficie -->
                             <div class="mb-4">
-                                <label for="tipo_superficie" class="block text-gray-700 text-2xl font-bold mb-2">Tipo de
+                                <label for="tipo_superficie" class="block text-gray-700 text-sm font-bold mb-2">Tipo de
                                     Superficie</label>
-                                <div x-text="tipoSuperficie" class="text-2xl"></div>
-
+                                <input type="text" id="tipo_superficie" name="tipo_superficie"
+                                    x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field" required>
                             </div>
-
                             {{-- DEPORTE --}}
 
+                            <!-- Cuadro de texto para el deporte -->
                             <div class="mb-4">
-                                <label for="deporte"
-                                    class="block text-gray-700 text-2xl font-bold mb-2">Deporte</label>
-                                <div x-text="deporte" class="text-2xl"></div>
-                                <!-- O si prefieres usar un span: -->
-                                <!-- <span x-text="deporte" class="text-2xl"></span> -->
+                                <label for="deporte" class="block text-gray-700 text-sm font-bold mb-2">Deporte</label>
+                                <input type="text" id="deporte" name="deporte" x-model="deporte"
+                                    x-bind:value="deporte" class="input-field">
                             </div>
+
 
 
                             {{-- HORAS --}}
                             <div class="mb-4">
                                 <label for="hora" class="block text-gray-700 text-2xl font-bold mb-2">Hora</label>
                                 <select id="hora" name="hora" x-model="hora" class="input-field text-2xl"
-                                    required>
+                                    required x-on:change="cargarFranjasYPrecio">
                                     <option value="" disabled selected>Selecciona una hora</option>
                                     <template x-for="franja in franjasHorarias" :key="franja.hora">
                                         <option :value="franja.hora" :disabled="franja.ocupada">
@@ -97,6 +97,8 @@
                                         </option>
                                     </template>
                                 </select>
+
+
 
                                 <p x-show="errorHoraOcupada" class="text-red-500 text-2xl">La hora seleccionada está
                                     ocupada. Por favor, elige otra hora.</p>

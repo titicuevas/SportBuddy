@@ -20,13 +20,32 @@
                     <h1 class="text-3xl font-bold ml-2">SportBuddy</h1>
                 </div>
 
+
+                <!-- Dark Overlay -->
+    <div id="dark-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 998;">
+</div>
+
+<!-- Cookie Overlay -->
+<div id="cookie-overlay"
+    style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); z-index: 999; color: black; text-align: center; padding: 20px;">
+    <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso de 🍪.
+    </p>
+    <button onclick="acceptCookies()"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
+
+    <a href="{{ route('politicas.cookies.privacidad') }}"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Políticas Cookies y
+        Privacidad</a>
+</div>
+
                 <!-- Agrega esto a tu código donde quieras mostrar el icono de usuario y el menú desplegable -->
                 <div class="relative inline-block text-left">
                     <div>
                         <button type="button" class="text-white hover:underline focus:outline-none"
                             onclick="toggleDropdown()">
                             <!-- Puedes personalizar este icono según tus preferencias -->
-                            <img src="https://i.ibb.co/q5K9P4G/usuario.png" alt="usuario" border="0">
+                            <img src="https://i.ibb.co/W5rQcpn/usuario.png" alt="usuario" border="0">
                         </button>
                     </div>
                     <div id="dropdown"
@@ -108,7 +127,7 @@
 </x-guest-layout>
 
 
-{{-- <!-- Sección de mensaje y video -->
+{{-- Sección de mensaje y video -->
         <div class="bg-gray-800 text-white py-16">
             <div class="container mx-auto flex flex-col items-center">
                 <h2 class="text-3xl font-bold mb-6">Busca donde y con quien jugar a tus deportes favoritos</h2>
