@@ -22,22 +22,54 @@
 
 
                 <!-- Dark Overlay -->
-    <div id="dark-overlay"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 998;">
-</div>
+                <div id="dark-overlay"
+                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 998;">
+                </div>
 
-<!-- Cookie Overlay -->
-<div id="cookie-overlay"
-    style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); z-index: 999; color: black; text-align: center; padding: 20px;">
-    <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso de 🍪.
-    </p>
-    <button onclick="acceptCookies()"
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
+                <!-- Cookie Overlay -->
+                <div id="cookie-overlay"
+                    style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); z-index: 999; color: black; text-align: center; padding: 20px;">
+                    <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso
+                        de 🍪.
+                    </p>
+                    <button onclick="acceptCookies()"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
 
-    <a href="{{ route('politicas.cookies.privacidad') }}"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Políticas Cookies y
-        Privacidad</a>
-</div>
+                    <a href="{{ route('politicas.cookies.privacidad') }}"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Políticas Cookies y
+                        Privacidad</a>
+                </div>
+
+                <script>
+                    // Función para establecer la cookie y ocultar el mensaje
+                    function acceptCookies() {
+                        // Configura la cookie sin un tiempo de vida específico (cookie de sesión)
+                        document.cookie = "acceptCookies=true; path=/";
+
+                        // Oculta el mensaje de cookies
+                        document.getElementById('cookie-overlay').style.display = 'none';
+
+                        // También oculta el overlay oscuro
+                        document.getElementById('dark-overlay').style.display = 'none';
+                    }
+
+                    // Comprueba si la cookie ya ha sido aceptada al cargar la página
+                    window.onload = function() {
+                        if (document.cookie.indexOf("acceptCookies=true") === -1) {
+                            // La cookie no se ha aceptado, muestra el mensaje de cookies y el overlay oscuro
+                            document.getElementById('cookie-overlay').style.display = 'block';
+                            document.getElementById('dark-overlay').style.display = 'block';
+                        }
+                    };
+                </script>
+
+
+
+
+
+
+
+
 
                 <!-- Agrega esto a tu código donde quieras mostrar el icono de usuario y el menú desplegable -->
                 <div class="relative inline-block text-left">
