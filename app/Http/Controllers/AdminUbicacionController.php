@@ -47,6 +47,14 @@ class AdminUbicacionController extends Controller
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada exitosamente.');
     }
 
+    public function edit(Ubicacion $ubicacion)
+    {
+        return view('admin.ubicacion.edit', compact('ubicacion'));
+    }
+
+
+
+
     public function update(Request $request, Ubicacion $ubicacion)
     {
         $request->validate([
@@ -80,8 +88,6 @@ class AdminUbicacionController extends Controller
 
     public function destroy(Ubicacion $ubicacion)
     {
-
-
         $ubicacion->delete();
 
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación eliminada exitosamente.');

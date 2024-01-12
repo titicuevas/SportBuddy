@@ -103,37 +103,37 @@
             </div>
         </header>
 
-        <!-- Sección de mensaje y carrusel -->
-        <div x-data="{ slide: 0 }" x-init="startInterval()"
-            class="bg-gray-800 text-black py-16 transition-all duration-500"
-            :style="'background-image: url(' + getImageUrl(slide) +
-                '); background-size: cover; background-position: center; background-repeat: no-repeat; height: 100vh;'">
-            <div class="container mx-auto flex flex-col items-center">
-                <h2 class="text-3xl font-bold mb-6">Busca donde y con quien jugar a tus deportes favoritos</h2>
+          <!-- Sección de mensaje y carrusel -->
+    <div x-data="{ slide: 0 }" x-init="startInterval()"
+    class="bg-gray-800 text-black py-16 transition-all duration-500"
+    :style="'background-image: url(' + getImageUrl(slide) +
+        '); background-size: cover; background-position: center; background-repeat: no-repeat; height: 100vh;'">
+    <div class="container mx-auto flex flex-col items-center">
+        <h2 class="text-3xl font-bold mb-6">Busca dónde y con quién jugar a tus deportes favoritos</h2>
 
-                <!-- Carrusel de imágenes -->
-                <div class="relative w-full h-96 overflow-hidden">
-                    <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
-                        :style="'translateX(' + (slide * -100) + '%)'">
+        <!-- Carrusel de imágenes -->
+        <div class="relative w-full h-96 overflow-hidden">
+            <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
+                :style="'translateX(' + (slide * -100) + '%)'">
                         <!-- Imágenes del carrusel -->
-                        <img src="https://www.europasur.es/2017/08/13/lalinea/campos-futbol-albero-pasaran-sintetico_1162994101_71643075_667x375.jpg"
-                            alt="Albero" class="w-full h-full object-cover">
+                        <img src="https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg" alt="Albero"
+                            class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/319678569.jpg?k=90a4681b5870c3873a41afe366ccedddd860dd686aa56d5a325e81ee74cb24bf&o=&hp=1"
-                            alt="Futbol7" class="w-full h-full object-cover">
+                            alt="Futbol7" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://santamariaarquitectes.cat/wp-content/uploads/2019/06/camp_futbol_01.jpg"
-                            alt="Campo de Fútbol" class="w-full h-full object-cover">
+                            alt="Campo de Fútbol" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://news.mondoiberica.com.es/wp-content/uploads/elementor/thumbs/IMG-20171211-WA0002-p473c99lxzb0882lvv33erk8m7fwn88zr2t8litpbk.jpg"
-                            alt="Futsal" class="w-full h-full object-cover">
+                            alt="Futsal" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://s3.ppllstatics.com/ideal/www/multimedia/202104/21/media/cortadas/olvio%202-kUPB-U140127566558BBD-1248x770@Ideal.jpg"
-                            alt="Pista de Fútbol Sala" class="w-full h-full object-cover">
+                            alt="Pista de Fútbol Sala" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://www.pistas-padel.es/wp-content/uploads/2021/10/Construccion-pistas-padel-Espana-1024x566.jpg"
-                            alt="Pádel Indoor" class="w-full h-full object-cover">
+                            alt="Pádel Indoor" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://www.padeladdict.com/wp-content/uploads/2022/11/ventajas-de-las-pistas-de-padel-interiores-frente-a-las-exteriores-portada-1068x580.jpg"
-                            alt="Pista de Pádel" class="w-full h-full object-cover">
+                            alt="Pista de Pádel" class="w-full h-full object-cover bg-center bg-cover">
 
 
 
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,7 +160,7 @@
             function getImageUrl(slide) {
                 // Retorna la URL de la imagen correspondiente al índice del carrusel
                 var images = [
-                    'https://www.europasur.es/2017/08/13/lalinea/campos-futbol-albero-pasaran-sintetico_1162994101_71643075_667x375.jpg',
+                    'https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg',
                     'https://cf.bstatic.com/xdata/images/hotel/max1024x768/319678569.jpg?k=90a4681b5870c3873a41afe366ccedddd860dd686aa56d5a325e81ee74cb24bf&o=&hp=1',
                     'https://santamariaarquitectes.cat/wp-content/uploads/2019/06/camp_futbol_01.jpg',
                     'https://news.mondoiberica.com.es/wp-content/uploads/elementor/thumbs/IMG-20171211-WA0002-p473c99lxzb0882lvv33erk8m7fwn88zr2t8litpbk.jpg',
