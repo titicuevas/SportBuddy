@@ -15,8 +15,8 @@
             <h1 class="text-4xl text-blue-500">SUPERFICIES</h1>
         </div>
 
-        <div class="overflow-x-auto mb-6">
-            <table class="min-w-full bg-white border border-gray-300">
+        <div class="overflow-x-auto mx-auto max-w-2xl mb-6">
+            <table class="w-full bg-white border border-gray-300">
                 <thead>
                     <tr>
                         <th class="py-2 px-4 border-b">Tipo</th>

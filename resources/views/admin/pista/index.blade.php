@@ -55,7 +55,7 @@
                         <td class="py-2 px-4 border-b text-center">
                             <!-- Agrega enlaces para editar y eliminar según sea necesario -->
                             <a href="{{ route('admin.pista.edit', $pista->id) }}"
-                                class="text-blue-500 hover:underline mr-2 bg-blue-200 py-1 px-2 rounded-md hover:bg-blue-300 focus:outline-none">
+                                class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
                                 Editar
                             </a>
 
@@ -66,9 +66,8 @@
                                 onsubmit="return confirm('¿Estás seguro de borrar esta pista?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                    class="text-red-500 hover:underline bg-red-200 py-1 px-2 rounded-md hover:bg-red-300 focus:outline-none">
-                                    Eliminar
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded">
+                                    Borrar
                                 </button>
                             </form>
                         </td>

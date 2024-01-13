@@ -27,6 +27,6 @@ class UniqueInsensitive implements Rule
 
     public function message()
     {
-        return 'El campo :attribute ya existe en la base de datos.';
+        return 'El :attribute ya existe en la base de datos.';
     }
 }

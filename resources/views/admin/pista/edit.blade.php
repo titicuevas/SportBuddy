@@ -8,65 +8,90 @@
             @csrf
             @method('PUT')
 
-            <!-- Ubicación -->
-            <div class="mb-4">
-                <label for="ubicacion_id" class="block text-gray-600 text-sm font-semibold mb-2">Ubicación</label>
-                <select name="ubicacion_id" id="ubicacion_id" class="w-full border-gray-300 rounded-md p-2 border-opacity-50"
-                    required>
-                    @foreach ($ubicaciones as $ubicacion)
-                        <option value="{{ $ubicacion->id }}" {{ $pista->ubicacion_id == $ubicacion->id ? 'selected' : '' }}>
-                            {{ $ubicacion->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <div class="mx-auto max-w-2xl">
+                <table class="w-full bg-white border border-gray-500">
+                    <tbody>
+                        <!-- Ubicación -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Ubicación</td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <select name="ubicacion_id" id="ubicacion_id"
+                                    class="w-full border-gray-300 rounded-md p-2 border-opacity-50" required>
+                                    @foreach ($ubicaciones as $ubicacion)
+                                        <option value="{{ $ubicacion->id }}"
+                                            {{ $pista->ubicacion_id == $ubicacion->id ? 'selected' : '' }}>
+                                            {{ $ubicacion->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
 
-            <!-- Superficie -->
-            <div class="mb-4">
-                <label for="superficie_id" class="block text-gray-600 text-sm font-semibold mb-2">Superficie</label>
-                <select name="superficie_id" id="superficie_id"
-                    class="w-full border-gray-300 rounded-md p-2 border-opacity-50" required>
-                    @foreach ($superficies as $superficie)
-                        <option value="{{ $superficie->id }}"
-                            {{ $pista->superficie_id == $superficie->id ? 'selected' : '' }}>
-                            {{ $superficie->tipo }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                        <!-- Superficie -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Superficie
+                            </td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <select name="superficie_id" id="superficie_id"
+                                    class="w-full border-gray-300 rounded-md p-2 border-opacity-50" required>
+                                    @foreach ($superficies as $superficie)
+                                        <option value="{{ $superficie->id }}"
+                                            {{ $pista->superficie_id == $superficie->id ? 'selected' : '' }}>
+                                            {{ $superficie->tipo }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
 
-            <!-- Deporte -->
-            <div class="mb-4">
-                <label for="deporte_id" class="block text-gray-600 text-sm font-semibold mb-2">Deporte</label>
-                <select name="deporte_id" id="deporte_id" class="w-full border-gray-300 rounded-md p-2 border-opacity-50"
-                    required>
-                    @foreach ($deportes as $deporte)
-                        <option value="{{ $deporte->id }}" {{ $pista->deporte_id == $deporte->id ? 'selected' : '' }}>
-                            {{ $deporte->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                        <!-- Deporte -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Deporte</td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <select name="deporte_id" id="deporte_id"
+                                    class="w-full border-gray-300 rounded-md p-2 border-opacity-50" required>
+                                    @foreach ($deportes as $deporte)
+                                        <option value="{{ $deporte->id }}"
+                                            {{ $pista->deporte_id == $deporte->id ? 'selected' : '' }}>
+                                            {{ $deporte->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
 
-            <!-- Número de Pista -->
-            <div class="mb-4">
-                <label for="numero" class="block text-gray-600 text-sm font-semibold mb-2">Número de Pista</label>
-                <input type="text" name="numero" id="numero" class="w-full border-gray-300 rounded-md p-2"
-                    value="{{ $pista->numero }}" required>
-            </div>
+                        <!-- Número de Pista -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Número de
+                                Pista</td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <input type="text" name="numero" id="numero"
+                                    class="w-full border-gray-300 rounded-md p-2" value="{{ $pista->numero }}" required>
+                            </td>
+                        </tr>
 
-            <!-- Precio con Luz -->
-            <div class="mb-4">
-                <label for="precio_con_luz" class="block text-gray-600 text-sm font-semibold mb-2">Precio con Luz</label>
-                <input type="text" name="precio_con_luz" id="precio_con_luz"
-                    class="w-full border-gray-300 rounded-md p-2" value="{{ $pista->precio_con_luz }}">
-            </div>
+                        <!-- Precio con Luz -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Precio con
+                                Luz</td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <input type="text" name="precio_con_luz" id="precio_con_luz"
+                                    class="w-full border-gray-300 rounded-md p-2" value="{{ $pista->precio_con_luz }}">
+                            </td>
+                        </tr>
 
-            <!-- Precio sin Luz -->
-            <div class="mb-4">
-                <label for="precio_sin_luz" class="block text-gray-600 text-sm font-semibold mb-2">Precio sin Luz</label>
-                <input type="text" name="precio_sin_luz" id="precio_sin_luz"
-                    class="w-full border-gray-300 rounded-md p-2" value="{{ $pista->precio_sin_luz }}" required>
+                        <!-- Precio sin Luz -->
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-sm font-semibold">Precio sin
+                                Luz</td>
+                            <td class="py-2 px-4 border-b border-gray-500">
+                                <input type="text" name="precio_sin_luz" id="precio_sin_luz"
+                                    class="w-full border-gray-300 rounded-md p-2" value="{{ $pista->precio_sin_luz }}"
+                                    required>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Botón Guardar Cambios -->

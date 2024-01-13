@@ -148,6 +148,8 @@ Route::delete('/admin/ubicacion/{ubicacion}', [AdminUbicacionController::class, 
 Route::get('/admin/deportes', [AdminDeporteController::class, 'index'])->name('admin.deportes.index');
 Route::get('/admin/deportes/create', [AdminDeporteController::class, 'create'])->name('admin.deportes.create');
 Route::post('/admin/deportes', [AdminDeporteController::class, 'store'])->name('admin.deportes.store');
+Route::get('/admin/deportes/{deporte}/edit', [AdminDeporteController::class, 'edit'])->name('admin.deportes.edit');
+Route::put('/admin/deportes/{deporte}', [AdminDeporteController::class, 'update'])->name('admin.deportes.update');
 Route::delete('/admin/deportes/{deporte}', [AdminDeporteController::class, 'destroy'])->name('admin.deportes.destroy');
 
 
@@ -170,7 +172,7 @@ Route::post('/admin/superficie/store', [AdminSuperficieController::class, 'store
  */
 
 
- 
+
 /* Route Admin Pistas */
 
 Route::get('/admin/pista/index', [AdminPistaController::class, 'index'])->name('admin.pista.index');

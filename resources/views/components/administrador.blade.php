@@ -11,7 +11,10 @@
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen bg-gray-200">
         <!-- Barra lateral izquierda -->
-        <div class="bg-blue-800 text-white  w-1/4 p-6">
+
+
+
+        <div class="bg-blue-800 text-white w-1/4 p-6">
             <div class="text-center bg-blue-400 p-4">
                 <h2 class="text-2xl font-semibold mb-4 text-black">Secciones</h2>
             </div>
@@ -20,52 +23,46 @@
             <ul class="space-y-2">
                 <li>
                     <a href="{{ route('admin.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Inicio
                     </a>
                 </li>
                 <br>
 
-
                 <li>
                     <a href="{{ route('admin.users.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.users.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Usuarios
                     </a>
                 </li>
 
-
-
                 <br>
                 <li>
                     <a href="{{ route('admin.deportes.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.deportes.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Deportes
                     </a>
                 </li>
                 <br>
 
                 <li>
-
                     <a href="{{ route('admin.ubicacion.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.ubicacion.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Ubicacion
                     </a>
                 </li>
                 <br>
                 <li>
-
                     <a href="{{ route('admin.superficie.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.superficie.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Superficie
                     </a>
                 </li>
                 <br>
 
                 <li>
-
                     <a href="{{ route('admin.pista.index') }}"
-                        class="block p-2 hover:bg-blue-700 focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
+                        class="block p-2 {{ request()->routeIs('admin.pista.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }} focus:bg-blue-700 text-center focus:outline-none rounded-md transition duration-300">
                         Pista
                     </a>
                 </li>
@@ -78,11 +75,8 @@
                         class="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:bg-red-700 focus:outline-none transition duration-300">
                         Salir modo Admin
                     </button>
-
-
-
+                </div>
             </ul>
-
         </div>
 
 

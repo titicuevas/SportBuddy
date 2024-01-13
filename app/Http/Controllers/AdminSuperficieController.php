@@ -1,10 +1,11 @@
 <?php
 
-// AdminSuperficieController.php
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAdminSuperficieRequest;
+use App\Http\Requests\UpdateSuperficieRequest;
 use App\Models\Superficie;
 
 class AdminSuperficieController extends Controller
@@ -20,42 +21,32 @@ class AdminSuperficieController extends Controller
         return view('admin.superficie.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAdminSuperficieRequest $request)
     {
         $request->validate([
             'tipo' => 'required|string',
         ]);
 
-        $tipo = strtolower($request->input('tipo'));
-
-        // Verifica si ya existe una superficie con el mismo nombre (en minúsculas)
-        if (Superficie::where('tipo', $tipo)->exists()) {
-            return redirect()->route('admin.superficie.create')->with('error', 'Ya existe una superficie con ese nombre.');
-        }
-
-        $superficie = new Superficie();
-        $superficie->tipo = $tipo;
-        $superficie->save();
+        Superficie::create([
+            'tipo' => $request->input('tipo'),
+        ]);
 
         return redirect()->route('admin.superficie.index')->with('success', 'Superficie agregada exitosamente.');
     }
 
-    public function update(Request $request, Superficie $superficie)
+    public function edit(Superficie $superficie)
+    {
+        return view('admin.superficie.edit', compact('superficie'));
+    }
+
+    public function update(UpdateSuperficieRequest $request, Superficie $superficie)
     {
         $request->validate([
             'tipo' => 'required|string',
         ]);
 
-        $tipo = strtolower($request->input('tipo'));
-
-        // Verifica si ya existe otra superficie con el mismo nombre (en minúsculas)
-        if (Superficie::where('tipo', $tipo)->where('id', '!=', $superficie->id)->exists()) {
-            return redirect()->route('admin.superficie.edit', $superficie->id)->with('error', 'Ya existe una superficie con ese nombre.');
-        }
-
         $superficie->update([
-            'tipo' => $tipo,
-            // Agrega aquí otros campos según sea necesario
+            'tipo' => $request->input('tipo'),
         ]);
 
         return redirect()->route('admin.superficie.index')->with('success', 'Superficie actualizada exitosamente.');

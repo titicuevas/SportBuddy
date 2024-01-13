@@ -47,6 +47,8 @@
                                     Sin enlace
                                 @endif
                             </td>
+
+
                             <td class="py-2 px-4 border-b text-center">
                                 <a href="{{ route('admin.ubicacion.edit', $ubicacion->id) }}"
                                     class= " bg-blue-500  over:bg-red-700 text-white px-3 py-1 rounded">

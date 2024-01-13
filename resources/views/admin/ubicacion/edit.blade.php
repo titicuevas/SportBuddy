@@ -19,55 +19,71 @@
             @csrf
             @method('PUT')
 
-            <div class="flex items-center justify-center mb-6">
-                <h1 class="text-4xl text-blue-500">Editar Ubicación</h1>
+            <div class="mx-auto max-w-2xl">
+                <table class="w-full bg-white border border-gray-500">
+                    <tbody>
+                        <!-- Campos del formulario -->
+                        <tr>
+                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Nombre</td>
+                            <td class="py-2 px-4 border-b">
+                                <input type="text" name="nombre" id="nombre"
+                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                    value="{{ old('nombre', $ubicacion->nombre) }}" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Dirección</td>
+                            <td class="py-2 px-4 border-b">
+                                <input type="text" name="direccion" id="direccion"
+                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                    value="{{ old('direccion', $ubicacion->direccion) }}" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Enlace Maps</td>
+                            <td class="py-2 px-4 border-b">
+                                <textarea name="enlace_maps" id="enlace_maps"
+                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('enlace_maps', $ubicacion->enlace_maps) }}</textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Iframe</td>
+                            <td class="py-2 px-4 border-b">
+                                <textarea name="iframe" id="iframe"
+                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('iframe', $ubicacion->iframe) }}</textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Imagen</td>
+                            <td class="py-2 px-4 border-b">
+                                <input type="file" name="imagen" id="imagen" accept="image/*"
+                                    class="py-2 px-3 focus:outline-none focus:border-blue-500">
+
+                                @if ($ubicacion->imagen)
+                                    <div class="flex justify-center items-center mt-2">
+                                        <img src="{{ asset('storage/imagen/' . $ubicacion->imagen) }}"
+                                            alt="Imagen Actual" class="max-w-full h-auto">
+                                    </div>
+                                    <p class="text-gray-500 text-sm mt-1">Imagen actual: {{ $ubicacion->imagen }}</p>
+                                @else
+                                    <p class="text-gray-500 text-sm mt-1">Sin imagen actual</p>
+                                @endif
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <form action="{{ route('admin.ubicacion.update', $ubicacion->id) }}" method="post" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <!-- Campos del formulario -->
-                <div class="mb-4 text-center">
-                    <label for="nombre" class="block text-sm font-semibold mb-2 text-gray-600">Nombre</label>
-                    <input type="text" name="nombre" id="nombre"
-                        class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                        value="{{ old('nombre', $ubicacion->nombre) }}" required>
-                </div>
-
-                <div class="mb-4 text-center">
-                    <label for="direccion" class="block text-sm font-semibold mb-2 text-gray-600">Dirección</label>
-                    <input type="text" name="direccion" id="direccion"
-                        class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                        value="{{ old('direccion', $ubicacion->direccion) }}" required>
-                </div>
-
-                <div class="mb-4 text-center">
-                    <label for="enlace_maps" class="block text-sm font-semibold mb-2 text-gray-600">Enlace Maps</label>
-                    <textarea name="enlace_maps" id="enlace_maps"
-                        class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                        rows="4">{{ old('enlace_maps', $ubicacion->enlace_maps) }}</textarea>
-                </div>
-
-                <div class="mb-4 text-center">
-                    <label for="imagen" class="block text-sm font-semibold mb-2 text-gray-600">Imagen</label>
-                    <input type="file" name="imagen" id="imagen" accept="image/*"
-                        class="py-2 px-3 focus:outline-none focus:border-blue-500">
-                    @if ($ubicacion->imagen)
-                        <img src="{{ asset('storage/imagen/' . $ubicacion->imagen) }}" alt="Imagen Actual"
-                            class="max-w-full h-auto mt-2">
-                        <p class="text-gray-500 text-sm mt-1">Imagen actual: {{ $ubicacion->imagen }}</p>
-                    @else
-                        <p class="text-gray-500 text-sm mt-1">Sin imagen actual</p>
-                    @endif
-                </div>
-
-                <!-- Botón para actualizar la ubicación -->
-                <div class="mt-4 text-center">
-                    <button type="submit"
-                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
-                        Actualizar Ubicación
-                    </button>
-                </div>
-            </form>
-        </x-administrador>
+            <!-- Botón para actualizar la ubicación -->
+            <div class="mt-4 text-center">
+                <button type="submit"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+                    Actualizar Ubicación
+                </button>
+            </div>
+        </form>
+    </x-administrador>
