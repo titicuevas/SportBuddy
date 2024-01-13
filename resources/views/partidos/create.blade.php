@@ -284,6 +284,8 @@
                         }
                     },
 
+
+
                     // Función para obtener la fecha actual en el formato esperado
                     obtenerFechaActual: function() {
                         const ahora = new Date();
@@ -360,6 +362,13 @@
 
 
 
+                    // Nueva función para obtener la hora actual en formato HH:mm
+                    horaActual: function() {
+                        const ahora = new Date();
+                        const hora = ahora.getHours().toString().padStart(2, '0');
+                        const minuto = ahora.getMinutes().toString().padStart(2, '0');
+                        return `${hora}:${minuto}`;
+                    },
 
 
 
@@ -371,6 +380,12 @@
                         const intervalo = 90; // 90 minutos en cada franja
                         const horasDisponibles = 22 - 9; // Total de horas disponibles
 
+                        const horaActual = this.horaActual(); // Obtener la hora actual
+                        const fechaActual = this.obtenerFechaActual(); // Obtener la fecha actual
+
+                        // Obtener la fecha seleccionada
+                        const fechaSeleccionada = this.fecha;
+
                         for (let i = 0; i < horasDisponibles * 60; i += intervalo) {
                             const hora = Math.floor(i / 60) + 9;
                             const minuto = i % 60;
@@ -378,13 +393,23 @@
                             const minutoFormateado = minuto.toString().padStart(2, '0');
                             const horaCompleta = `${horaFormateada}:${minutoFormateado}`;
 
-                            // Utiliza tu función asíncrona para verificar si la hora está ocupada
-                            const ocupada = await this.horaOcupada(horaCompleta);
+                            // Obtener la fecha y hora combinada para comparación
+                            const fechaHoraCompleta = `${fechaSeleccionada} ${horaCompleta}`;
 
-                            franjas.push({
-                                hora: horaCompleta,
-                                ocupada: ocupada,
-                            });
+                            // Verifica si la fecha y hora ya han pasado y márcala como ocupada solo en el día actual
+                            if (fechaSeleccionada === fechaActual && fechaHoraCompleta <= horaActual) {
+                                franjas.push({
+                                    hora: horaCompleta,
+                                    ocupada: true, // Marcar como ocupada
+                                });
+                            } else {
+                                // Utiliza tu función asíncrona para verificar si la hora está ocupada
+                                const ocupada = await this.horaOcupada(horaCompleta);
+                                franjas.push({
+                                    hora: horaCompleta,
+                                    ocupada: ocupada,
+                                });
+                            }
                         }
 
                         return franjas;
