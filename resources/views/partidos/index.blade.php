@@ -1,5 +1,5 @@
 <x-app-layout>
-    {{-- Crear la pista con exito --}}
+    {{-- Crear la pista con éxito --}}
     @if (session('success'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
             class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
@@ -29,7 +29,8 @@
                                     d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
                                 </path>
                             </svg>
-                            <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
+                            <div
+                                class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
                                 <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
                                     {{ $partido->ubicacion->direccion }}
                                 </a>
@@ -53,9 +54,18 @@
                 </article>
             @endif
         @empty
-            <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>
+            <!-- No hay partidos o todos los partidos han pasado -->
         @endforelse
-    </div>  
+
+        @if (count($partidos) == 0)
+            <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>
+        @elseif (count($partidos) > 0 &&
+                $partidos->every(function ($partido) {
+                    return \Carbon\Carbon::parse($partido->fecha_hora) <= \Carbon\Carbon::now();
+                }))
+            <p class="text-center text-gray-700">Todos los partidos han pasado.</p>
+        @endif
+    </div>
 
 
     <script>

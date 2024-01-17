@@ -2,21 +2,20 @@
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
+            <div class="flex items-center">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                <div>
                     <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-6 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex ">
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
                 </div>
-
             </div>
 
             <!-- Settings Dropdown -->
@@ -24,17 +23,19 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-2xl leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ml-1">
+                            class="inline-flex items-center space-x-2 px-4 py-2 border border-transparent text-2xl leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <div class="flex items-center">
                                 <!-- Muestra la imagen del perfil con un tamaño más grande -->
                                 @if (Auth::user()->foto)
-                                    <img src="{{ Storage::url(Auth::user()->foto) }}" class="w-11 h-11 rounded-full">
+                                    <img src="{{ Storage::url(Auth::user()->foto) }}" class="w-16 h-16 rounded-full">
                                 @else
                                     <img src="https://mastermdi.com/files/students/noImage.jpg"
-                                        class="w-11 h-11 rounded-full">
+                                        class="w-16 h-16 rounded-full">
                                 @endif
+
+                                <div class="ml-6">
+                                    {{ Auth::user()->name }}
+                                </div>
                             </div>
                         </button>
                     </x-slot>
