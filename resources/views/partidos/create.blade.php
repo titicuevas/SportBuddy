@@ -66,21 +66,21 @@
 
 
                             {{-- TIPO DE SUPERFICIE --}}
-                            <!-- Cuadro de texto para el tipo de superficie -->
                             <div class="mb-4">
                                 <label for="tipo_superficie" class="block text-gray-700 text-sm font-bold mb-2">Tipo de
                                     Superficie</label>
                                 <input type="text" id="tipo_superficie" name="tipo_superficie"
-                                    x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field" required>
+                                    x-model="tipoSuperficie" x-bind:value="tipoSuperficie" class="input-field" required
+                                    readonly>
                             </div>
-                            {{-- DEPORTE --}}
 
-                            <!-- Cuadro de texto para el deporte -->
+                            {{-- DEPORTE --}}
                             <div class="mb-4">
                                 <label for="deporte" class="block text-gray-700 text-sm font-bold mb-2">Deporte</label>
                                 <input type="text" id="deporte" name="deporte" x-model="deporte"
-                                    x-bind:value="deporte" class="input-field">
+                                    x-bind:value="deporte" class="input-field" readonly>
                             </div>
+
 
 
 
@@ -91,18 +91,17 @@
                                     required x-on:change="cargarFranjasYPrecio">
                                     <option value="" disabled selected>Selecciona una hora</option>
                                     <template x-for="franja in franjasHorarias" :key="franja.hora">
-                                        <option :value="franja.hora" :disabled="franja.ocupada">
-                                            <span x-text="franja.hora"></span> - <span
-                                                x-text="franja.ocupada ? 'No disponible' : ''"></span>
+                                        <option :value="franja.hora" :disabled="franja.disabled">
+                                            <span x-text="franja.hora"></span><span
+                                                x-text="franja.ocupada ? ' - No disponible' : ''"></span>
                                         </option>
                                     </template>
                                 </select>
 
-
-
                                 <p x-show="errorHoraOcupada" class="text-red-500 text-2xl">La hora seleccionada está
                                     ocupada. Por favor, elige otra hora.</p>
                             </div>
+
 
 
                             {{-- PRECIO --}}
@@ -306,6 +305,16 @@
 
                         // Actualizar el estado errorHoraOcupada
                         this.errorHoraOcupada = hayHorasOcupadas;
+
+                        // Agregar código para deshabilitar las horas pasadas de la fecha actual
+                        const horaActual = this.horaActual();
+                        const fechaActual = this.obtenerFechaActual();
+
+                        this.franjasHorarias.forEach(franja => {
+                            const fechaHoraCompleta = `${this.fecha} ${franja.hora}`;
+                            franja.disabled = franja.ocupada || (this.fecha === fechaActual && franja.hora <
+                                horaActual);
+                        });
 
                         this.actualizarPrecio(); // Llamamos a la función para calcular el precio
                     },

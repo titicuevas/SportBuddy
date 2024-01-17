@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
+
 class ProfileController extends Controller
 {
     // Función para mostrar el perfil del usuario
@@ -63,28 +64,38 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // Verificar si se proporcionó una nueva foto
         if ($request->hasFile('foto')) {
-            // Eliminar la foto actual si existe
+            $allowedTypes = ['jpeg'];
+            $fileType = $request->file('foto')->getClientOriginalExtension();
+
+            // Verificar si es un tipo de imagen permitido
+            if (!in_array($fileType, $allowedTypes) || !@getimagesize($request->file('foto'))) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'El formato de archivo no es compatible. Por favor, utiliza formatos JPEG.',
+                ]);
+            }
+
+
             if ($user->foto) {
+                // Eliminar la foto anterior si existe
                 Storage::delete($user->foto);
             }
 
-            // Almacenar la nueva foto
-            $foto = $request->file('foto');
-            $path = $foto->storeAs('public/profile-photos', $user->id . '.' . $foto->getClientOriginalExtension());
-            $user->foto = $path;
-        } elseif (!$user->foto) {
-            // Si no se proporciona una nueva foto y no tiene una foto existente, puedes manejarlo como desees.
-            // En este ejemplo, se establece una imagen predeterminada.
-            $user->foto = 'public/default-profile-image.png';
+            // Almacenar la nueva foto en storage/public/profile-photos
+            $path = $request->file('foto')->store('public/profile-photos');
+
+            // Actualizar la ruta en la base de datos
+            $user->update(['foto' => $path]);
+
+            $fotoPerfilURL = Storage::url($path);
+
+            return response()->json(['status' => 'foto-updated', 'fotoPerfilURL' => $fotoPerfilURL]);
         }
-
-        $user->save();
-
-        // Redirigir a la página de perfil con el ID del usuario
-        return response()->json(['status' => 'foto-updated', 'fotoPerfilURL' => Storage::url($user->foto)]);
     }
+
+
+
 
     // Función para eliminar la cuenta del usuario
     public function destroy(Request $request): RedirectResponse

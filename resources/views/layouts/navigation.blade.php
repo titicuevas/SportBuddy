@@ -37,12 +37,12 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-yellow-200">
+                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-yellow-400">
                             {{ __('Perfil') }}
                         </x-dropdown-link>
 
                         @if (Auth::user()->rol_id === 1)
-                            <x-dropdown-link :href="route('admin.index')" class="hover:bg-blue-200">
+                            <x-dropdown-link :href="route('admin.index')" class="hover:bg-blue-400">
                                 {{ __('Modo Admin') }}
                             </x-dropdown-link>
                         @endif

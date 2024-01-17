@@ -19,10 +19,7 @@
                 </div>
             </div>
 
-
             {{-- FOTO --}}
-
-
             <div class="flex items-start p-6 bg-white rounded-lg">
                 <div>
                     <h2 class="text-lg font-medium text-gray-900 mb-4 text-center">Cambiar Foto</h2>
@@ -37,7 +34,6 @@
                                 src="https://mastermdi.com/files/students/noImage.jpg" alt="usuario" />
                         @endif
                     </div>
-
                     {{-- Botones --}}
                     <div class="flex justify-start items-center mb-4 space-x-4">
                         <button type="button" class="bg-blue-500 text-white py-2 px-4 rounded" id="btn-examinar-foto">
@@ -62,6 +58,9 @@
                                 <input type="file" name="foto" id="foto" accept="image/*" class="hidden">
                             </div>
 
+                            <!-- Agregamos un campo oculto para indicar si la foto fue eliminada -->
+                            <input type="hidden" name="foto_eliminada" id="foto_eliminada" value="0">
+
                             <button type="submit" class="hidden"></button>
                         </form>
                     </div>
@@ -85,7 +84,6 @@
                             inputFoto.click();
                         });
 
-                        // Botón "Eliminar foto"
                         btnEliminar.addEventListener('click', function() {
                             var respuesta = confirm('¿Está seguro de que desea eliminar la foto de perfil?');
 
@@ -101,20 +99,17 @@
                                 // Deshabilitar el botón "Guardar foto"
                                 btnGuardar.disabled = true;
 
-                                // Eliminar la foto en la base de datos (opcional)
-                                fetch("{{ route('profile.update-foto') }}", {
-                                    method: "POST",
-                                    body: new FormData(document.getElementById('form-actualizar-foto')),
-                                });
+                                // Indicar que la foto fue eliminada
+                                document.getElementById('foto_eliminada').value = 1;
 
-                                // Mostrar mensaje al usuario
-                                alert('Foto eliminada');
+                                // Enviar el formulario para eliminar la foto
+                                formActualizarFoto.submit();
                             }
                         });
 
                         // Botón "Guardar foto"
                         btnGuardar.addEventListener('click', function() {
-                            // Enviar el formulario para actualizar el perfil del usuario
+                            // Enviar el formulario completo para actualizar el perfil del usuario
                             var formData = new FormData(document.getElementById('form-actualizar-foto'));
 
                             fetch("{{ route('profile.update-foto') }}", {
@@ -123,16 +118,22 @@
                                 })
                                 .then(response => response.json())
                                 .then(data => {
-                                    // Actualizar la vista previa de la foto
-                                    imgPerfil.src = data.fotoPerfilURL;
-                                    // Deshabilitar el botón "Guardar foto" nuevamente
-                                    btnGuardar.disabled = true;
+                                    if (data.status === 'error') {
+                                        // Mostrar mensaje de error al usuario
+                                        alert(data.message);
+                                    } else {
+                                        // Actualizar la vista previa de la foto
+                                        imgPerfil.src = data.fotoPerfilURL;
+                                        // Deshabilitar el botón "Guardar foto" nuevamente
+                                        btnGuardar.disabled = true;
 
-                                    // Mostrar mensaje al usuario
-                                    alert('Foto actualizada');
+                                        // Mostrar mensaje de éxito al usuario
+                                        alert('Foto actualizada');
+                                    }
                                 })
                                 .catch(error => console.error('Error:', error));
                         });
+
 
                         // Manejar el cambio de la foto
                         inputFoto.addEventListener('change', function() {
@@ -158,18 +159,9 @@
                         });
                     });
                 </script>
-
-
-
             </div>
 
-
-
-
             {{-- DELETE --}}
-
-
-
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
