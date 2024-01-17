@@ -19,8 +19,6 @@
 
             </div>
 
-
-
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
@@ -31,7 +29,12 @@
 
                             <div class="ml-1">
                                 <!-- Muestra la imagen del perfil con un tamaño más grande -->
-                                <img src="{{ Storage::url(Auth::user()->foto) }}" class="w-11 h-11 rounded-full">
+                                @if (Auth::user()->foto)
+                                    <img src="{{ Storage::url(Auth::user()->foto) }}" class="w-11 h-11 rounded-full">
+                                @else
+                                    <img src="https://mastermdi.com/files/students/noImage.jpg"
+                                        class="w-11 h-11 rounded-full">
+                                @endif
                             </div>
                         </button>
                     </x-slot>
@@ -91,9 +94,6 @@
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
-
-
-
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
@@ -104,8 +104,6 @@
                         {{ __('Modo Admin') }}
                     </x-dropdown-link>
                 @endif
-
-
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
