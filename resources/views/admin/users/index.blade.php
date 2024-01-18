@@ -16,34 +16,37 @@
             <h1 class="text-4xl text-blue-500 mb-6">USUARIOS</h1>
         </div>
 
-        <table class="min-w-full bg-white border border-gray-300">
+        <table class="min-w-full bg-white border-2  border-gray-500">
             <thead>
+                text-xl border-gray-500 border-b-2
                 <tr>
-                    <th class="py-2 px-4 border-b">Nombre</th>
-                    <th class="py-2 px-4 border-b">Apellidos</th>
-                    <th class="py-2 px-4 border-b">Telefono</th>
-                    <th class="py-2 px-4 border-b">Email</th>
-                    <th class="py-2 px-4 border-b">Acciones</th>
+                    <th class="py-2 text-xl border-gray-500 px-4 border-b-2">Nombre</th>
+                    <th class="py-2 text-xl border-gray-500 px-4 border-b-2">Apellidos</th>
+                    <th class="py-2 px-4   border-gray-500 text-xl border-b-2">Telefono</th>
+                    <th class="py-2 px-4 border-gray-500 text-xl border-b-2">Email</th>
+                    <th class="py-2 px-4 border-gray-500 text-xl border-b-2">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
                     <tr>
-                        <td class="py-2 px-4 border-b text-center">{{ $user->name }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $user->apellidos }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $user->telefono }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $user->email }}</td>
-                        <td class="py-2 px-4 border-b text-center">
+                        <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $user->name }}</td>
+                        <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $user->apellidos }}</td>
+                        <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $user->telefono }}</td>
+                        <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $user->email }}</td>
+                        <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">
                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="post"
                                 onsubmit="return confirm('¿Estás seguro de borrar a {{ $user->name }}?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="bg-red-500 hover:bg-red-700 text-white focus:outline-none px-4 py-2 rounded">
+                                    class="bg-red-500  hover:bg-red-700 text-white  focus:outline-none px-4 py-2 rounded">
                                     Eliminar
                                 </button>
                             </form>
+
                         </td>
+
                     </tr>
                 @endforeach
             </tbody>

@@ -15,7 +15,7 @@
 
         <!-- Mostrar mensajes de error de validación -->
         @if ($errors->has('tipo'))
-            <div class="text-red-500 text-center text-sm mt-2">
+            <div class="text-red-500 text-center text-xl mt-2">
                 {{ $errors->first('tipo') }}
             </div>
         @endif
@@ -25,14 +25,14 @@
             <form action="{{ route('admin.superficie.store') }}" method="post">
                 @csrf
                 <div class="mb-4 text-center">
-                    <label for="tipo" class="block text-gray-600 text-sm font-semibold mb-2">Tipo de Superficie</label>
-                    <input type="text" name="tipo" id="tipo" class="w-48 border rounded-md p-2 border-opacity-50"
+                    <label for="tipo" class="block text-gray-600 text-xl font-semibold mb-2">Tipo de Superficie</label>
+                    <input type="text" name="tipo" id="tipo" class="w-48 border rounded-md p-2 text-xl border-opacity-50"
                         required>
                 </div>
 
                 <div class="mt-4 text-center">
                     <button type="submit"
-                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+                        class="bg-blue-500 text-white py-2 px-4 text-xl rounded-md hover:bg-blue-700 focus:outline-none">
                         Agregar Superficie
                     </button>
                 </div>

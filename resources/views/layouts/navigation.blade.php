@@ -41,12 +41,12 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-yellow-400">
+                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-yellow-400 hover:text-white">
                             {{ __('Perfil') }}
                         </x-dropdown-link>
 
                         @if (Auth::user()->rol_id === 1)
-                            <x-dropdown-link :href="route('admin.index')" class="hover:bg-blue-400">
+                            <x-dropdown-link :href="route('admin.index')" class="hover:bg-green-800  hover:text-white">
                                 {{ __('Modo Admin') }}
                             </x-dropdown-link>
                         @endif
@@ -55,7 +55,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')" class="hover:bg-red-700"
+                            <x-dropdown-link :href="route('logout')" class="hover:bg-red-700 hover:text-white"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('Cerrar Sesión') }}
                             </x-dropdown-link>

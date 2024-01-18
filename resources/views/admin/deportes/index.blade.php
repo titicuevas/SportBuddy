@@ -16,19 +16,19 @@
         </div>
 
         <div class="overflow-x-auto mb-6 mx-auto max-w-2xl">
-            <table class="min-w-full bg-white border border-gray-300">
+            <table class="min-w-full bg-white border-2 text-xl border-b-2 border-gray-500 ">
                 <thead>
                     <tr>
-                        <th class="py-2 px-4 border-b">Nombre</th>
+                        <th class="py-2 px-4 text-xl border-b-2 border-gray-500">Nombre</th>
 
-                        <th class="py-2 px-4 border-b">Acciones</th>
+                        <th class="py-2 px-4 text-xl border-b-2 border-gray-500">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($deportes as $deporte)
                         <tr>
-                            <td class="py-2 px-4 border-b text-center">{{ $deporte->nombre }}</td>
-                            <td class="py-2 px-4 border-b text-center">
+                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $deporte->nombre }}</td>
+                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">
 
                                 <a href="{{ route('admin.deportes.edit', $deporte->id) }}"
                                     class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
@@ -40,6 +40,7 @@
                                     onsubmit="return confirm('¿Estás seguro de borrar {{ $deporte->nombre }}?')">
                                     @csrf
                                     @method('DELETE')
+
                                     <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded">
                                         Borrar
                                     </button>
@@ -51,7 +52,7 @@
             </table>
         </div>
 
-        <div class="flex items-center justify-center mt-4">
+        <div class="flex items-center text-xl  justify-center mt-4">
             <a href="{{ route('admin.deportes.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
                 Crear Deporte

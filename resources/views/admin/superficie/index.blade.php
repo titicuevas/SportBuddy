@@ -16,19 +16,21 @@
         </div>
 
         <div class="overflow-x-auto mx-auto max-w-2xl mb-6">
-            <table class="w-full bg-white border border-gray-300">
+            <table class="w-full bg-white border text-xl  border-b-2 border-gray-500-2 border-gray-500">
                 <thead>
                     <tr>
-                        <th class="py-2 px-4 border-b">Tipo</th>
-                        <th class="py-2 px-4 border-b">Acciones</th>
+                        <th class="py-2 px-4 text-xl border-b-2 border-gray-500">Tipo</th>
+                        <th class="py-2 px-4 text-xl border-b-2 border-gray-500">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($superficies as $superficie)
                         <tr>
-                            <td class="py-2 px-4 border-b text-center">{{ $superficie->tipo }}</td>
-                            <td class="py-2 px-4 border-b text-center">
+                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $superficie->tipo }}</td>
+                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">
+                                <br>
                                 <a href="{{ route('admin.superficie.edit', $superficie->id) }}"
+
                                     class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
                                     Editar
                                 </a>
@@ -41,6 +43,8 @@
                                     <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded">
                                         Borrar
                                     </button>
+                                    <br>
+                                    <br>
                                 </form>
                             </td>
                         </tr>
@@ -51,7 +55,7 @@
 
         <div class="flex items-center justify-center">
             <a href="{{ route('admin.superficie.create') }}"
-                class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                class="bg-blue-500 hover:bg-blue-700 text-white text-xl py-2 px-4 rounded">
                 Crear Superficie
             </a>
         </div>

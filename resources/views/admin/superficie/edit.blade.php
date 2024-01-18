@@ -21,16 +21,16 @@
 
             <!-- Campos del formulario -->
             <div class="mb-4 text-center">
-                <label for="tipo" class="block text-sm font-semibold mb-2 text-gray-600">Tipo</label>
+                <label for="tipo" class="block text-xl font-semibold mb-2 text-gray-600">Tipo</label>
                 <input type="text" name="tipo" id="tipo"
-                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                    class="w-48 border rounded-md py-2 text-xl px-3 focus:outline-none focus:border-blue-500"
                     value="{{ old('tipo', $superficie->tipo) }}" required>
             </div>
 
             <!-- Botón para actualizar la superficie -->
             <div class="mt-4 text-center">
                 <button type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md text-xl hover:bg-blue-700 focus:outline-none">
                     Actualizar Superficie
                 </button>
             </div>

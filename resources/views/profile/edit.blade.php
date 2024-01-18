@@ -6,66 +6,65 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-center items-center h-full">
+            <div class="space-y-6">
+
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
                     @include('profile.partials.update-profile-information-form')
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
                     @include('profile.partials.update-password-form')
                 </div>
-            </div>
 
-            {{-- FOTO --}}
-            <div class="flex items-start p-6 bg-white rounded-lg">
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-4 text-center">Cambiar Foto</h2>
+                {{-- FOTO --}}
+                <div class="flex items-center justify-center p-6 bg-white rounded-lg max-w-md">
+                    <div>
+                        <h2 class="text-lg font-medium text-gray-900 mb-4 text-center">Cambiar Foto</h2>
 
-                    {{-- Vista previa de la foto --}}
-                    <div class="flex justify-center items-center mb-4">
-                        @if ($user->foto)
-                            <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
-                                src="{{ Storage::url($user->foto) }}" alt="Foto de perfil" />
-                        @else
-                            <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
-                                src="https://mastermdi.com/files/students/noImage.jpg" alt="usuario" />
-                        @endif
+                        {{-- Vista previa de la foto --}}
+                        <div class="flex justify-center items-center mb-4">
+                            @if ($user->foto)
+                                <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
+                                    src="{{ Storage::url($user->foto) }}" alt="Foto de perfil" />
+                            @else
+                                <img class="h-48 w-48 border-2 border-black rounded-t mb-4" id="imgPerfil"
+                                    src="https://mastermdi.com/files/students/noImage.jpg" alt="usuario" />
+                            @endif
+                        </div>
+
+                        {{-- Botones --}}
+                        <div class="flex justify-center items-center space-x-4">
+                            <button type="button" class="bg-blue-500 text-white py-2 px-4 rounded" id="btn-examinar-foto">
+                                Examinar
+                            </button>
+
+                            <button type="button" class="bg-red-500 text-white py-2 px-4 rounded hidden" id="btn-eliminar-foto">
+                                Eliminar foto de perfil
+                            </button>
+
+                            <button type="button" class="bg-green-500 text-white py-2 px-4 rounded" id="btn-guardar-foto"
+                                disabled>
+                                Guardar foto
+                            </button>
+
+                            {{-- Formulario para actualizar foto --}}
+                            <form action="{{ route('profile.update-foto') }}" method="post"
+                                enctype="multipart/form-data" id="form-actualizar-foto">
+                                @csrf
+                                @method('post')
+
+                                <div class="mb-4">
+                                    <input type="file" name="foto" id="foto" accept="image/*" class="hidden">
+                                </div>
+
+                                <!-- Agregamos un campo oculto para indicar si la foto fue eliminada -->
+                                <input type="hidden" name="foto_eliminada" id="foto_eliminada" value="0">
+
+                                <button type="submit" class="hidden"></button>
+                            </form>
+                        </div>
                     </div>
-                    {{-- Botones --}}
-                    <div class="flex justify-start items-center mb-4 space-x-4">
-                        <button type="button" class="bg-blue-500 text-white py-2 px-4 rounded" id="btn-examinar-foto">
-                            Examinar
-                        </button>
-
-                        <button type="button" class="bg-red-500 text-white py-2 px-4 rounded" id="btn-eliminar-foto">
-                            Eliminar foto de perfil
-                        </button>
-
-                        <button type="button" class="bg-green-500 text-white py-2 px-4 rounded" id="btn-guardar-foto">
-                            Guardar foto
-                        </button>
-
-                        {{-- Formulario para actualizar foto --}}
-                        <form action="{{ route('profile.update-foto') }}" method="post" enctype="multipart/form-data"
-                            id="form-actualizar-foto">
-                            @csrf
-                            @method('post')
-
-                            <div class="mb-4">
-                                <input type="file" name="foto" id="foto" accept="image/*" class="hidden">
-                            </div>
-
-                            <!-- Agregamos un campo oculto para indicar si la foto fue eliminada -->
-                            <input type="hidden" name="foto_eliminada" id="foto_eliminada" value="0">
-
-                            <button type="submit" class="hidden"></button>
-                        </form>
-                    </div>
-                </div>
-
                 <script>
                     // Agregar evento al cargar la página
                     document.addEventListener("DOMContentLoaded", function() {
@@ -162,11 +161,10 @@
             </div>
 
             {{-- DELETE --}}
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
+                @include('profile.partials.delete-user-form')
             </div>
         </div>
+    </div>
     </div>
 </x-app-layout>

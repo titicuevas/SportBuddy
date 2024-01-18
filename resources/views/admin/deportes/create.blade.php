@@ -25,15 +25,16 @@
         <form action="{{ route('admin.deportes.store') }}" method="post">
             @csrf
             <div class="mb-4 text-center">
-                <label for="nombre" class="block text-sm font-semibold mb-2 text-gray-600">Nombre del Deporte</label>
+                <label for="nombre" class="block text-xl font-semibold mb-2 text-gray-600">Nombre del Deporte</label>
                 <input type="text" name="nombre" id="nombre"
-                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+                    class="w-48  text-xl border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
             </div>
 
+            
 
             <div class="mt-4 text-center">
                 <button type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+                    class="bg-blue-500 text-white text-xl py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
                     Agregar Deporte
                 </button>
             </div>

@@ -18,7 +18,7 @@
                 <!-- Aquí coloca el icono y el texto "SportBuddy" juntos -->
                 <div class="flex items-center">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                    <h1 class="text-3xl font-bold ml-2">SportBuddy</h1>
+                    <h1 class="text-4xl font-bold ml-2">SportBuddy</h1>
                 </div>
 
 
@@ -103,18 +103,23 @@
             </div>
         </header>
 
-          <!-- Sección de mensaje y carrusel -->
-    <div x-data="{ slide: 0 }" x-init="startInterval()"
-    class="bg-gray-800 text-black py-16 transition-all duration-500"
-    :style="'background-image: url(' + getImageUrl(slide) +
-        '); background-size: cover; background-position: center; background-repeat: no-repeat; height: 100vh;'">
-    <div class="container mx-auto flex flex-col items-center">
-        <h2 class="text-3xl font-bold mb-6">Busca dónde y con quién jugar a tus deportes favoritos</h2>
+        <!-- Sección de mensaje y carrusel -->
+        <div x-data="{ slide: 0 }" x-init="startInterval()"
+            class="relative bg-gray-800 text-white transition-all duration-500 min-h-screen"
+            :style="'background-image: url(' + getImageUrl(slide) +
+                '); background-size: cover; background-position: center; background-repeat: no-repeat; height: 50vh;'">
 
-        <!-- Carrusel de imágenes -->
-        <div class="relative w-full h-96 overflow-hidden">
-            <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
-                :style="'translateX(' + (slide * -100) + '%)'">
+            <!-- Fondo opaco para el texto -->
+            <div class="absolute inset-0 bg-black opacity-50"></div>
+
+            <div class="container mx-auto flex flex-col items-center h-full relative">
+                <h2 class="text-3xl font-bold mb-6 relative z-10">Busca dónde y con quién jugar a tus deportes favoritos
+                </h2>
+                <div class="relative w-full h-48 md:h-72 overflow-hidden">
+                    <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
+                        :style="'translateX(' + (slide * -100) + '%)'">
+
+                        
                         <!-- Imágenes del carrusel -->
                         <img src="https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg" alt="Albero"
                             class="w-full h-full object-cover bg-center bg-cover">
@@ -137,6 +142,60 @@
                 </div>
             </div>
         </div>
+
+        <!-- Div para "Conoce gente nueva mientras juegas" -->
+        <div class="bg-white p-8 mt-8 w-full flex items-center justify-center" style="background-color: #f8f8f8;">
+            <!-- Parte izquierda con la imagen -->
+            <div class="w-full md:w-1/2 pr-4 flex items-center justify-center">
+                <img src="https://i.ibb.co/bB4Lrtx/tipos-jugadores-2.png" alt="tipos-jugadores-2"
+                    class="w-full h-full object-cover md:w-96 md:h-full">
+            </div>
+            <!-- Parte derecha con el título, el texto y el párrafo -->
+            <div class="w-full md:w-1/2 pl-4">
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Conoce gente nueva mientras juegas</h3>
+                <p class="text-base md:text-lg lg:text-xl">Publica tu próximo partido en SportBuddy. Solo te llevará un
+                    par de minutos para publicar tu
+                    partido y conocer a nuevos compañeros de deportes. ¿Compartimos la cancha?</p>
+
+                <a href="{{ route('register') }}"
+                    class="block mt-4 px-8 py-3 text-base font-bold uppercase bg-gray-400 text-white rounded hover:bg-gray-500 transition-all duration-300">
+                    Registrarse
+                </a>
+
+
+            </div>
+        </div>
+
+        <!-- Div dividido con dos partes -->
+        <div class="bg-white p-8 mt-8 w-full flex items-center justify-center" style="background-color: #f8f8f8;">
+            <!-- Parte izquierda con el título "Encuentra los mejores partidos" -->
+            <div class="w-full md:w-1/2 pr-4">
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Encuentra los mejores partidos</h3>
+                <!-- Agrega aquí el texto sobre deportes -->
+                <p class="text-base md:text-lg lg:text-xl">Nuestra comunidad de deportistas está en todos los lugares.
+                    Donde sea que vayas, descubre la
+                    experiencia perfecta con partidos y encuentros en los puntos más cercanos.</p>
+            </div>
+
+            <!-- Parte derecha con "Busca, elige y a jugar" -->
+            <div class="w-full md:w-1/2 pl-4">
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">¡Busca, elige y a jugar!</h3>
+                <!-- Agrega aquí el texto sobre conocer gente mientras juegas -->
+                <p class="text-base md:text-lg lg:text-xl">¡Organizar un partido es más fácil que nunca! Gracias a
+                    tecnología, podrás reservar un encuentro deportivo cerca de ti en cuestión de minutos.</p>
+                nuestra sencilla página web y su potente
+
+                <a href="{{ route('login') }}"
+                    class="block mt-4 px-8 py-3 text-base font-bold uppercase bg-blue-500 text-white rounded hover:bg-blue-700 transition-all duration-300">
+                    Iniciar Sesión
+                </a>
+
+
+            </div>
+        </div>
+        </div>
+
+
 
         <!-- Script para el carrusel automático -->
         <script>

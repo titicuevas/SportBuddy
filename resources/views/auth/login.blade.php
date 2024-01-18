@@ -7,11 +7,12 @@
             <a href="{{ url('/') }}">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
-            <h1 class="text-3xl text-center font-bold">SportBuddy</h1>
+            <h1 class="text-4xl text-center font-bold">SportBuddy</h1>
         </div>
     </header>
 
-    <body class="font-sans text-gray-900 antialiased relative">
+
+    <body class="font-sans    text-gray-900 antialiased relative">
         <!-- Sección para el fondo oscuro con opacidad -->
         <div class="min-h-screen flex justify-center items-center relative">
             <div class="absolute inset-0 bg-black opacity-40"></div>
@@ -27,7 +28,7 @@
 
                     <form method="POST" action="{{ route('login') }}" class="w-full">
                         @csrf
-                        <h1 class="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-center">Iniciar Sesión</h1>
 
                         <div class="mb-4">
                             <x-input-label for="email" :value="__('Email')" />
@@ -60,10 +61,18 @@
                                 </a>
                             @endif
 
+                            <a href="{{ route('register') }}" class="text-sm text-gray-600">
+                                {{ '¿No tienes una cuenta?' }} <span
+                                    class="text-blue-500 cursor-pointer">Registrarse</span>
+                            </a>
+
+
+
                             <x-primary-button>
                                 {{ __('Iniciar sesión') }}
                             </x-primary-button>
                         </div>
+
                     </form>
                 </div>
             </div>

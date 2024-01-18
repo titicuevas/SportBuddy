@@ -41,8 +41,9 @@
                             </td>
                         </tr>
 
+
                         <tr>
-                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Enlace Maps</td>
+                            <td class="py-2 px-4 border-b-2 text-center font-semibold text-gray-600">Enlace Maps</td>
                             <td class="py-2 px-4 border-b">
                                 <textarea name="enlace_maps" id="enlace_maps"
                                     class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('enlace_maps', $ubicacion->enlace_maps) }}</textarea>
@@ -50,16 +51,16 @@
                         </tr>
 
                         <tr>
-                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Iframe</td>
-                            <td class="py-2 px-4 border-b">
+                            <td class="py-2 px-4 border-b-2 text-center font-semibold text-gray-600">Iframe</td>
+                            <td class="py-2 px-4 border-b-2">
                                 <textarea name="iframe" id="iframe"
-                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('iframe', $ubicacion->iframe) }}</textarea>
+                                    class="w-48 border-2 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('iframe', $ubicacion->iframe) }}</textarea>
                             </td>
                         </tr>
 
                         <tr>
                             <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Imagen</td>
-                            <td class="py-2 px-4 border-b">
+                            <td class="py-2 px-4 border-b-2">
                                 <input type="file" name="imagen" id="imagen" accept="image/*"
                                     class="py-2 px-3 focus:outline-none focus:border-blue-500">
 
@@ -68,9 +69,9 @@
                                         <img src="{{ asset('storage/imagen/' . $ubicacion->imagen) }}"
                                             alt="Imagen Actual" class="max-w-full h-auto">
                                     </div>
-                                    <p class="text-gray-500 text-sm mt-1">Imagen actual: {{ $ubicacion->imagen }}</p>
+                                    <p class="text-gray-500 text-xl mt-1">Imagen actual: {{ $ubicacion->imagen }}</p>
                                 @else
-                                    <p class="text-gray-500 text-sm mt-1">Sin imagen actual</p>
+                                    <p class="text-gray-500 text-xl mt-1">Sin imagen actual</p>
                                 @endif
                             </td>
                         </tr>
@@ -81,7 +82,7 @@
             <!-- Botón para actualizar la ubicación -->
             <div class="mt-4 text-center">
                 <button type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
+                    class="bg-blue-500 text-white py-2 px-4 text-xls rounded-md hover:bg-blue-700 focus:outline-none">
                     Actualizar Ubicación
                 </button>
             </div>

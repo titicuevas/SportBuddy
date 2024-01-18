@@ -27,7 +27,14 @@ class AdminUbicacionController extends Controller
             'direccion' => 'required|string',
             'enlace_maps' => 'nullable|string',
             'iframe' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
+            'imagen' => 'nullable|image|mimes:jpeg|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'direccion.required' => 'La dirección es obligatoria.',
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo JPEG.',
+            'imagen.max' => 'La imagen no debe superar los 2 MB.',
+            // Puedes personalizar los mensajes de error según tus necesidades
         ]);
 
         // Lógica para guardar la ubicación y la imagen
@@ -38,14 +45,23 @@ class AdminUbicacionController extends Controller
         $ubicacion->iframe = $request->iframe;
 
         if ($request->hasFile('imagen')) {
-            $imagenPath = $request->file('imagen')->store('imagen', 'public');
-            $ubicacion->imagen = $imagenPath;
+            // Obtén el nombre original del archivo
+            $nombreOriginal = $request->file('imagen')->getClientOriginalName();
+
+            // Almacena la imagen con el nombre original
+            $request->file('imagen')->storeAs('public/imagen', $nombreOriginal);
+            $ubicacion->imagen = $nombreOriginal;
         }
 
         $ubicacion->save();
 
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada exitosamente.');
     }
+
+
+
+
+
 
     public function edit(Ubicacion $ubicacion)
     {
@@ -62,7 +78,7 @@ class AdminUbicacionController extends Controller
             'direccion' => 'required|string',
             'enlace_maps' => 'nullable|string',
             'iframe' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
+            'imagen' => 'nullable|image|mimes:jpeg|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
         ]);
 
         // Actualizar los atributos de la ubicación
