@@ -29,7 +29,8 @@
                         <div class="mb-4">
                             <label for="fecha" class="block text-gray-700 text-2xl font-bold mb-2">Fecha</label>
                             <input type="date" id="fecha" name="fecha" x-model="fecha"
-                                class="input-field text-2xl" :min="obtenerFechaActual()" required>
+                                class="input-field text-2xl" :min="obtenerFechaActual()" required
+                                x-on:change="cargarFechaYActualizar">
                         </div>
 
 
@@ -283,6 +284,12 @@
                         }
                     },
 
+
+
+                    cargarFechaYActualizar: async function() {
+                        // Lógica para cargar la fecha y actualizar otras opciones según sea necesario
+                        await this.cargarFranjasYPrecio();
+                    },
 
 
                     // Función para obtener la fecha actual en el formato esperado

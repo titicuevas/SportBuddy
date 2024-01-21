@@ -85,7 +85,10 @@ text-white
                     @endforeach
                 </tbody>
             </table>
+            {{ $ubicaciones->links() }}
+
         </div>
+
 
         <div class="flex items-center justify-center">
             <a href="{{ route('admin.ubicacion.create') }}"
@@ -93,4 +96,7 @@ text-white
                 Crear Ubicación
             </a>
         </div>
+        {{ $ubicaciones->links() }}
+
+
     </x-administrador>

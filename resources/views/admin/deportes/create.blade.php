@@ -13,7 +13,7 @@
         @endif
 
         <!-- Mostrar mensajes de error de validación -->
-        @if($errors->has('nombre'))
+        @if ($errors->has('nombre'))
             <div class="text-red-500 text-center text-sm mt-2">
                 {{ $errors->first('nombre') }}
             </div>
@@ -30,12 +30,19 @@
                     class="w-48  text-xl border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
             </div>
 
-            
+
 
             <div class="mt-4 text-center">
                 <button type="submit"
                     class="bg-blue-500 text-white text-xl py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none">
                     Agregar Deporte
+                </button>
+
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="location.href='{{ route('admin.deportes.index') }}'"
+                    class="bg-red-500 text-white text-xl py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
+                    Volver
                 </button>
             </div>
         </form>

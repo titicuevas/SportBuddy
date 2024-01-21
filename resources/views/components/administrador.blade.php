@@ -2,24 +2,32 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <!-- Aquí puedes agregar tus metaetiquetas, hojas de estilo y scripts -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+
+
+
+
+
+
+
 
 </head>
 
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen bg-gray-200">
-
-
         <!-- Barra lateral izquierda -->
 
 
-        <!-- Barra lateral izquierda -->
-        <div class="bg-blue-800 text-white w-1/4 p-6">
-            <div class="text-center bg-gray-200 p-4">
-                <h2 class="text-4xl font-semibold mb-4 text-black">Secciones</h2>
+        <div id="sidebar" class="bg-blue-800 text-white w-1/4 p-6">
+            <div class="text-center bg-gray-200 rounded-md">
+                <div class="inline-block">
+                    <h2 class="text-4xl font-semibold mb-4 text-black">Secciones</h2>
+                </div>
             </div>
+
 
             <ul class="space-y-2">
                 <br>
@@ -75,7 +83,7 @@
                 <br>
 
                 <div class="border-b-8  mb-8"></div>
-                <div class="w-3/4 p-6 relative">
+                <div class="w-3/5 p-6 relative flex items-center justify-center">
                     <button onclick="location.href='{{ route('dashboard') }}'"
                         class="absolute top-4 right-4 bg-red-500 text-white text-3xl px-4 py-2 rounded-md hover:bg-red-700 focus:bg-red-700 focus:outline-none transition duration-300">
                         Salir
@@ -109,6 +117,12 @@
             </div>
         </div>
     </div>
+
+
+
+
 </body>
+
+
 
 </html>

@@ -13,6 +13,8 @@ class AdminSuperficieController extends Controller
     public function index()
     {
         $superficies = Superficie::all();
+        $superfies = Superficie::paginate(10); // Cambia el número según tus necesidades
+
         return view('admin.superficie.index', compact('superficies'));
     }
 

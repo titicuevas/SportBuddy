@@ -35,7 +35,16 @@
                         class="bg-blue-500 text-white py-2 px-4 text-xl rounded-md hover:bg-blue-700 focus:outline-none">
                         Agregar Superficie
                     </button>
+
+                    <div class="mt-4 text-center">
+                        <button onclick="location.href='{{ route('admin.superficie.index') }}'"
+                            class="bg-red-500 text-white text-xl py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
+                            Volver
+                        </button>
+                    </div>
                 </div>
+
+
             </form>
         </div>
 

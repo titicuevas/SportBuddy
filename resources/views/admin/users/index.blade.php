@@ -18,7 +18,7 @@
 
         <table class="min-w-full bg-white border-2  border-gray-500">
             <thead>
-                text-xl border-gray-500 border-b-2
+
                 <tr>
                     <th class="py-2 text-xl border-gray-500 px-4 border-b-2">Nombre</th>
                     <th class="py-2 text-xl border-gray-500 px-4 border-b-2">Apellidos</th>

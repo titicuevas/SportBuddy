@@ -76,10 +76,12 @@
                     Agregar Pista
                 </button>
 
-                <a href="{{ route('admin.pista.index') }}"
-                    class="bg-red-500 text-white py-2 px-4 text-xl rounded-md hover:bg-red-700 focus:outline-none">
-                    Cancelar
-                </a>
+                <div class="mt-4 text-center">
+                    <button onclick="location.href='{{ route('admin.pista.index') }}'"
+                        class="bg-red-500 text-white text-xl py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
+                        Volver
+                    </button>
+                </div>
             </div>
         </form>
     </x-administrador>

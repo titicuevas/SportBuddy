@@ -58,4 +58,6 @@
                 Crear Deporte
             </a>
         </div>
+        {{ $deportes->links() }}
+
     </x-administrador>

@@ -11,6 +11,7 @@ class AdminUbicacionController extends Controller
     public function index()
     {
         $ubicaciones = Ubicacion::all();
+        $ubicaciones = Ubicacion::paginate(10); // Cambia el número según tus necesidades
 
         return view('admin.ubicacion.index', compact('ubicaciones'));
     }

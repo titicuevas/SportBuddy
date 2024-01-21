@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
+
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdminDeporteRequest;
 use App\Http\Requests\UpdateDeporteRequest;
@@ -12,6 +15,8 @@ class AdminDeporteController extends Controller
     public function index()
     {
         $deportes = Deporte::all();
+        $deportes = Deporte::paginate(10); // Cambia el número según tus necesidades
+
         return view('admin.deportes.index')->with('deportes', $deportes);
     }
 

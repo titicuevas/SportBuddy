@@ -57,6 +57,10 @@ bg-green-500
                     <label for="direccion" class="block text-xl font-semibold mb-2 text-gray-600">Dirección</label>
                     <input type="text" name="direccion" id="direccion"
                         class="w-48 border rounded-md p-2 text-xl border-opacity-50" required>
+
+                    @error('nombre')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4 text-center">
@@ -64,6 +68,10 @@ bg-green-500
                         Maps</label>
                     <input type="text" name="enlace_maps" id="enlace_maps"
                         class="w-48 border rounded-md p-2 text-xl border-opacity-50">
+
+                    @error('direccion')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4 text-center">
@@ -73,9 +81,15 @@ bg-green-500
 
                 <div class="mb-4 text-center">
                     <label for="imagen" class="block text-xl font-semibold mb-2 text-gray-600">Imagen</label>
-                    <input type="file" name="imagen" id="imagen" class="w-48 border text-xl rounded-md p-2 border-opacity-50"
-                        onchange="previewImage()">
+                    <input type="file" name="imagen" id="imagen"
+                        class="w-48 border text-xl rounded-md p-2 border-opacity-50" onchange="previewImage()">
+
+
                     <div id="imagen-preview" class="mt-2"></div>
+
+                    @error('imagen')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mt-4 text-center">
@@ -83,6 +97,13 @@ bg-green-500
                         class="bg-blue-500 text-white py-2  text-xl px-4 rounded-md hover:bg-blue-700 focus:outline-none">
                         Agregar Ubicación
                     </button>
+
+                    <div class="mt-4 text-center">
+                        <button onclick="location.href='{{ route('admin.ubicacion.index') }}'"
+                            class="bg-red-500 text-white text-xl py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none">
+                            Volver
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Previsualizacion de la imagen --}}

@@ -66,14 +66,8 @@
 
 
 
-
-
-
-
-
-
                 <!-- Agrega esto a tu código donde quieras mostrar el icono de usuario y el menú desplegable -->
-                <div class="relative inline-block text-left">
+                <div class="relative inline-block text-left z-40">
                     <div>
                         <button type="button" class="text-white hover:underline focus:outline-none"
                             onclick="toggleDropdown()">
@@ -119,7 +113,7 @@
                     <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
                         :style="'translateX(' + (slide * -100) + '%)'">
 
-                        
+                        {{--
                         <!-- Imágenes del carrusel -->
                         <img src="https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg" alt="Albero"
                             class="w-full h-full object-cover bg-center bg-cover">
@@ -135,7 +129,7 @@
                             alt="Pádel Indoor" class="w-full h-full object-cover bg-center bg-cover">
                         <img src="https://www.padeladdict.com/wp-content/uploads/2022/11/ventajas-de-las-pistas-de-padel-interiores-frente-a-las-exteriores-portada-1068x580.jpg"
                             alt="Pista de Pádel" class="w-full h-full object-cover bg-center bg-cover">
-
+ --}}
 
 
                     </div>
@@ -201,8 +195,11 @@
         <script>
             function startInterval() {
                 var slide = 0;
+                var totalSlides = 7; // Número total de imágenes en el carrusel
+
                 setInterval(function() {
-                    slide = (slide + 1) % 7;
+                    slide = (slide + 1) % totalSlides;
+
                     var xDataElement = document.querySelector('[x-data="{ slide: 0 }"]');
                     if (xDataElement && xDataElement.__x) {
                         xDataElement.__x.$data.slide = slide;
@@ -213,6 +210,20 @@
                     if (section) {
                         section.style.backgroundImage = 'url(' + getImageUrl(slide) + ')';
                     }
+
+                    // Si es la última imagen, vuelve a la primera después de un breve retraso
+                    if (slide === totalSlides - 1) {
+                        setTimeout(function() {
+                            slide = 0;
+                            if (xDataElement && xDataElement.__x) {
+                                xDataElement.__x.$data.slide = slide;
+                            }
+                            if (section) {
+                                section.style.backgroundImage = 'url(' + getImageUrl(slide) + ')';
+                            }
+                        }, 1000); // Ajusta el tiempo de espera según tus preferencias
+                    }
+
                 }, 5000);
             }
 
@@ -224,7 +235,6 @@
                     'https://santamariaarquitectes.cat/wp-content/uploads/2019/06/camp_futbol_01.jpg',
                     'https://news.mondoiberica.com.es/wp-content/uploads/elementor/thumbs/IMG-20171211-WA0002-p473c99lxzb0882lvv33erk8m7fwn88zr2t8litpbk.jpg',
                     'https://s3.ppllstatics.com/ideal/www/multimedia/202104/21/media/cortadas/olvio%202-kUPB-U140127566558BBD-1248x770@Ideal.jpg',
-                    'https://www.pistas-padel.es/wp-content/uploads/2021/10/Construccion-pistas-padel-Espana-1024x566.jpg',
                     'https://www.padeladdict.com/wp-content/uploads/2022/11/ventajas-de-las-pistas-de-padel-interiores-frente-a-las-exteriores-portada-1068x580.jpg'
                 ];
                 return images[slide];
