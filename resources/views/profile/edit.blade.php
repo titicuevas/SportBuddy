@@ -1,26 +1,26 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Perfil') }}
+        <h2 class="font-semibold text-2xl text-gray-800 text-center leading-tight">
+            {{('Perfil') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-center items-center h-full">
+        <div class="max-w-7xl mx-auto sm:px-6 xl:px-8 flex justify-center items-center h-full">
             <div class="space-y-6">
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-2xl max-w-xl">
                     @include('profile.partials.update-profile-information-form')
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-xl max-w-xl">
                     @include('profile.partials.update-password-form')
                 </div>
 
                 {{-- FOTO --}}
-                <div class="flex items-center justify-center p-6 bg-white rounded-lg max-w-md">
+                <div class="p-4 sm:p-8 bg-white rounded-lg max-w-xl">
                     <div>
-                        <h2 class="text-lg font-medium text-gray-900 mb-4 text-center">Cambiar Foto</h2>
+                        <h2 class="text-xl font-medium text-gray-900 mb-4 text-center">Cambiar Foto</h2>
 
                         {{-- Vista previa de la foto --}}
                         <div class="flex justify-center items-center mb-4">
@@ -161,7 +161,7 @@
             </div>
 
             {{-- DELETE --}}
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg max-w-xl">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-xl max-w-xl">
                 @include('profile.partials.delete-user-form')
             </div>
         </div>

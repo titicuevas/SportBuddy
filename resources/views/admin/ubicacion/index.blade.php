@@ -2,6 +2,16 @@
     @section('contenido')
 
 
+        {{-- Mensaje de éxito --}}
+        @if (session('success'))
+            <div class="flex items-center justify-center mb-6">
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                    class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+                    <p class="text-center text-xl">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
 
         @if (session('success') || session('error'))
             <div x-data="{ show: false }" x-show="show" x-init="() => {

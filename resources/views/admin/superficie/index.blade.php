@@ -1,13 +1,15 @@
 <x-administrador>
 
     @section('contenido')
+
+
+    {{-- Mensaje de éxito --}}
         @if (session('success'))
-            <div x-data="{ show: false }" x-show="show" x-init="() => {
-                show = true;
-                setTimeout(() => show = false, 5000);
-            }"
-                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md transition-all duration-300">
-                <p class="text-center text-base">{{ session('success') }}</p>
+            <div class="flex items-center justify-center mb-6">
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                    class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+                    <p class="text-center text-xl">{{ session('success') }}</p>
+                </div>
             </div>
         @endif
 
@@ -26,11 +28,11 @@
                 <tbody>
                     @foreach ($superficies as $superficie)
                         <tr>
-                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $superficie->tipo }}</td>
+                            <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">{{ $superficie->tipo }}
+                            </td>
                             <td class="py-2 px-4 text-xl border-b-2 border-gray-500 text-center">
                                 <br>
                                 <a href="{{ route('admin.superficie.edit', $superficie->id) }}"
-
                                     class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
                                     Editar
                                 </a>

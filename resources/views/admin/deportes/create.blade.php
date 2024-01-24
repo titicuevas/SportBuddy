@@ -12,12 +12,15 @@
             </div>
         @endif
 
+
+
         <!-- Mostrar mensajes de error de validación -->
         @if ($errors->has('nombre'))
             <div class="text-red-500 text-center text-sm mt-2">
                 {{ $errors->first('nombre') }}
             </div>
         @endif
+
 
 
 

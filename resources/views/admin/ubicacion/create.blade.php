@@ -28,6 +28,10 @@ bg-green-500
                         </svg>
                     </button>
                 </div>
+
+
+
+                
                 <!-- Agregar botón para mostrar detalles del error -->
                 @if (session('errorDetails'))
                     <button @click="showDetails = true" class="text-white focus:outline-none mt-2 underline cursor-pointer">

@@ -4,11 +4,13 @@
             <h1 class="text-4xl text-blue-500 mb-6">Agregar Nueva Superficie</h1>
         </div>
 
-        <!-- Mensaje de éxito -->
+        {{-- Mensaje de éxito --}}
         @if (session('error'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
-                <p class="text-center text-base">{{ session('error') }}</p>
+            <div class="flex items-center justify-center mb-6">
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                    class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+                    <p class="text-center text-xl">{{ session('error') }}</p>
+                </div>
             </div>
         @endif
 

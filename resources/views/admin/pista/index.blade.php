@@ -5,15 +5,16 @@
         </div>
 
 
-        {{-- Cambiar el diseño de el mensaje --}}
 
-        <!-- Mensaje de éxito -->
-        @if (session('success'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                class="fixed inset-x-0 mx-auto top-4 p-4 bg-green-700 text-white rounded-md shadow-md">
-                <p class="text-lg">{{ session('success') }}</p>
-            </div>
-        @endif
+       {{-- Mensaje de éxito --}}
+       @if (session('success'))
+       <div class="flex items-center justify-center mb-6">
+           <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+               class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+               <p class="text-center text-xl">{{ session('success') }}</p>
+           </div>
+       </div>
+   @endif
 
 
         <!-- Agrega un enlace para ir al formulario de creación -->
