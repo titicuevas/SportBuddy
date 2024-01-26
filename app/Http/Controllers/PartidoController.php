@@ -16,7 +16,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Events\MensajeEnviado;
 use App\Models\Mensaje;
-
+use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use App\Rules\UniquePistaHoraRule;
@@ -366,6 +366,18 @@ class PartidoController extends Controller
 
 
 
+    public function actualizarEstadoPago(Request $request, $partidoId)
+    {
+        $partido = Partido::findOrFail($partidoId);
+
+        // Actualiza el estado del pago en la base de datos
+        $partido->update(['pago_aprobado' => $request->pago_aprobado]);
+
+        // Almacena el estado del pago en la sesión
+        session(['pago_aprobado_' . $partidoId => $request->pago_aprobado]);
+
+        return response()->json(['success' => true]);
+    }
 
 
 

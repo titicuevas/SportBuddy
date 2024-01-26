@@ -27,6 +27,7 @@ return new class extends Migration
             $table->decimal('precio', 8, 2)->nullable();
             $table->boolean('pista_tiene_luz')->default(false);
             $table->decimal('precio_con_luz', 8, 2)->nullable();
+            $table->boolean('pago_aprobado')->default(false); //Agregada 26-02-2024
             $table->timestamps();
         });
     }
@@ -37,5 +38,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('partidos');
+
     }
 };

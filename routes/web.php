@@ -94,6 +94,11 @@ Route::post('/partidos/{partido}/desapuntarse', [PartidoController::class, 'desa
 
 
 
+/* Confirmar pago */
+
+Route::post('/actualizar-estado-pago/{partido}', [PartidoController::class, 'actualizarEstadoPago'])
+    ->name('actualizar_estado_pago');
+
 Route::post('/partidos', [PartidoController::class, 'store'])->name('partidos.store');
 Route::get('/partidos/index', [PartidoController::class, 'index'])->name('partidos.index');
 Route::get('/partidos/{partido}', [PartidoController::class, 'show'])->name('partidos.show');

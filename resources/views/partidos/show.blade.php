@@ -76,32 +76,67 @@
                             @if (auth()->user()->id == $partido->user->id)
                                 {{-- Botón de PayPal --}}
                                 <div id="paypal-button-container"></div>
+                                <div id="pista-pagada-message"
+                                    class="hidden bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
+                                    Pista Pagada 😊
+                                </div>
                                 <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
                                 <script nonce="random_nonce_value">
-                                    paypal.Buttons({
-                                        createOrder: function(data, actions) {
-                                            return actions.order.create({
-                                                purchase_units: [{
-                                                    amount: {
-                                                        value: '{{ $partido->precio }}',
-                                                        currency_code: 'EUR'
-                                                    }
-                                                }]
-                                            });
-                                        },
-                                        onApprove: function(data, actions) {
-                                            return actions.order.capture().then(function(details) {
-                                                // Aquí puedes realizar acciones adicionales después de que el pago sea aprobado
-                                                alert('Pago completado por ' + details.payer.name.given_name);
-                                                // Puedes actualizar el estado del pago en el servidor y mostrar un mensaje a todos los usuarios
-                                            });
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        const isPagoAprobado = localStorage.getItem('pago_aprobado_{{ $partido->id }}');
+
+                                        paypal.Buttons({
+                                            createOrder: function(data, actions) {
+                                                return actions.order.create({
+                                                    purchase_units: [{
+                                                        amount: {
+                                                            value: '{{ $partido->precio }}',
+                                                            currency_code: 'EUR'
+                                                        }
+                                                    }]
+                                                });
+                                            },
+                                            onApprove: function(data, actions) {
+                                                return actions.order.capture().then(function(details) {
+                                                    alert('Pago completado por ' + details.payer.name.given_name);
+                                                    document.getElementById('paypal-button-container').style.display =
+                                                        'none';
+                                                    document.getElementById('pista-pagada-message').style.display = 'block';
+
+                                                    // Almacena el estado del pago en localStorage
+                                                    localStorage.setItem('pago_aprobado_{{ $partido->id }}', true);
+
+                                                    // Actualiza el estado del pago en el servidor (puedes utilizar una solicitud HTTP o Laravel Echo, según tus preferencias)
+                                                    axios.post('{{ route('actualizar_estado_pago', $partido->id) }}', {
+                                                            pago_aprobado: true
+                                                        })
+                                                        .then(function(response) {
+                                                            // Maneja la respuesta, si es necesario
+                                                        })
+                                                        .catch(function(error) {
+                                                            console.error('Error al actualizar el estado del pago',
+                                                                error);
+                                                        });
+                                                });
+                                            }
+                                        }).render('#paypal-button-container');
+
+                                        // Mostrar el mensaje de "Pista Pagada" si el pago ya fue aprobado
+                                        if (isPagoAprobado) {
+                                            document.getElementById('paypal-button-container').style.display = 'none';
+                                            document.getElementById('pista-pagada-message').style.display = 'block';
                                         }
-                                    }).render('#paypal-button-container');
+                                    });
                                 </script>
-                            @else
-                                {{-- Aquí puedes mostrar un mensaje que indique que el botón solo está disponible para el creador --}}
-                                <p>Este botón solo está disponible para el creador del partido.</p>
+                            @elseif ($partido->pago_aprobado)
+                                {{-- Mensaje de "Pista Pagada" --}}
+                                <div id="pista-pagada-message"
+                                    class="bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
+                                    Pista Pagada 😊
+                                </div>
                             @endif
+
+                            
 
 
                         </div>

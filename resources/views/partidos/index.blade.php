@@ -4,7 +4,7 @@
 
     @if (session('success'))
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)"
-                    class="fixed inset-x-0 mx-auto top-0 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-red-500 text-white rounded-md shadow-md mt-40">
+                    class="fixed inset-x-0 mx-auto top-0 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-green-500 text-white rounded-md shadow-md mt-40">
                     <p class="text-center text-lg">{{ session('success') }}</p>
                 </div>
             @endif
