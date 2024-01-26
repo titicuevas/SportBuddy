@@ -80,6 +80,7 @@
                                     class="hidden bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
                                     Pista Pagada 😊
                                 </div>
+
                                 <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
                                 <script nonce="random_nonce_value">
                                     document.addEventListener("DOMContentLoaded", function() {
@@ -136,7 +137,7 @@
                                 </div>
                             @endif
 
-                            
+
 
 
                         </div>
