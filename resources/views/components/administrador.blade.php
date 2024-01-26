@@ -8,7 +8,33 @@
 
 
 
+    <style>
+        body {
+            font-family: 'sans-serif';
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        /* Añade estilos específicos para pantallas más pequeñas si es necesario */
+
+        @media only screen and (max-width: 768px) {
+
+            /* Por ejemplo, puedes ajustar el tamaño de fuente o márgenes */
+            body {
+                font-size: 14px;
+            }
+
+            /* Puedes ajustar estilos adicionales para tamaños de pantalla más pequeños aquí */
+            #sidebar {
+                width: 100%;
+            }
+
+            .w-3/4 {
+                width: 100%;
+            }
+        }
+    </style>
 
 
 

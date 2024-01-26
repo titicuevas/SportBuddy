@@ -73,32 +73,35 @@
 
 
 
-
-                            {{-- Botón de PayPal --}}
-                            <div id="paypal-button-container"></div>
-                            <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
-                            <script nonce="random_nonce_value">
-                                paypal.Buttons({
-                                    createOrder: function(data, actions) {
-                                        return actions.order.create({
-                                            purchase_units: [{
-                                                amount: {
-                                                    value: '{{ $partido->precio }}',
-                                                    currency_code: 'EUR'
-                                                }
-                                            }]
-                                        });
-                                    },
-                                    onApprove: function(data, actions) {
-                                        return actions.order.capture().then(function(details) {
-                                            // Aquí puedes realizar acciones adicionales después de que el pago sea aprobado
-                                            alert('Pago completado por ' + details.payer.name.given_name);
-                                        });
-                                    }
-                                }).render('#paypal-button-container');
-                            </script>
-
-
+                            @if (auth()->user()->id == $partido->user->id)
+                                {{-- Botón de PayPal --}}
+                                <div id="paypal-button-container"></div>
+                                <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
+                                <script nonce="random_nonce_value">
+                                    paypal.Buttons({
+                                        createOrder: function(data, actions) {
+                                            return actions.order.create({
+                                                purchase_units: [{
+                                                    amount: {
+                                                        value: '{{ $partido->precio }}',
+                                                        currency_code: 'EUR'
+                                                    }
+                                                }]
+                                            });
+                                        },
+                                        onApprove: function(data, actions) {
+                                            return actions.order.capture().then(function(details) {
+                                                // Aquí puedes realizar acciones adicionales después de que el pago sea aprobado
+                                                alert('Pago completado por ' + details.payer.name.given_name);
+                                                // Puedes actualizar el estado del pago en el servidor y mostrar un mensaje a todos los usuarios
+                                            });
+                                        }
+                                    }).render('#paypal-button-container');
+                                </script>
+                            @else
+                                {{-- Aquí puedes mostrar un mensaje que indique que el botón solo está disponible para el creador --}}
+                                <p>Este botón solo está disponible para el creador del partido.</p>
+                            @endif
 
 
                         </div>

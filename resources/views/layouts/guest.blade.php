@@ -12,6 +12,38 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+
+    <style>
+        body {
+            font-family: 'figtree', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Añade tus estilos existentes aquí */
+
+        @media only screen and (max-width: 768px) {
+            /* Estilos para dispositivos móviles */
+
+            body {
+                font-size: 14px;
+            }
+
+            /* Añade más estilos responsivos para móviles según sea necesario */
+        }
+
+        @media only screen and (min-width: 769px) and (max-width: 1024px) {
+            /* Estilos para tabletas */
+
+            body {
+                font-size: 16px;
+            }
+
+            /* Añade más estilos responsivos para tabletas según sea necesario */
+        }
+    </style>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -40,7 +72,7 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-   
+
     {{ $slot }}
     </div>
 </body>

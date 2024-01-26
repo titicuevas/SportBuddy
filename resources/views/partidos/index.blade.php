@@ -1,11 +1,13 @@
 <x-app-layout>
     {{-- Crear la pista con éxito --}}
+
+
     @if (session('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-            class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
-            <p class="text-center text-base">{{ session('success') }}</p>
-        </div>
-    @endif
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)"
+                    class="fixed inset-x-0 mx-auto top-0 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-red-500 text-white rounded-md shadow-md mt-40">
+                    <p class="text-center text-lg">{{ session('success') }}</p>
+                </div>
+            @endif
 
     <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
         @forelse ($partidos as $partido)
