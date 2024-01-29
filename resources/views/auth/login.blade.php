@@ -77,5 +77,7 @@
                 </div>
             </div>
         </div>
+        <script src="{{ asset('js/validaciones.js') }}" defer></script>
+
     </body>
 </x-guest-layout>
