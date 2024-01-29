@@ -2,11 +2,13 @@
     {{-- Crear la pista con éxito --}}
 
     @if (session('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)"
-            class="fixed inset-x-0 mx-auto top-0 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-green-500 text-white rounded-md shadow-md mt-20">
-            <p class="text-center text-lg">{{ session('success') }}</p>
+    <div class="flex items-center justify-center mb-6">
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+            class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
+            <p class="text-center text-xl">{{ session('success') }}</p>
         </div>
-    @endif
+    </div>
+@endif
 
 
     <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">

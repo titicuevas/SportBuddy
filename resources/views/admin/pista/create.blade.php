@@ -83,5 +83,7 @@
                     </button>
                 </div>
             </div>
+            <script src="{{ asset('js/validacionesAdmin.js') }}" defer></script>
+
         </form>
     </x-administrador>

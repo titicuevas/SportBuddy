@@ -42,7 +42,7 @@
 
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans h-screen">
     <div class="flex h-screen bg-gray-200">
         <!-- Barra lateral izquierda -->
 
@@ -120,7 +120,8 @@
 
 
         <!-- Contenido principal -->
-        <div class="w-3/4 p-6">
+        <div class="flex-grow overflow-y-auto">
+
             <h1 class="text-4xl text-gray-800 mb-6 text-center">
                 BIENVENIDO AL MODO ADMIN
             </h1>

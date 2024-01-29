@@ -21,7 +21,7 @@
             <!-- Campos del formulario -->
             <div class="mb-4 text-center">
                 <label for="tipo" class="block text-xl font-semibold mb-2 text-gray-600">Tipo</label>
-                <input type="text" name="tipo" id="tipo"
+                <input type="text" name="nombre" id="nombre"
                     class="w-48  text-xl border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
                     value="{{ old('tipo', $deporte->nombre) }}" required>
             </div>

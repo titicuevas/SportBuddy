@@ -22,7 +22,8 @@
         @endif
 
 
-
+        <!-- Nuevo elemento para mostrar el mensaje de error de JavaScript -->
+        <div id="nombreError" class="text-red-500 text-center text-sm mt-2"></div>
 
 
         <form action="{{ route('admin.deportes.store') }}" method="post">
@@ -48,6 +49,7 @@
                     Volver
                 </button>
             </div>
+            <script src="{{ asset('js/validacionesAdmin.js') }}" defer></script>
         </form>
 
     </x-administrador>

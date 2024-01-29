@@ -28,8 +28,8 @@
                 @csrf
                 <div class="mb-4 text-center">
                     <label for="tipo" class="block text-gray-600 text-xl font-semibold mb-2">Tipo de Superficie</label>
-                    <input type="text" name="tipo" id="tipo" class="w-48 border rounded-md p-2 text-xl border-opacity-50"
-                        required>
+                    <input type="text" name="tipo" id="tipo"
+                        class="w-48 border rounded-md p-2 text-xl border-opacity-50" required>
                 </div>
 
                 <div class="mt-4 text-center">
@@ -48,6 +48,9 @@
 
 
             </form>
+
+            <script src="{{ asset('js/validacionesAdmin.js') }}" defer></script>
+
         </div>
 
     </x-administrador>

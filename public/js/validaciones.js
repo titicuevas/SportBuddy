@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
             /* Validaciones contraseñas */
 
 
-            
+
             // Validación de longitud mínima de contraseña
             if (passwordInput.value.length < 8) {
                 alert("La contraseña debe tener al menos 8 caracteres.");
