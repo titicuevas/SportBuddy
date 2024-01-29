@@ -298,19 +298,7 @@ class PartidoController extends Controller
         // Después de inscribir al usuario, puedes enviar un mensaje
         $contenidoMensaje = '¡Nuevo jugador inscrito! ' . $user->name . ' se ha unido al partido.';
 
-        /*
-        // Crea el mensaje en la base de datos
-        $mensaje = Mensaje::create([
-            'partido_id' => $partido->id,
-            'user_id' => $user->id,
-            'contenido' => $contenidoMensaje,
-        ]);
-
-        // Emite el evento para que se transmita a través de Pusher
-
-        broadcast(new MensajeEnviado($mensaje));
-        return redirect()->route('partidos.show', $partido)->with('success', 'Te has inscrito al partido correctamente'); */
-
+        
         // Obtener los equipos del partido
         $equipo1 = Equipo::find(1);
         $equipo2 = Equipo::find(2);

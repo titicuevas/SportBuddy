@@ -10,7 +10,11 @@
                 <!-- Sección 1: Datos del partido -->
                 <div class="flex-1/4">
                     <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">Datos del partido</h1>
+                        <hr class="w-full border-t-8 bg-gray-500 mt-1">
+
+
 
                         <div class="mb-6">
                             <p class="text-xl text-gray-700">
@@ -73,6 +77,8 @@
 
 
 
+
+
                             @if (auth()->user()->id == $partido->user->id)
                                 {{-- Botón de PayPal --}}
                                 <div id="paypal-button-container"></div>
@@ -80,6 +86,7 @@
                                     class="hidden bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
                                     Pista Pagada 😊
                                 </div>
+
 
                                 <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
                                 <script nonce="random_nonce_value">
@@ -167,6 +174,15 @@
                                 al partido</button>
                         @endif
                     </form>
+
+
+
+
+
+
+
+
+
 
                     {{-- Boton de Desapuntarse --}}
                     <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}"
@@ -266,6 +282,7 @@
 
                         <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <h2 class="text-lg  font-bold text-black">Pronóstico del tiempo</h2>
+                            <br>
                             <div id="weather-info"></div>
                         </div>
                     </div>
@@ -290,6 +307,8 @@
                         /* Ajusta el tamaño de fuente según tus preferencias */
                     }
                 </style>
+
+
 
                 <script nonce="random_nonce_value">
                     const apiKey = '9facddaf62df7e0216baad1b406319c9';
@@ -382,7 +401,6 @@
 
 
                 <!-- Parte 2 dividida en dos con fondo verde -->
-
                 <div class="bg-green-200 p-6 rounded-lg flex space-x-4">
                     <!-- Parte 2.1 - EQUIPO 1 -->
                     <div class="flex-1">
@@ -392,10 +410,9 @@
                             <br>
                             @foreach ($partido->asignamientos as $asignamiento)
                                 @if ($asignamiento->equipo_id == 1)
-                                    <a href="{{ route('user.show', $partido->user) }}"
+                                    <a href="{{ route('user.show', $asignamiento->user) }}"
                                         class="text-blue-500 hover:text-blue-700 underline">
-                                        <p class="text-gray-700 text-center">
-                                            {{ $asignamiento->user->name }}</p>
+                                        <p class="text-gray-700 text-center">{{ $asignamiento->user->name }}</p>
                                     </a>
                                     <br>
                                 @endif
@@ -411,10 +428,9 @@
                             <br>
                             @foreach ($partido->asignamientos as $asignamiento)
                                 @if ($asignamiento->equipo_id == 2)
-                                    <a href="{{ route('user.show', $partido->user) }}"
+                                    <a href="{{ route('user.show', $asignamiento->user->id) }}"
                                         class="text-blue-500 hover:text-blue-700 underline">
-                                        <p class="text-gray-700 text-center">
-                                            {{ $asignamiento->user->name }}</p>
+                                        <p class="text-gray-700 text-center">{{ $asignamiento->user->name }}</p>
                                     </a>
                                     <br>
                                 @endif
@@ -422,4 +438,6 @@
                         </div>
                     </div>
                 </div>
+
+
 </x-app-layout>
