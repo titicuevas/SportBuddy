@@ -1,93 +1,59 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Datos de los usuarios
-    const userForm = document.getElementById("user-form");
+    const profileForm = document.getElementById("profile-form");
 
-    if (userForm) {
-        userForm.addEventListener("submit", function (event) {
-            if (!validateUserForm()) {
+    if (profileForm) {
+        profileForm.addEventListener("submit", function (event) {
+            if (!validateProfileForm()) {
                 event.preventDefault();
             }
         });
     }
 
-    function validateUserForm() {
+    function validateProfileForm() {
         const nameInput = document.getElementById("name");
         const apellidosInput = document.getElementById("apellidos");
         const telefonoInput = document.getElementById("telefono");
         const emailInput = document.getElementById("email");
 
+        // Limpiar mensajes de error
+        document.getElementById("nameError").innerHTML = "";
+        document.getElementById("apellidosError").innerHTML = "";
+        document.getElementById("telefonoError").innerHTML = "";
+        document.getElementById("emailError").innerHTML = "";
+
+        // Validación de nombre
         if (nameInput.value.trim() === "") {
-            alert("Por favor, introduce un nombre.");
+            document.getElementById("nameError").innerHTML =
+                "Por favor, introduce un nombre.";
             return false;
         }
 
+        // Validación de apellidos
         if (apellidosInput.value.trim() === "") {
-            alert("Por favor, introduce apellidos.");
+            document.getElementById("apellidosError").innerHTML =
+                "Por favor, introduce apellidos.";
             return false;
         }
 
+        // Validación de teléfono
         if (telefonoInput.value.trim() === "") {
-            alert("Por favor, introduce un teléfono.");
+            document.getElementById("telefonoError").innerHTML =
+                "Por favor, introduce un teléfono.";
             return false;
         }
 
-        // Puedes agregar más validaciones según tus necesidades
+        // Validación de correo electrónico
+        if (emailInput.value.trim() === "") {
+            document.getElementById("emailError").innerHTML =
+                "Por favor, introduce un correo electrónico.";
+            return false;
+        }
 
         return true;
     }
 
     console.log(
         "El script de validación para datos de usuarios está funcionando correctamente."
-    );
-
-    // Datos de la contraseña
-    const passwordForm = document.getElementById("password-form");
-
-    if (passwordForm) {
-        passwordForm.addEventListener("submit", function (event) {
-            if (!validatePasswordForm()) {
-                event.preventDefault();
-            }
-        });
-    }
-
-    function validatePasswordForm() {
-        const currentPasswordInput =
-            document.getElementById("current_password");
-        const newPasswordInput = document.getElementById("password");
-        const confirmPasswordInput = document.getElementById(
-            "password_confirmation"
-        );
-
-        if (currentPasswordInput.value.trim() === "") {
-            alert("Por favor, introduce tu contraseña actual.");
-            return false;
-        }
-
-        if (newPasswordInput.value.trim() === "") {
-            alert("Por favor, introduce una nueva contraseña.");
-            return false;
-        }
-
-        if (confirmPasswordInput.value.trim() === "") {
-            alert("Por favor, confirma tu nueva contraseña.");
-            return false;
-        }
-
-        if (newPasswordInput.value !== confirmPasswordInput.value) {
-            alert(
-                "Las contraseñas no coinciden. Por favor, inténtalo de nuevo."
-            );
-            return false;
-        }
-
-        // Puedes agregar más validaciones según tus necesidades
-
-        return true;
-    }
-
-    console.log(
-        "El script de validación para cambio de contraseña está funcionando correctamente."
     );
 
     /* Validaciones Registro */
@@ -137,10 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return false;
             }
 
-
             /* Validaciones contraseñas */
-
-
 
             // Validación de longitud mínima de contraseña
             if (passwordInput.value.length < 8) {

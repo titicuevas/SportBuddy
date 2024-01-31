@@ -34,13 +34,21 @@ class PartidoController extends Controller
      */
     public function index()
     {
+        // Obtén el usuario actualmente autenticado
+        $usuario = auth()->user();
+
+        // Obtén todos los partidos
         $partidos = Partido::with('user')->get();
 
-        // $partidos = Partido::with('ubicacion')->get();
+        // Obtén los partidos en los que el usuario está inscrito
+        $misPartidos = Asignamiento::where('user_id', $usuario->id)->pluck('partido_id');
 
-        return view('partidos.index', compact('partidos'));
+        // Filtra los partidos para mostrar solo los que el usuario está inscrito
+        $partidosInscritos = $partidos->whereIn('id', $misPartidos);
+
+        // Pasa los partidos y "Mis Partidos" a la vista
+        return view('partidos.index', compact('partidos', 'partidosInscritos'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -298,7 +306,7 @@ class PartidoController extends Controller
         // Después de inscribir al usuario, puedes enviar un mensaje
         $contenidoMensaje = '¡Nuevo jugador inscrito! ' . $user->name . ' se ha unido al partido.';
 
-        
+
         // Obtener los equipos del partido
         $equipo1 = Equipo::find(1);
         $equipo2 = Equipo::find(2);

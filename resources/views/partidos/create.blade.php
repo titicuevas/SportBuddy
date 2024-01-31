@@ -50,6 +50,7 @@
 
 
 
+
                         {{-- NUMERO DE PISTA --}}
                         <div x-show="pistas.length > 0">
                             <div class="mb-4">
