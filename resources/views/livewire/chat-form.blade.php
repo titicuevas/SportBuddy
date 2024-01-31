@@ -1,51 +1,78 @@
-<div>
+<div class="">
 
+    <a href="/" style="color: black;">
+        <h5 class="pb-0 mb-0"><strong>Live Chat with</strong></h5>
+        <h2 class="pt-0 mt-0"><strong>Laravel7 + LiveWire + Pusher</strong></h2>
+    </a>
 
+    <!-- El Usuario -->
     <div class="form-group">
+        <label for="usuario"><strong>Usuario</strong></label>
+        <input
+            type="text"
+            wire:model="usuario"
+            class="form-control"
+            id="usuario">
 
-        <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" wire:model="nombre">
-        <small>{{ $nombre }}</small>
+        <!-- Validación -->
+        @error("usuario")
+            <small class="text-danger">{{ $message }}</small>
+        @else
+            <small class="text-muted">Tu nombre: {{$usuario}}</small>
+        @enderror
     </div>
-    <br>
 
+    <!-- Mensaje de Chat a Enviar -->
     <div class="form-group">
+        <label for="mensaje"><strong>Mensaje</strong></label>
+        <input type="text"
+            wire:model="mensaje"
+            wire:keydown.enter="enviarMensaje"
+            class="form-control"
+            id="mensaje">
 
-        <label for="mensaje">Mensaje</label>
-        <input type="text" class="form-control" id="mensaje" wire:model="mensaje">
-        <small>{{ $mensaje }}</small>
+        <!-- Validación -->
+        @error("mensaje")
+            <small class="text-danger">{{ $message }}</small>
+        @else
+            <small class="text-muted">Escribe tu mensaje y teclea <code>ENTER</code> para enviarlo</small>
+        @enderror
     </div>
-    <br>
 
-    <button class="btn btn-primary" wire:click="enviarMensaje">Enviar Mensaje</button>
+    <div wire:offline class="alert alert-danger text-center">
+        <strong>Se ha perdido la conexión a Internet</strong>
+    </div>
 
-
-    {{-- Mensaje alerta --}}
-
-    <div style="position: :absolute;" class="alert alert-success collapse" role="alert" id="avisoSuccess">
-
-        Se envio
+    <div class="row">
+        <div class="col-6">
+            <!-- Mensajes de alerta -->
+            <div style="position: absolute;"
+            class="alert alert-success collapse"
+            role="alert"
+            id="avisoSuccess"
+            >Se ha enviado</div>
+        </div>
+        <div class="col-6 pt-2 text-right">
+            <button
+                class="btn btn-primary"
+                wire:click="enviarMensaje"
+                wire:loading.attr="disabled"
+                wire:offline.attr="disabled"
+            >Enviar Mensaje</button>
+        </div>
     </div>
 
     <script>
-        /* JS de componetes */
 
-        window.livewire.on('mensajeEnviado', function() {
-
-
-            /* Mostrar aviso */
-            $("#avisoSuccess").fadeIn("slow");
-
-            /* Ocultar aviso 3 segundos */
-
-            setTimeout(function() {
-                $("#avisoSuccess").fadeOut("slow");
-
-            }, 3000);
-
+        // Esto lo recibimos en JS cuando lo emite el componente
+        // El evento "enviadoOK"
+        $( document ).ready(function() {
+            window.livewire.on('enviadoOK', function () {
+                $("#avisoSuccess").fadeIn("slow");
+                setTimeout(function(){ $("#avisoSuccess").fadeOut("slow"); }, 3000);
+            });
         });
+
     </script>
-
-
 
 </div>

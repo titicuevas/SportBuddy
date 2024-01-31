@@ -22,7 +22,7 @@ use App\Http\Controllers\PaypalController;
 
 /* Controlador Chat */
 
-use App\Http\Controllers\ChatController;
+use App\Http\Controllers\MensajeController;
 
 /* CONTROLADORES ADMIN */
 use App\Http\Controllers\AdminUserController;
@@ -215,16 +215,8 @@ Route::middleware('auth')->group(function () {
 
 
 /* Intento Chat */
-
-Route::get('chat/{chat}', 'App\Http\Controllers\ChatController@show')->name('chat.show');
-
-Route::get('chat/with/{user}', 'App\Http\Controllers\ChatController@chat_with')->name('chat.with');
-
-Route::get('chat/{chat}/get_users', 'App\Http\Controllers\ChatController@get_users')->name('chat.get_users');
-
-Route::get('chat/{chat}/get_messages', 'App\Http\Controllers\ChatController@get_messages')->name('chat.get_messages');
-
-Route::post('message/sent', '\App\Http\Controllers\MessageController@sent')->name('message.sent');
+Route::get('/mensajes/{partidoId}', [MensajeController::class, 'index'])->name('mensajes.index')->middleware('web');
+Route::get('/mensajes', [MensajeController::class, 'index'])->name('mensajes.index');
 
 
 //Correo electronico

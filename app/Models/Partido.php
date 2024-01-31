@@ -90,7 +90,10 @@ public function superficie()
     return $this->belongsTo(Superficie::class, 'superficie_id');
 }
 
-
+public function mensajes()
+{
+    return $this->hasMany(Mensaje::class);
+}
 
 
 }

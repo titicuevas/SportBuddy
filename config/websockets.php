@@ -29,8 +29,20 @@ return [
             'secret' => env('PUSHER_APP_SECRET'),
             'path' => env('PUSHER_APP_PATH'),
             'capacity' => null,
-            'enable_client_messages' => true,
+            'enable_client_messages' => false,
             'enable_statistics' => true,
+        ],
+    ],
+
+    'channels' => [
+        'public' => [
+            'driver' => 'log',
+        ],
+        'private' => [
+            'driver' => 'log',
+        ],
+        'presence' => [
+            'driver' => 'log',
         ],
     ],
 

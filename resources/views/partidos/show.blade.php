@@ -1,6 +1,7 @@
 <x-app-layout>
 
 
+
     <div class="flex justify-center items-center h-screen">
         <div class="flex flex-col space-y-4">
 
@@ -441,18 +442,29 @@
                     </div>
 
                 </div>
+
+                {{-- <div class="my-4">
+                    <a href="{{ route('mensajes.index', ['partidoId' => $partidoId]) }}"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Ir al chat grupal
+                    </a>
+                </div>
+
+                <!-- Incluye el componente Livewire Mensajes -->
+                <livewire:mensajes :partidoId="$partidoId" /> --}}
+
+
+
             </div>
 
 
 
- {{-- Botón para ir a la lista de partidos --}}
- <div class="mt-8 flex justify-center">
-    <a href="{{ route('partidos.index') }}"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Volver
-    </a>
-</div>
+            {{-- Botón para ir a la lista de partidos --}}
+            <div class="mt-8 flex justify-center">
+                <a href="{{ route('partidos.index') }}"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Volver
+                </a>
+            </div>
 
 </x-app-layout>
-
-
