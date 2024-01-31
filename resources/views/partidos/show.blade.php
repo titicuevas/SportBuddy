@@ -7,12 +7,14 @@
             <!-- Parte 1 con fondo azul -->
             <div class="bg-blue-200 p-6 rounded-lg flex space-x-4">
 
+
                 <!-- Sección 1: Datos del partido -->
                 <div class="flex-1/4">
                     <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">Datos del partido</h1>
                         <hr class="w-full border-t-8 bg-gray-500 mt-1">
+
 
 
 
@@ -437,7 +439,20 @@
                             @endforeach
                         </div>
                     </div>
-                </div>
 
+                </div>
+            </div>
+
+
+
+ {{-- Botón para ir a la lista de partidos --}}
+ <div class="mt-8 flex justify-center">
+    <a href="{{ route('partidos.index') }}"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Volver
+    </a>
+</div>
 
 </x-app-layout>
+
+
