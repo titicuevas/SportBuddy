@@ -33,22 +33,26 @@ class PartidoController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-{
-    // Obtén el usuario actualmente autenticado
-    $usuario = auth()->user();
+    {
+        // Obtén el usuario actualmente autenticado
+        $usuario = auth()->user();
 
-    // Obtén todos los partidos
-    $partidos = Partido::with('user')->get();
+        // Obtén todos los partidos
+        $partidos = Partido::with('user')->get();
 
-    // Obtén los partidos en los que el usuario está inscrito
-    $misPartidos = Asignamiento::where('user_id', $usuario->id)->pluck('partido_id');
 
-    // Filtra los partidos para mostrar solo los que el usuario está inscrito
-    $partidosInscritos = $partidos->whereIn('id', $misPartidos);
+        // Obtén todos los partidos ordenados por fecha_hora
+        $partidos = Partido::with('user')->orderBy('fecha_hora', 'asc')->get();
 
-    // Pasa los partidos y "Mis Partidos" a la vista
-    return view('partidos.index', compact('partidos', 'partidosInscritos'));
-}
+        // Obtén los partidos en los que el usuario está inscrito
+        $misPartidos = Asignamiento::where('user_id', $usuario->id)->pluck('partido_id');
+
+        // Filtra los partidos para mostrar solo los que el usuario está inscrito
+        $partidosInscritos = $partidos->whereIn('id', $misPartidos);
+
+        // Pasa los partidos y "Mis Partidos" a la vista
+        return view('partidos.index', compact('partidos', 'partidosInscritos'));
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -55,20 +55,20 @@ class Partido extends Model
 
     public function ubicacion()
     {
-        return $this->belongsTo('App\Models\Ubicacion','ubicacion_id');
+        return $this->belongsTo('App\Models\Ubicacion', 'ubicacion_id');
     }
 
 
     public function deporte()
     {
-        return $this->belongsTo('App\Models\Deporte' , 'deporte_id');
+        return $this->belongsTo('App\Models\Deporte', 'deporte_id');
     }
 
 
     public function getImagePathAttribute()
-{
-    return asset('storage/' . $this->deporte->imagen);
-}
+    {
+        return asset('storage/' . $this->deporte->imagen);
+    }
 
     public function asignamientos()
     {
@@ -76,24 +76,34 @@ class Partido extends Model
     }
 
     public function user()
-{
-    return $this->belongsTo(User::class, 'user_id');
-}
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
-public function pista()
-{
-    return $this->belongsTo(Pista::class, 'pista_id');
-}
+    public function pista()
+    {
+        return $this->belongsTo(Pista::class, 'pista_id');
+    }
 
-public function superficie()
-{
-    return $this->belongsTo(Superficie::class, 'superficie_id');
-}
-
-public function mensajes()
-{
-    return $this->hasMany(Mensaje::class);
-}
+    public function superficie()
+    {
+        return $this->belongsTo(Superficie::class, 'superficie_id');
+    }
 
 
+    public function mostrarPartidos()
+    {
+        // Obtén los partidos ordenados por fecha_hora en orden ascendente
+        $partidos = Partido::with(['ubicacion', 'user'])
+            ->orderBy('fecha_hora', 'asc')
+            ->get();
+
+        return view('partidos.index', ['partidos' => $partidos]);
+    }
+
+
+    public function mensajes()
+    {
+        return $this->hasMany(Mensaje::class);
+    }
 }
