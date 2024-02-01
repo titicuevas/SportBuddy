@@ -17,11 +17,10 @@ use Illuminate\Support\Facades\DB;
 use App\Events\MensajeEnviado;
 use App\Models\Mensaje;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
 use App\Rules\UniquePistaHoraRule;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\Comentario;
 use Carbon\Carbon;
 
 
@@ -275,6 +274,9 @@ class PartidoController extends Controller
         // Elimina todas las asignaciones asociadas al partido
         Asignamiento::where('partido_id', $partido->id)->delete();
 
+        // Elimina los comentarios asociados al partido
+        $partido->comentarios()->delete();
+
         // Elimina el partido
         $partido->delete();
 
@@ -352,6 +354,12 @@ class PartidoController extends Controller
         $user = auth()->user()->id;
         $asignamiento =  Asignamiento::where('partido_id', $partido->id)
             ->where('user_id', $user)->first();
+
+        // Crear una instancia del modelo Comentario
+        $comentario = new Comentario();
+
+        // Eliminar comentarios del usuario que se ha desapuntado
+        $comentario->eliminarComentariosUsuario($partido, $user);
 
         // Eliminar la asignación
         if ($asignamiento) {

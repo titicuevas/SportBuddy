@@ -13,56 +13,62 @@
 
     {{-- Mis Partidos --}}
     <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
-        <h2 class="text-3xl  text-center font-bold mb-4 w-full">Mis Partidos</h2>
+        <h2 class="text-3xl text-center font-bold mb-4 w-full">Mis Partidos</h2>
 
-
-        {{-- es el operador de fusión de null, que proporciona un valor predeterminado (en este caso, un array vacío []) en caso de que $partidosInscritos sea null. Esto ayuda a evitar errores si la variable no está definida o es null. --}}
         @forelse ($partidosInscritos ?? [] as $partido)
             @php
                 $fechaHoraPartido = \Carbon\Carbon::parse($partido->fecha_hora);
+                $fechaHoraActual = \Carbon\Carbon::now();
             @endphp
-            <article id="partido" class="card card2 w-96 mb-8">
-                <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
-                    class="btn btn-sm btn-primary">
-                    <header class="card__header bg-cover h-72"
-                        style="background-image: url('{{ $partido->ubicacion->image_path }}');">
-                        <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->ubicacion->nombre }}</h1>
-                        <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->deporte->nombre }}</h1>
-                    </header>
-                </a>
-                <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
-                    <div class="card__address flex">
-                        <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
-                            <path
-                                d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
-                            </path>
-                        </svg>
-                        <div class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
-                            <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
-                                {{ $partido->ubicacion->direccion }}
-                            </a>
+
+            {{-- Verificar si el partido está en el futuro --}}
+            @if ($fechaHoraPartido->gt($fechaHoraActual))
+                <article id="partido" class="card card2 w-96 mb-8">
+                    <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
+                        class="btn btn-sm btn-primary">
+                        <header class="card__header bg-cover h-72"
+                            style="background-image: url('{{ $partido->ubicacion->image_path }}');">
+                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->ubicacion->nombre }}</h1>
+                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->deporte->nombre }}</h1>
+                        </header>
+                    </a>
+                    <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
+                        <div class="card__address flex">
+                            <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
+                                <path
+                                    d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
+                                </path>
+                            </svg>
+                            <div
+                                class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
+                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
+                                    {{ $partido->ubicacion->direccion }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
+                            <div class="text-left">
+                                <label for="fecha" class="block mb-2 text-2xl font-bold text-black">Fecha:</label>
+                                <p class="text-gray-700 text-xl">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <label for="hora" class="block mb-2 text-2xl font-bold text-black">Hora:</label>
+                                <p class="text-gray-700 text-xl">
+                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                        <div class="text-left">
-                            <label for="fecha" class="block mb-2 text-2xl font-bold text-black">Fecha:</label>
-                            <p class="text-gray-700 text-xl">
-                                {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
-                            </p>
-                        </div>
-                        <div class="text-right">
-                            <label for="hora" class="block mb-2 text-2xl font-bold text-black">Hora:</label>
-                            <p class="text-gray-700 text-xl">
-                                {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </article>
+                </article>
+            @endif
+
         @empty
             <p class="text-center text-gray-700">No estás apuntado a ningún partido.</p>
         @endforelse
     </div>
+
     <br>
 
 

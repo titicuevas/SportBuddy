@@ -448,20 +448,26 @@
                     <h2 class="text-2xl font-bold text-black mb-4">Comentarios</h2>
 
                     <!-- Formulario para agregar comentario -->
-                    <form id="comentario-form" method="POST"
-                        action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
-                        @csrf
-                        <input type="hidden" name="partido_id" value="{{ $partido->id }}">
-                        <textarea name="contenido" id="contenido" class="w-full p-2 border rounded" placeholder="Escribe tu comentario"></textarea>
-                        <button type="button" onclick="enviarComentario()"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">Agregar
-                            Comentario</button>
-                    </form>
+                    @if ($inscrito)
+                        <form id="comentario-form" method="POST"
+                            action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
+                            @csrf
+                            <input type="hidden" name="partido_id" value="{{ $partido->id }}">
+                            <div class="flex">
+                                <textarea name="contenido" id="contenido" class="w-full p-2 border rounded resize-none"
+                                    placeholder="Escribe tu comentario"></textarea>
+                                <button type="button" onclick="enviarComentario()"
+                                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar
+                                    Comentario</button>
+                            </div>
+                        </form>
+                    @else
+                        <p class="text-gray-700">Debes estar inscrito para agregar comentarios.</p>
+                    @endif
 
-                    <!-- Mostrar los últimos 3 comentarios existentes -->
                     <!-- Mostrar comentarios existentes -->
-                    <div id="comentarios-section" class="max-h-96 overflow-y-auto">
-                        @foreach ($partido->comentarios->sortByDesc('created_at')->take(5)->reverse() as $comentario)
+                    <div id="comentarios-section" class="max-h-96 overflow-y-auto mt-4">
+                        @foreach ($partido->comentarios->sortBy('created_at') as $comentario)
                             <div class="bg-white p-4 mb-4 rounded-lg">
                                 <p class="text-gray-700">
                                     <strong>{{ $comentario->user->name }}</strong>
@@ -471,51 +477,37 @@
                                 </p>
                             </div>
                         @endforeach
-
                     </div>
 
-
+                    {{-- <!-- Botón "Ver más comentarios" -->
+        @if ($partido->comentarios->count() > 3)
+            <button id="ver-mas-comentarios" class="text-blue-500 hover:text-blue-700 underline">Ver más
+                comentarios</button>
+        @endif --}}
                 </div>
 
-                {{-- <!-- Botón "Ver más comentarios" -->
-                    @if ($partido->comentarios->count() > 3)
-                        <button id="ver-mas-comentarios" class="text-blue-500 hover:text-blue-700 underline">Ver más
-                            comentarios</button>
-                    @endif --}}
-            </div>
+                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                <script>
+                    // Declarar la función en el ámbito global
+                    function enviarComentario() {
+                        // Obtener datos del formulario
+                        var formData = $('#comentario-form').serialize();
 
-            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-            <script>
-                // Declarar la función en el ámbito global
-                function enviarComentario() {
-                    // Obtener datos del formulario
-                    var formData = $('#comentario-form').serialize();
-
-                    // Enviar solicitud AJAX
-                    $.ajax({
-                        type: 'POST',
-                        url: $('#comentario-form').attr('action'),
-                        data: formData,
-                        success: function(response) {
-                            // Agregar el nuevo comentario al contenedor de comentarios
-                            $('#comentarios-section').prepend(response);
-
-                            // Limpiar el contenido del textarea
-                            $('#contenido').val('');
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-                }
-
-                $(document).ready(function() {
-                    function cargarComentarios() {
+                        // Enviar solicitud AJAX
                         $.ajax({
-                            type: 'GET',
-                            url: '{{ route('comentarios.index', $partido->id) }}',
+                            type: 'POST',
+                            url: $('#comentario-form').attr('action'),
+                            data: formData,
                             success: function(response) {
-                                $('#comentarios-section').html(response);
+                                // Agregar el nuevo comentario al contenedor de comentarios
+                                $('#comentarios-section').append(response);
+
+                                // Limpiar el contenido del textarea
+                                $('#contenido').val('');
+
+                                // Desplazarse al nuevo comentario (scroll hacia abajo)
+                                var container = $('#comentarios-section');
+                                container.scrollTop(container.prop("scrollHeight"));
                             },
                             error: function(error) {
                                 console.log(error);
@@ -523,51 +515,80 @@
                         });
                     }
 
-                    // Actualizar comentarios cada 5 segundos
-                    setInterval(function() {
-                        cargarComentarios();
-                    }, 5000);
+                    $(document).ready(function() {
+                        function cargarComentarios() {
+                            $.ajax({
+                                type: 'GET',
+                                url: '{{ route('comentarios.index', $partido->id) }}',
+                                success: function(response) {
+                                    $('#comentarios-section').html(response);
 
-                    // Manejar clic en "Ver más comentarios"
-                    $('#ver-mas-comentarios').on('click', function() {
-                        cargarComentarios();
-                    });
+                                    // Desplazarse al último comentario (scroll hacia abajo)
+                                    var container = $('#comentarios-section');
+                                    container.scrollTop(container.prop("scrollHeight"));
+                                },
+                                error: function(error) {
+                                    console.log(error);
+                                }
+                            });
+                        }
 
-                    // Manejar tecla "Enter" en el área de texto
-                    $('#contenido').keyup(function(event) {
-                        if (event.key === 'Enter' && !event.shiftKey) {
-                            event.preventDefault();
-                            enviarComentario();
+                        // Actualizar comentarios cada 5 segundos
+                        setInterval(function() {
+                            cargarComentarios();
+                        }, 5000);
+
+                        // Manejar clic en "Ver más comentarios"
+                        $('#ver-mas-comentarios').on('click', function() {
+                            cargarComentarios();
+                        });
+
+                        // Manejar tecla "Enter" en el área de texto
+                        $('#contenido').keyup(function(event) {
+                            if (event.key === 'Enter' && !event.shiftKey) {
+                                event.preventDefault();
+                                enviarComentario();
+                            }
+                        });
+
+                        // Agregar la hora al enviar un comentario
+                        $('#comentario-form').submit(function(event) {
+                            event.preventDefault(); // Evitar que el formulario se envíe normalmente
+
+                            // Obtener la hora actual
+                            var horaActual = obtenerHoraActual();
+
+                            // Obtener el contenido del comentario
+                            var comentarioContenido = $('#contenido').val();
+
+                            // Agregar el nuevo comentario al contenedor de comentarios
+                            $('#comentarios-section').append(
+                                '<div class="bg-white p-4 mb-4 rounded-lg"><p class="text-gray-700"><strong>{{ Auth::user()->name }}</strong> (' +
+                                horaActual + '): ' + comentarioContenido + '</p></div>');
+
+                            // Limpiar el contenido del textarea
+                            $('#contenido').val('');
+
+                            // Desplazarse al último comentario (scroll hacia abajo)
+                            var container = $('#comentarios-section');
+                            container.scrollTop(container.prop("scrollHeight"));
+                        });
+
+                        // Función para formatear la hora
+                        function obtenerHoraActual() {
+                            var fecha = new Date();
+                            var horas = fecha.getHours().toString().padStart(2, '0');
+                            var minutos = fecha.getMinutes().toString().padStart(2, '0');
+                            return horas + ':' + minutos;
                         }
                     });
-
-                    // Agregar la hora al enviar un comentario
-                    $('#comentario-form').submit(function(event) {
-                        event.preventDefault(); // Evitar que el formulario se envíe normalmente
-
-                        var horaActual = obtenerHoraActual();
-                        $('#comentarios-section').prepend(
-                            '<div class="bg-white p-4 mb-4 rounded-lg"><p class="text-gray-700"><strong>{{ Auth::user()->name }}</strong> (' +
-                            horaActual + '): ' + $('#contenido').val() + '</p></div>');
-
-                        // Limpiar el contenido del textarea
-                        $('#contenido').val('');
-                    });
-
-                    // Función para formatear la hora
-                    function obtenerHoraActual() {
-                        var fecha = new Date();
-                        var horas = fecha.getHours().toString().padStart(2, '0');
-                        var minutos = fecha.getMinutes().toString().padStart(2, '0');
-                        return horas + ':' + minutos;
-                    }
-                });
-            </script>
+                </script>
 
 
 
 
 
+            </div>
         </div>
 
     </div>
