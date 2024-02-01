@@ -106,4 +106,9 @@ class Partido extends Model
     {
         return $this->hasMany(Mensaje::class);
     }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class);
+    }
 }

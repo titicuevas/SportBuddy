@@ -443,28 +443,143 @@
 
                 </div>
 
-                {{-- <div class="my-4">
-                    <a href="{{ route('mensajes.index', ['partidoId' => $partidoId]) }}"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Ir al chat grupal
-                    </a>
+                {{-- Comentarios --}}
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-black mb-4">Comentarios</h2>
+
+                    <!-- Formulario para agregar comentario -->
+                    <form id="comentario-form" method="POST"
+                        action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
+                        @csrf
+                        <input type="hidden" name="partido_id" value="{{ $partido->id }}">
+                        <textarea name="contenido" id="contenido" class="w-full p-2 border rounded" placeholder="Escribe tu comentario"></textarea>
+                        <button type="button" onclick="enviarComentario()"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">Agregar
+                            Comentario</button>
+                    </form>
+
+                    <!-- Mostrar los últimos 3 comentarios existentes -->
+                    <!-- Mostrar comentarios existentes -->
+                    <div id="comentarios-section" class="max-h-96 overflow-y-auto">
+                        @foreach ($partido->comentarios->sortByDesc('created_at')->take(5)->reverse() as $comentario)
+                            <div class="bg-white p-4 mb-4 rounded-lg">
+                                <p class="text-gray-700">
+                                    <strong>{{ $comentario->user->name }}</strong>
+                                    <span
+                                        class="text-sm text-gray-500">{{ $comentario->created_at->format('H:i') }}</span>:
+                                    {{ $comentario->contenido }}
+                                </p>
+                            </div>
+                        @endforeach
+
+                    </div>
+
+
                 </div>
 
-                <!-- Incluye el componente Livewire Mensajes -->
-                <livewire:mensajes :partidoId="$partidoId" /> --}}
-
-
-
+                {{-- <!-- Botón "Ver más comentarios" -->
+                    @if ($partido->comentarios->count() > 3)
+                        <button id="ver-mas-comentarios" class="text-blue-500 hover:text-blue-700 underline">Ver más
+                            comentarios</button>
+                    @endif --}}
             </div>
 
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+            <script>
+                // Declarar la función en el ámbito global
+                function enviarComentario() {
+                    // Obtener datos del formulario
+                    var formData = $('#comentario-form').serialize();
+
+                    // Enviar solicitud AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: $('#comentario-form').attr('action'),
+                        data: formData,
+                        success: function(response) {
+                            // Agregar el nuevo comentario al contenedor de comentarios
+                            $('#comentarios-section').prepend(response);
+
+                            // Limpiar el contenido del textarea
+                            $('#contenido').val('');
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+                }
+
+                $(document).ready(function() {
+                    function cargarComentarios() {
+                        $.ajax({
+                            type: 'GET',
+                            url: '{{ route('comentarios.index', $partido->id) }}',
+                            success: function(response) {
+                                $('#comentarios-section').html(response);
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+
+                    // Actualizar comentarios cada 5 segundos
+                    setInterval(function() {
+                        cargarComentarios();
+                    }, 5000);
+
+                    // Manejar clic en "Ver más comentarios"
+                    $('#ver-mas-comentarios').on('click', function() {
+                        cargarComentarios();
+                    });
+
+                    // Manejar tecla "Enter" en el área de texto
+                    $('#contenido').keyup(function(event) {
+                        if (event.key === 'Enter' && !event.shiftKey) {
+                            event.preventDefault();
+                            enviarComentario();
+                        }
+                    });
+
+                    // Agregar la hora al enviar un comentario
+                    $('#comentario-form').submit(function(event) {
+                        event.preventDefault(); // Evitar que el formulario se envíe normalmente
+
+                        var horaActual = obtenerHoraActual();
+                        $('#comentarios-section').prepend(
+                            '<div class="bg-white p-4 mb-4 rounded-lg"><p class="text-gray-700"><strong>{{ Auth::user()->name }}</strong> (' +
+                            horaActual + '): ' + $('#contenido').val() + '</p></div>');
+
+                        // Limpiar el contenido del textarea
+                        $('#contenido').val('');
+                    });
+
+                    // Función para formatear la hora
+                    function obtenerHoraActual() {
+                        var fecha = new Date();
+                        var horas = fecha.getHours().toString().padStart(2, '0');
+                        var minutos = fecha.getMinutes().toString().padStart(2, '0');
+                        return horas + ':' + minutos;
+                    }
+                });
+            </script>
 
 
-            {{-- Botón para ir a la lista de partidos --}}
-            <div class="mt-8 flex justify-center">
-                <a href="{{ route('partidos.index') }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Volver
-                </a>
-            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+
+    {{-- Botón para ir a la lista de partidos --}}
+    <div class="mt-8 flex justify-center">
+        <a href="{{ route('partidos.index') }}"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Volver
+        </a>
+    </div>
 
 </x-app-layout>

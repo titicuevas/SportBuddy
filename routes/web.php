@@ -43,6 +43,11 @@ use App\Http\Controllers\AdminSuperficieController;
 /* Controller de Admin Pista */
 use App\Http\Controllers\AdminPistaController;
 
+/* Comentarios */
+
+use App\Http\Controllers\ComentarioController;
+
+
 
 use App\Models\Deporte;
 
@@ -212,6 +217,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/show/{user}', [ProfileController::class, 'show'])->name('profile.show');
 });
 
+
+/* Comentarios */
+// Rutas para comentarios
+Route::get('/comentarios/{partidoId}', [ComentarioController::class, 'index'])->name('comentarios.index');
+Route::post('/partidos/{partidoId}/comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
+Route::post('/partidos/{partido}/comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
 
 
 /* Intento Chat */
