@@ -6,12 +6,12 @@
         <div class="flex flex-col space-y-4">
 
             <!-- Parte 1 con fondo azul -->
-            <div class="bg-blue-200 p-6 rounded-lg flex space-x-4">
+            <div class="bg-white p-6 rounded-lg flex space-x-4">
 
 
                 <!-- Sección 1: Datos del partido -->
                 <div class="flex-1/4">
-                    <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
 
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">Datos del partido</h1>
                         <hr class="w-full border-t-8 bg-gray-500 mt-1">
@@ -276,14 +276,14 @@
 
                 <!-- Sección 2: Mapa con fondo amarillo -->
                 <div class="flex-1/2">
-                    <div class="p-6 bg-yellow-200 rounded-lg">
+                    <div class="p-6 bg-gray rounded-lg">
                         <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center relative">
                             Ubicacion y pronostico del tiempo
-                            <span class="block w-full bg-gray-500 mx-auto mt-1 h-1 absolute bottom-0"></span>
+                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
                             <!-- Línea divisoria -->
                         </h1> {!! $partido->ubicacion->iframe !!}
 
-                        <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
                             <h2 class="text-lg  font-bold text-black">Pronóstico del tiempo</h2>
                             <br>
                             <div id="weather-info"></div>
@@ -404,20 +404,20 @@
 
 
                 <!-- Parte 2 dividida en dos con fondo verde -->
-                <div class="bg-green-200 p-6 rounded-lg flex space-x-4">
+                <div class="bg-gray p-6 rounded-lg flex space-x-4">
+
                     <!-- Parte 2.1 - EQUIPO 1 -->
                     <div class="flex-1">
-                        <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
                             <h2 class="text-2xl font-bold text-black mb-4">EQUIPO 1</h2>
-                            <hr class="w-full border-t-3 bg-gray-500 mt-1">
-                            <br>
+                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
+
                             @foreach ($partido->asignamientos as $asignamiento)
                                 @if ($asignamiento->equipo_id == 1)
                                     <a href="{{ route('user.show', $asignamiento->user) }}"
-                                        class="text-blue-500 hover:text-blue-700 underline">
-                                        <p class="text-gray-700 text-center">{{ $asignamiento->user->name }}</p>
+                                        class="text-blue-500 hover:text-blue-700 underline block text-center mb-2">
+                                        {{ $asignamiento->user->name }}
                                     </a>
-                                    <br>
                                 @endif
                             @endforeach
                         </div>
@@ -425,66 +425,68 @@
 
                     <!-- Parte 2.2 - EQUIPO 2 -->
                     <div class="flex-1">
-                        <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
                             <h2 class="text-2xl font-bold text-black mb-4">EQUIPO 2</h2>
-                            <hr class="w-full border-t-3 bg-gray-500 mt-1">
-                            <br>
+                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
+
                             @foreach ($partido->asignamientos as $asignamiento)
                                 @if ($asignamiento->equipo_id == 2)
                                     <a href="{{ route('user.show', $asignamiento->user->id) }}"
-                                        class="text-blue-500 hover:text-blue-700 underline">
-                                        <p class="text-gray-700 text-center">{{ $asignamiento->user->name }}</p>
+                                        class="text-blue-500 hover:text-blue-700 underline block text-center mb-2">
+                                        {{ $asignamiento->user->name }}
                                     </a>
-                                    <br>
                                 @endif
                             @endforeach
                         </div>
+
+                        {{-- Comentarios --}}
+                        <div class="mt-8">
+                            <h2 class="text-2xl font-bold text-black mb-4">Comentarios</h2>
+                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
+
+
+                            <!-- Formulario para agregar comentario -->
+                            @if ($inscrito)
+                                <form id="comentario-form" method="POST"
+                                    action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
+                                    @csrf
+                                    <input type="hidden" name="partido_id" value="{{ $partido->id }}">
+                                    <div class="flex">
+                                        <textarea name="contenido" id="contenido" class="w-full p-2 border rounded resize-none"
+                                            placeholder="Escribe tu comentario"></textarea>
+                                        <button type="button" onclick="enviarComentario()"
+                                            class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar
+                                            Comentario</button>
+                                    </div>
+                                </form>
+                            @else
+                                <p class="text-gray-700">Debes estar inscrito para agregar comentarios.</p>
+                            @endif
+
+                            <!-- Mostrar comentarios existentes -->
+                            <div id="comentarios-section" class="max-h-96 overflow-y-auto mt-4">
+                                @foreach ($partido->comentarios->sortBy('created_at') as $comentario)
+                                    <div class="bg-white p-4 mb-4 rounded-lg flex justify-between">
+                                        <div>
+                                            <p class="text-gray-700">
+                                                <strong>{{ $comentario->user->name }}</strong>
+                                                <span class="text-sm text-gray-500"></span>:
+                                                {{ $comentario->contenido }}
+                                            </p>
+                                        </div>
+                                        <div class="text-right">
+                                            <span
+                                                class="text-sm text-gray-500">{{ $comentario->created_at->format('H:i') }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
 
-                {{-- Comentarios --}}
-                <div class="mt-8">
-                    <h2 class="text-2xl font-bold text-black mb-4">Comentarios</h2>
-
-                    <!-- Formulario para agregar comentario -->
-                    @if ($inscrito)
-                        <form id="comentario-form" method="POST"
-                            action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
-                            @csrf
-                            <input type="hidden" name="partido_id" value="{{ $partido->id }}">
-                            <div class="flex">
-                                <textarea name="contenido" id="contenido" class="w-full p-2 border rounded resize-none"
-                                    placeholder="Escribe tu comentario"></textarea>
-                                <button type="button" onclick="enviarComentario()"
-                                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar
-                                    Comentario</button>
-                            </div>
-                        </form>
-                    @else
-                        <p class="text-gray-700">Debes estar inscrito para agregar comentarios.</p>
-                    @endif
-
-                    <!-- Mostrar comentarios existentes -->
-                    <div id="comentarios-section" class="max-h-96 overflow-y-auto mt-4">
-                        @foreach ($partido->comentarios->sortBy('created_at') as $comentario)
-                            <div class="bg-white p-4 mb-4 rounded-lg">
-                                <p class="text-gray-700">
-                                    <strong>{{ $comentario->user->name }}</strong>
-                                    <span
-                                        class="text-sm text-gray-500">{{ $comentario->created_at->format('H:i') }}</span>:
-                                    {{ $comentario->contenido }}
-                                </p>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    {{-- <!-- Botón "Ver más comentarios" -->
-        @if ($partido->comentarios->count() > 3)
-            <button id="ver-mas-comentarios" class="text-blue-500 hover:text-blue-700 underline">Ver más
-                comentarios</button>
-        @endif --}}
-                </div>
 
                 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
                 <script>
@@ -533,10 +535,10 @@
                             });
                         }
 
-                        // Actualizar comentarios cada 5 segundos
+                        /* // Actualizar comentarios cada 5 segundos
                         setInterval(function() {
                             cargarComentarios();
-                        }, 5000);
+                        }, 5000); */
 
                         // Manejar clic en "Ver más comentarios"
                         $('#ver-mas-comentarios').on('click', function() {
