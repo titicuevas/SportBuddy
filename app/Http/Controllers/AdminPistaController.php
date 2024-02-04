@@ -8,6 +8,7 @@ use App\Models\Superficie;
 use App\Models\Deporte;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class AdminPistaController extends Controller
 {
@@ -35,7 +36,6 @@ class AdminPistaController extends Controller
     /**
      * Almacena una nueva pista en la base de datos.
      */
-
     public function store(Request $request)
     {
         try {
@@ -47,7 +47,7 @@ class AdminPistaController extends Controller
                     'required',
                     'integer',
                     'min:0',
-                    \Illuminate\Validation\Rule::unique('pistas')
+                    Rule::unique('pistas')
                         ->where('ubicacion_id', $request->ubicacion_id)
                         ->where('superficie_id', $request->superficie_id)
                         ->where('deporte_id', $request->deporte_id),
@@ -74,17 +74,11 @@ class AdminPistaController extends Controller
 
             // Redirigir a la vista index con un mensaje de éxito
             return redirect()->route('admin.pista.index')->with('success', 'Pista creada exitosamente.');
-        } catch (\Exception $e) {
+        } catch (QueryException $e) {
             // Redirigir a la vista create con un mensaje de error
             return redirect()->route('admin.pista.create')->with('error', 'Error al crear la pista.');
         }
     }
-
-
-
-
-
-
 
     /**
      * Muestra el formulario para editar una pista.
@@ -108,7 +102,6 @@ class AdminPistaController extends Controller
             'superficie_id' => 'required|exists:superficies,id',
             'deporte_id' => 'required|exists:deportes,id',
             'numero' => 'required|integer|min:0',
-            'tiene_luz' => 'required|boolean',
             'precio_sin_luz' => 'required|numeric|min:0',
             'precio_con_luz' => 'nullable|numeric|min:0',
         ]);
@@ -119,7 +112,6 @@ class AdminPistaController extends Controller
             'superficie_id' => $request->superficie_id,
             'deporte_id' => $request->deporte_id,
             'numero' => $request->numero,
-            'tiene_luz' => $request->has('tiene_luz'),
             'precio_sin_luz' => $request->precio_sin_luz,
             'precio_con_luz' => $request->precio_con_luz,
         ]);
@@ -132,8 +124,19 @@ class AdminPistaController extends Controller
      */
     public function destroy(Pista $pista)
     {
-        $pista->delete();
+        try {
+            // Verificar si hay partidos asociados a la pista
+            if ($pista->partidos()->exists()) {
+                return redirect()->route('admin.pista.index')->with('error', 'No puedes eliminar la pista porque hay partidos asociados.');
+            }
 
-        return redirect()->route('admin.pista.index')->with('success', 'Pista eliminada exitosamente.');
+            // Eliminar la pista
+            $pista->delete();
+
+            return redirect()->route('admin.pista.index')->with('success', 'Pista eliminada exitosamente.');
+        } catch (QueryException $e) {
+            // Manejar cualquier error de base de datos
+            return redirect()->route('admin.pista.index')->with('error', 'Error al eliminar la pista.');
+        }
     }
 }

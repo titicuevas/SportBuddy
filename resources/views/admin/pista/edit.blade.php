@@ -1,12 +1,39 @@
 <x-administrador>
     @section('contenido')
+
+
+    @if (session('success'))
+    <div x-data="{ show: false }" x-show="show" x-init="() => {
+        show = true;
+        setTimeout(() => show = false, 5000);
+    }"
+        class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md transition-all duration-300">
+        <p class="text-center text-base">{{ session('success') }}</p>
+    </div>
+@endif
+
+
+@if (session('error'))
+            <div x-data="{ show: false }" x-show="show" x-init="() => {
+                show = true;
+                setTimeout(() => show = false, 5000);
+            }"
+                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-red-500 text-white rounded-md shadow-md transition-all duration-300">
+                <p class="text-center text-base">{{ session('error') }}</p>
+
+                
+            </div>
+        @endif
+
+
         <div class="flex items-center justify-center">
             <h1 class="text-4xl text-blue-500 mb-6">Editar Pista</h1>
         </div>
 
-        <form action="{{ route('admin.pista.update', $pista->id) }}" method="post" class="max-w-md mx-auto">
+        <form action="{{ route('admin.pista.update', $pista->id) }}" method="post">
             @csrf
             @method('PUT')
+
 
             <div class="mx-auto max-w-2xl">
                 <table class="w-full bg-white border border-gray-500">
@@ -66,7 +93,8 @@
                                 Pista</td>
                             <td class="py-2 px-4 border-b border-gray-500">
                                 <input type="text" name="numero" id="numero"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2" value="{{ $pista->numero }}" required>
+                                    class="w-full border-gray-300 text-xl rounded-md p-2" value="{{ $pista->numero }}"
+                                    required>
                             </td>
                         </tr>
 
@@ -76,7 +104,8 @@
                                 Luz</td>
                             <td class="py-2 px-4 border-b border-gray-500">
                                 <input type="text" name="precio_con_luz" id="precio_con_luz"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2" value="{{ $pista->precio_con_luz }}">
+                                    class="w-full border-gray-300 text-xl rounded-md p-2"
+                                    value="{{ $pista->precio_con_luz }}">
                             </td>
                         </tr>
 
@@ -86,8 +115,8 @@
                                 Luz</td>
                             <td class="py-2 px-4 border-b border-gray-500">
                                 <input type="text" name="precio_sin_luz" id="precio_sin_luz"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2" value="{{ $pista->precio_sin_luz }}"
-                                    required>
+                                    class="w-full border-gray-300 text-xl rounded-md p-2"
+                                    value="{{ $pista->precio_sin_luz }}" required>
                             </td>
                         </tr>
                     </tbody>
