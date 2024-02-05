@@ -72,7 +72,7 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-
+<div>
     {{ $slot }}
     </div>
 </body>
@@ -84,15 +84,16 @@
         <p>Creado por: Enrique Cuevas Garcia</p>
 
         <!-- Iconos de redes sociales -->
+        <!-- Iconos de redes sociales con enlaces que se abren en una nueva pestaña -->
         <div class="flex justify-center mt-4">
+            <a href="https://twitter.com/" target="_blank" class="mx-2"><img
+                    src="https://i.ibb.co/RzXRD4d/gorjeo-2.png" alt="gorjeo-2" border="0"></a>
 
-            <a href="https://twitter.com/" class="mx-2"><img src="https://i.ibb.co/RzXRD4d/gorjeo-2.png"
-                    alt="gorjeo-2" border="0"></a>
+            <a href="https://www.facebook.com/" target="_blank" class="mx-2"><img
+                    src="https://i.ibb.co/dBTPDBm/instagram-1.png" alt="instagram-1" border="0"></a>
 
-            <a href="https://www.facebook.com/" class="mx-2"><img src="https://i.ibb.co/dBTPDBm/instagram-1.png"
-                    alt="instagram-1" border="0"></a>
-            <a href="https://www.instagram.com/" class="mx-2"><img src="https://i.ibb.co/wCtRTFr/facebook-1.png"
-                    alt="facebook-1" border="0"></a>
+            <a href="https://www.instagram.com/" target="_blank" class="mx-2"><img
+                    src="https://i.ibb.co/wCtRTFr/facebook-1.png" alt="facebook-1" border="0"></a>
         </div>
 
         <!-- Enlaces "Politicas sobre las 🍪" y "Politicas sobre la Privacidad" -->

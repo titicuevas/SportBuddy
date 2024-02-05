@@ -110,6 +110,21 @@ document.addEventListener("DOMContentLoaded", function () {
             hideError(passwordInput, "passwordError");
         }
 
+        // Validación de complejidad de la contraseña
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+
+        if (!passwordRegex.test(passwordInput.value)) {
+            showError(
+                passwordInput,
+                "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.",
+                "passwordError"
+            );
+            return false;
+        } else {
+            hideError(passwordInput, "passwordError");
+        }
+
         return true;
     }
 

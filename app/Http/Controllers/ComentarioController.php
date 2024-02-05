@@ -15,7 +15,7 @@ class ComentarioController extends Controller
     public function index($partidoId)
     {
         $partido = Partido::findOrFail($partidoId);
-        $comentarios = $partido->comentarios->skip(5)->take(5);
+        $comentarios = $partido->comentarios->skip(3)->take(3);
 
         return View::make('comentario.index', ['comentarios' => $comentarios])->render();
     }

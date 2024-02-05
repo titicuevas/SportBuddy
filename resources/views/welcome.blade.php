@@ -109,6 +109,9 @@
             <div class="container mx-auto flex flex-col items-center h-full relative">
                 <h2 class="text-3xl font-bold mb-6 relative z-10">Busca dónde y con quién jugar a tus deportes favoritos
                 </h2>
+                <div>
+                    <img src="https://i.ibb.co/Jp6893M/Fondo-quitado.png" alt="Fondo-quitado" border="0">
+                </div>
                 <div class="relative w-full h-48 md:h-72 overflow-hidden">
                     <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
                         :style="'translateX(' + (slide * -100) + '%)'">

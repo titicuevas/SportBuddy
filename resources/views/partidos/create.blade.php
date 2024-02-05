@@ -331,10 +331,7 @@
                         let precioBaseConLuz, precioBaseSinLuz;
 
                         // Definir precios base según corresponda
-                        if (hora >= '09:00' && hora < '10:30') {
-                            precioBaseConLuz = 10.00;
-                            precioBaseSinLuz = 8.00;
-                        } else if (hora >= '11:00' && hora < '12:30') {
+                        if (hora >= '09:00' && hora < '16:00') {
                             precioBaseConLuz = 15.00;
                             precioBaseSinLuz = 12.00;
                         } else {

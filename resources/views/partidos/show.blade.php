@@ -1,9 +1,16 @@
 <x-app-layout>
 
 
+    <br>
+    <br>
+    <br>
+
+
+
 
     <div class="flex justify-center items-center h-screen">
         <div class="flex flex-col space-y-4">
+
 
             <!-- Parte 1 con fondo azul -->
             <div class="bg-white p-6 rounded-lg flex space-x-4">

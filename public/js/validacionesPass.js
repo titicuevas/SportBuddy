@@ -43,6 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
 
+        // Validación de complejidad de contraseña
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+        if (!passwordPattern.test(newPasswordInput.value)) {
+            document.getElementById("newPasswordError").innerHTML =
+                "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial.";
+            return false;
+        }
+
         // Validación de confirmación de contraseña
         if (confirmPasswordInput.value.trim() === "") {
             document.getElementById("confirmPasswordError").innerHTML =
