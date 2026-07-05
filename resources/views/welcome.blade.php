@@ -1,271 +1,117 @@
 <x-guest-layout>
-    <!DOCTYPE html>
-    <html lang="es">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tu Página</title>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-    </head>
-
-    <body class="bg-black">
-
-        <!-- Cabecera -->
-        <header class="bg-blue-500 text-white p-4">
-            <div class="container mx-auto flex items-center justify-between">
-                <!-- Aquí coloca el icono y el texto "SportBuddy" juntos -->
-                <div class="flex items-center">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                    <h1 class="text-4xl font-bold ml-2">SportBuddy</h1>
-                </div>
-
-
-                <!-- Dark Overlay -->
-                <div id="dark-overlay"
-                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 998;">
-                </div>
-
-                <!-- Cookie Overlay -->
-                <div id="cookie-overlay"
-                    style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); z-index: 999; color: black; text-align: center; padding: 20px;">
-                    <p>Este sitio utiliza cookies para mejorar la experiencia del usuario. Al continuar, aceptas el uso
-                        de 🍪.
-                    </p>
-                    <button onclick="acceptCookies()"
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Aceptar</button>
-
-                    <a href="{{ route('politicas.cookies.privacidad') }}"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Políticas Cookies y
-                        Privacidad</a>
-                </div>
-
-                <script>
-                    // Función para establecer la cookie y ocultar el mensaje
-                    function acceptCookies() {
-                        // Configura la cookie sin un tiempo de vida específico (cookie de sesión)
-                        document.cookie = "acceptCookies=true; path=/";
-
-                        // Oculta el mensaje de cookies
-                        document.getElementById('cookie-overlay').style.display = 'none';
-
-                        // También oculta el overlay oscuro
-                        document.getElementById('dark-overlay').style.display = 'none';
-                    }
-
-                    // Comprueba si la cookie ya ha sido aceptada al cargar la página
-                    window.onload = function() {
-                        if (document.cookie.indexOf("acceptCookies=true") === -1) {
-                            // La cookie no se ha aceptado, muestra el mensaje de cookies y el overlay oscuro
-                            document.getElementById('cookie-overlay').style.display = 'block';
-                            document.getElementById('dark-overlay').style.display = 'block';
-                        }
-                    };
-                </script>
-
-
-
-                <!-- Agrega esto a tu código donde quieras mostrar el icono de usuario y el menú desplegable -->
-                <div class="relative inline-block text-left z-40">
-                    <div>
-                        <button type="button" class="text-white hover:underline focus:outline-none"
-                            onclick="toggleDropdown()">
-                            <!-- Puedes personalizar este icono según tus preferencias -->
-                            <img src="https://i.ibb.co/W5rQcpn/usuario.png" alt="usuario" border="0">
-                        </button>
-                    </div>
-                    <div id="dropdown"
-                        class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <a href="{{ route('login') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Iniciar sesión</a>
-                            <a href="{{ route('register') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Registrarse</a>
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                    function toggleDropdown() {
-                        var dropdown = document.getElementById("dropdown");
-                        dropdown.classList.toggle("hidden");
-                    }
-                </script>
-            </div>
-        </header>
-
-        <!-- Sección de mensaje y carrusel -->
-        <div x-data="{ slide: 0 }" x-init="startInterval()"
-            class="relative bg-gray-800 text-white transition-all duration-500 min-h-screen"
-            :style="'background-image: url(' + getImageUrl(slide) +
-                '); background-size: cover; background-position: center; background-repeat: no-repeat; height: 50vh;'">
-
-            <!-- Fondo opaco para el texto -->
-            <div class="absolute inset-0 bg-black opacity-50"></div>
-
-            <div class="container mx-auto flex flex-col items-center h-full relative">
-                <h2 class="text-3xl font-bold mb-6 relative z-10">Busca dónde y con quién jugar a tus deportes favoritos
-                </h2>
-                <div>
-                    <img src="https://i.ibb.co/Jp6893M/Fondo-quitado.png" alt="Fondo-quitado" border="0">
-                </div>
-                <div class="relative w-full h-48 md:h-72 overflow-hidden">
-                    <div class="flex transition-transform ease-in-out duration-500 transform -translate-x-full"
-                        :style="'translateX(' + (slide * -100) + '%)'">
-
-                        {{--
-                        <!-- Imágenes del carrusel -->
-                        <img src="https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg" alt="Albero"
-                            class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/319678569.jpg?k=90a4681b5870c3873a41afe366ccedddd860dd686aa56d5a325e81ee74cb24bf&o=&hp=1"
-                            alt="Futbol7" class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://santamariaarquitectes.cat/wp-content/uploads/2019/06/camp_futbol_01.jpg"
-                            alt="Campo de Fútbol" class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://news.mondoiberica.com.es/wp-content/uploads/elementor/thumbs/IMG-20171211-WA0002-p473c99lxzb0882lvv33erk8m7fwn88zr2t8litpbk.jpg"
-                            alt="Futsal" class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://s3.ppllstatics.com/ideal/www/multimedia/202104/21/media/cortadas/olvio%202-kUPB-U140127566558BBD-1248x770@Ideal.jpg"
-                            alt="Pista de Fútbol Sala" class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://www.pistas-padel.es/wp-content/uploads/2021/10/Construccion-pistas-padel-Espana-1024x566.jpg"
-                            alt="Pádel Indoor" class="w-full h-full object-cover bg-center bg-cover">
-                        <img src="https://www.padeladdict.com/wp-content/uploads/2022/11/ventajas-de-las-pistas-de-padel-interiores-frente-a-las-exteriores-portada-1068x580.jpg"
-                            alt="Pista de Pádel" class="w-full h-full object-cover bg-center bg-cover">
- --}}
-
-
-                    </div>
-                </div>
-            </div>
+    {{-- Hero --}}
+    <section class="relative min-h-[75vh] flex items-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center"
+            style="background-image: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80');">
         </div>
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/85 via-indigo-800/75 to-emerald-800/70"></div>
 
-        <!-- Div para "Conoce gente nueva mientras juegas" -->
-        <div class="bg-white p-8 mt-8 w-full flex items-center justify-center" style="background-color: #f8f8f8;">
-            <!-- Parte izquierda con la imagen -->
-            <div class="w-full md:w-1/2 pr-4 flex items-center justify-center">
-                <img src="https://i.ibb.co/bB4Lrtx/tipos-jugadores-2.png" alt="tipos-jugadores-2"
-                    class="w-full h-full object-cover md:w-96 md:h-full">
-            </div>
-            <!-- Parte derecha con el título, el texto y el párrafo -->
-            <div class="w-full md:w-1/2 pl-4">
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Conoce gente nueva mientras juegas</h3>
-                <p class="text-base md:text-lg lg:text-xl">Publica tu próximo partido en SportBuddy. Solo te llevará un
-                    par de minutos para publicar tu
-                    partido y conocer a nuevos compañeros de deportes. ¿Compartimos la cancha?</p>
-
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <p class="inline-block mb-4 px-4 py-1.5 text-sm font-medium text-emerald-200 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                Tu comunidad deportiva
+            </p>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-4xl mx-auto">
+                Encuentra dónde y con quién jugar
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-indigo-100 max-w-2xl mx-auto">
+                Publica partidos, reserva pistas y conoce nuevos compañeros de deporte en minutos.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('register') }}"
-                    class="block mt-4 px-8 py-3 text-base font-bold uppercase bg-gray-400 text-white rounded hover:bg-gray-500 transition-all duration-300">
-                    Registrarse
+                    class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-indigo-700 bg-white rounded-xl hover:bg-indigo-50 shadow-lg hover:shadow-xl transition-all">
+                    Empezar gratis
                 </a>
-
-
-            </div>
-        </div>
-
-        <!-- Div dividido con dos partes -->
-        <div class="bg-white p-8 mt-8 w-full flex items-center justify-center" style="background-color: #f8f8f8;">
-            <!-- Parte izquierda con el título "Encuentra los mejores partidos" -->
-            <div class="w-full md:w-1/2 pr-4">
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Encuentra los mejores partidos</h3>
-                <!-- Agrega aquí el texto sobre deportes -->
-                <p class="text-base md:text-lg lg:text-xl">Nuestra comunidad de deportistas está en todos los lugares.
-                    Donde sea que vayas, descubre la
-                    experiencia perfecta con partidos y encuentros en los puntos más cercanos.</p>
-            </div>
-
-            <!-- Parte derecha con "Busca, elige y a jugar" -->
-            <div class="w-full md:w-1/2 pl-4">
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">¡Busca, elige y a jugar!</h3>
-                <!-- Agrega aquí el texto sobre conocer gente mientras juegas -->
-                <p class="text-base md:text-lg lg:text-xl">¡Organizar un partido es más fácil que nunca! Gracias a
-                    tecnología, podrás reservar un encuentro deportivo cerca de ti en cuestión de minutos.</p>
-                nuestra sencilla página web y su potente
-
                 <a href="{{ route('login') }}"
-                    class="block mt-4 px-8 py-3 text-base font-bold uppercase bg-blue-500 text-white rounded hover:bg-blue-700 transition-all duration-300">
-                    Iniciar Sesión
+                    class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white border-2 border-white/40 rounded-xl hover:bg-white/10 transition-colors">
+                    Ya tengo cuenta
                 </a>
-
-
             </div>
         </div>
-        </div>
+    </section>
 
+    {{-- Features --}}
+    <section class="py-16 sm:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">¿Por qué SportBuddy?</h2>
+                <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Todo lo que necesitas para organizar y unirte a partidos cerca de ti.
+                </p>
+            </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-600 text-white mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Encuentra partidos</h3>
+                    <p class="mt-2 text-gray-600">Descubre encuentros cerca de ti: fútbol, pádel, baloncesto y más.</p>
+                </div>
 
-        <!-- Script para el carrusel automático -->
-        <script>
-            function startInterval() {
-                var slide = 0;
-                var totalSlides = 7; // Número total de imágenes en el carrusel
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-emerald-600 text-white mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Conoce gente nueva</h3>
+                    <p class="mt-2 text-gray-600">Únete a equipos, chatea con jugadores y amplía tu círculo deportivo.</p>
+                </div>
 
-                setInterval(function() {
-                    slide = (slide + 1) % totalSlides;
-
-                    var xDataElement = document.querySelector('[x-data="{ slide: 0 }"]');
-                    if (xDataElement && xDataElement.__x) {
-                        xDataElement.__x.$data.slide = slide;
-                    }
-
-                    // Cambia el fondo de la sección al mismo tiempo que cambia la imagen del carrusel
-                    var section = document.querySelector('.bg-gray-800');
-                    if (section) {
-                        section.style.backgroundImage = 'url(' + getImageUrl(slide) + ')';
-                    }
-
-                    // Si es la última imagen, vuelve a la primera después de un breve retraso
-                    if (slide === totalSlides - 1) {
-                        setTimeout(function() {
-                            slide = 0;
-                            if (xDataElement && xDataElement.__x) {
-                                xDataElement.__x.$data.slide = slide;
-                            }
-                            if (section) {
-                                section.style.backgroundImage = 'url(' + getImageUrl(slide) + ')';
-                            }
-                        }, 1000); // Ajusta el tiempo de espera según tus preferencias
-                    }
-
-                }, 5000);
-            }
-
-            function getImageUrl(slide) {
-                // Retorna la URL de la imagen correspondiente al índice del carrusel
-                var images = [
-                    'https://live.staticflickr.com/6078/6110035405_894bf88cbc_b.jpg',
-                    'https://cf.bstatic.com/xdata/images/hotel/max1024x768/319678569.jpg?k=90a4681b5870c3873a41afe366ccedddd860dd686aa56d5a325e81ee74cb24bf&o=&hp=1',
-                    'https://santamariaarquitectes.cat/wp-content/uploads/2019/06/camp_futbol_01.jpg',
-                    'https://news.mondoiberica.com.es/wp-content/uploads/elementor/thumbs/IMG-20171211-WA0002-p473c99lxzb0882lvv33erk8m7fwn88zr2t8litpbk.jpg',
-                    'https://s3.ppllstatics.com/ideal/www/multimedia/202104/21/media/cortadas/olvio%202-kUPB-U140127566558BBD-1248x770@Ideal.jpg',
-                    'https://www.padeladdict.com/wp-content/uploads/2022/11/ventajas-de-las-pistas-de-padel-interiores-frente-a-las-exteriores-portada-1068x580.jpg'
-                ];
-                return images[slide];
-            }
-
-            document.addEventListener('DOMContentLoaded', startInterval);
-        </script>
-
-
-
-
-
-    </body>
-
-    </html>
-
-</x-guest-layout>
-
-
-{{-- Sección de mensaje y video -->
-        <div class="bg-gray-800 text-white py-16">
-            <div class="container mx-auto flex flex-col items-center">
-                <h2 class="text-3xl font-bold mb-6">Busca donde y con quien jugar a tus deportes favoritos</h2>
-
-                <!-- Video de YouTube con Tailwind -->
-                <div class="relative w-full h-96 overflow-hidden">
-                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/uJg1u_VUUi4?autoplay=1&mute=1"
-                        frameborder="0" allowfullscreen></iframe>
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-blue-600 text-white mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Reserva en minutos</h3>
+                    <p class="mt-2 text-gray-600">Elige pista, hora y deporte. Publica tu partido de forma sencilla.</p>
                 </div>
             </div>
-        </div> --}}
+        </div>
+    </section>
+
+    {{-- CTA split --}}
+    <section class="py-16 sm:py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">
+                        Organizar un partido nunca fue tan fácil
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        Crea tu partido, invita jugadores y gestiona pagos desde una sola plataforma.
+                        Nuestra comunidad está lista para jugar contigo.
+                    </p>
+                    <a href="{{ route('register') }}"
+                        class="inline-block mt-8 px-8 py-3 font-semibold text-white bg-gradient-to-r from-indigo-600 to-emerald-500 rounded-xl hover:opacity-90 shadow-md transition-opacity">
+                        Crear mi cuenta
+                    </a>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-video">
+                    <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&w=800&q=80"
+                        alt="Jugadores en un partido de fútbol"
+                        class="w-full h-full object-cover"
+                        loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Final CTA --}}
+    <section class="py-16 bg-gradient-to-r from-indigo-600 via-indigo-500 to-emerald-500">
+        <div class="max-w-3xl mx-auto px-4 text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white">¿Listo para jugar?</h2>
+            <p class="mt-4 text-lg text-indigo-100">
+                Únete a SportBuddy y encuentra tu próximo partido hoy mismo.
+            </p>
+            <a href="{{ route('register') }}"
+                class="inline-block mt-8 px-10 py-3.5 font-semibold text-indigo-700 bg-white rounded-xl hover:bg-indigo-50 shadow-lg transition-colors">
+                Registrarse ahora
+            </a>
+        </div>
+    </section>
+</x-guest-layout>

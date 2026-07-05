@@ -35,12 +35,20 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
+        $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
 
         $this->assertGuest();
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_login_requires_email_and_password(): void
+    {
+        $response = $this->post('/login', []);
+
+        $response->assertSessionHasErrors(['email', 'password']);
     }
 
     public function test_users_can_logout(): void

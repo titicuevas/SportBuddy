@@ -1,11 +1,48 @@
-<img src="https://i.ibb.co/ncgYQk4/1d241c09-0831-4925-9103-a5d6cccf059e.jpg" alt="1d241c09-0831-4925-9103-a5d6cccf059e" border="0">
+# SportBuddy
 
+Aplicación Laravel para organizar y encontrar partidos deportivos (fútbol, pádel, baloncesto, etc.).
 
- SportBuddy  
- 
- Enrique Cuevas Garcia  
- 
- Curso 2023/24
+## Desarrollo local rápido (recomendado)
+
+Para evitar la latencia de Supabase (~300 ms por consulta), usa **SQLite** en local:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+
+# En .env:
+# DB_CONNECTION=sqlite
+# DB_DATABASE=/ruta/absoluta/a/tu/proyecto/database/database.sqlite
+
+touch database/database.sqlite
+composer install
+npm install && npm run build
+php artisan migrate --seed
+php artisan storage:link
+php artisan serve
+```
+
+O ejecuta el script de ayuda:
+
+```bash
+chmod +x scripts/setup-local.sh
+./scripts/setup-local.sh
+```
+
+**Usuarios de prueba** (contraseña `12345678`):
+
+| Rol     | Email            |
+|---------|------------------|
+| Admin   | admin@gmail.com  |
+| Usuario | enrique@gmail.com |
+
+**Tests:** `php artisan test` (46+ tests)
+
+**Producción / staging:** usa PostgreSQL (Supabase) y las variables de `.env.example`. El `Procfile` cachea config, rutas y vistas al desplegar.
+
+---
+
+<img src="https://i.ibb.co/ncgYQk4/1d241c09-0831-4925-9103-a5d6cccf059e.jpg" alt="SportBuddy" border="0">
  
  # Descripción general del proyecto
 
@@ -189,7 +226,8 @@ VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 Una vez que hayas creado tu aplicación, serás redirigido a la página de detalles de la aplicación, donde encontrarás tus credenciales API. Inclúyelas en tu archivo .env de la siguiente manera:
 
 PAYPAL_CLIENT_ID=
-PAYPAL_SECRET=
+PAYPAL_CLIENT_SECRET=
+PAYPAL_MODE=sandbox
 
 **Para obtener la configuración necesaria para integrar Mailtrap en tu proyecto, sigue estos pasos:
 

@@ -4,12 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Broadcasting\Channel;
 
-
-
-class Mensaje extends Model implements ShouldBroadcast
+class Mensaje extends Model
 {
     use HasFactory;
 
@@ -23,10 +19,5 @@ class Mensaje extends Model implements ShouldBroadcast
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function broadcastOn()
-    {
-        return new Channel('Chat');
     }
 }

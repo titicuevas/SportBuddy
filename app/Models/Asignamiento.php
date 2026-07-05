@@ -10,8 +10,9 @@ class Asignamiento extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $primaryKey = ['user_id', 'partido_id', 'equipo_id']; // Clave primaria compuesta
-    public $incrementing = false; // Indicar que no es una clave primaria autoincremental
+
+    public $incrementing = false;
+
     protected $fillable = [
         'partido_id',
         'user_id',
@@ -20,16 +21,16 @@ class Asignamiento extends Model
 
     public function partido()
     {
-        return $this->belongsTo(Partido::class, 'partido_id');
+        return $this->belongsTo(Partido::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function equipo()
     {
-        return $this->belongsTo(Equipo::class, 'equipo_id');
+        return $this->belongsTo(Equipo::class);
     }
 }

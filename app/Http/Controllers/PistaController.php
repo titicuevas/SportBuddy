@@ -53,11 +53,15 @@ class PistaController extends Controller
     public function show(Pista $pista)
     {
         // Asegúrate de cargar la relación 'superficie'
-        $pista->load('superficie');
+        $pista->load(['superficie', 'deporte:id,nombre']);
 
         return response()->json([
             'numero' => $pista->numero,
             'tipo_superficie' => $pista->superficie ? $pista->superficie->tipo : 'Tipo Desconocido',
+            'deporte' => $pista->deporte?->nombre ?? 'Desconocido',
+            'tiene_luz' => (bool) $pista->tiene_luz,
+            'precio_sin_luz' => $pista->precio_sin_luz,
+            'precio_con_luz' => $pista->precio_con_luz,
         ]);
     }
 
@@ -82,7 +86,11 @@ class PistaController extends Controller
     public function superficiePorUbicacion($ubicacionId)
     {
         try {
-            $pistas = Pista::with('superficie')->where('ubicacion_id', $ubicacionId)->get(['id', 'numero', 'superficie.tipo']);
+            $pistas = Pista::query()
+                ->with('superficie:id,tipo')
+                ->where('ubicacion_id', $ubicacionId)
+                ->get(['id', 'numero', 'superficie_id']);
+
             return response()->json($pistas);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

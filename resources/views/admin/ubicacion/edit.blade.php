@@ -1,90 +1,47 @@
-<x-administrador>
+<x-admin-form-card title="Editar ubicación" :back-route="route('admin.ubicacion.index')">
+    <form action="{{ route('admin.ubicacion.update', $ubicacion) }}" method="post" enctype="multipart/form-data" class="space-y-5">
+        @csrf
+        @method('PUT')
 
-    @section('contenido')
-        @if (session('success'))
-            <div x-data="{ show: false }" x-show="show" x-init="() => {
-                show = true;
-                setTimeout(() => show = false, 5000);
-            }"
-                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md transition-all duration-300">
-                <p class="text-center text-base">{{ session('success') }}</p>
-            </div>
-        @endif
+        <x-admin-field label="Nombre" name="nombre" :value="$ubicacion->nombre" :required="true" />
+        <x-admin-field label="Dirección" name="direccion" :value="$ubicacion->direccion" :required="true" />
 
-        <div class="flex items-center justify-center mb-6">
-            <h1 class="text-4xl text-blue-500">Editar Ubicación</h1>
+        <div>
+            <label for="enlace_maps" class="block text-sm font-medium text-slate-700 mb-1.5">Enlace de Google Maps</label>
+            <textarea name="enlace_maps" id="enlace_maps" rows="3"
+                class="block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('enlace_maps', $ubicacion->enlace_maps) }}</textarea>
+            @error('enlace_maps')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <form action="{{ route('admin.ubicacion.update', $ubicacion->id) }}" method="post" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+        <div>
+            <label for="iframe" class="block text-sm font-medium text-slate-700 mb-1.5">Iframe del mapa</label>
+            <textarea name="iframe" id="iframe" rows="4"
+                class="block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('iframe', $ubicacion->iframe) }}</textarea>
+            @error('iframe')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
 
-            <div class="mx-auto max-w-2xl">
-                <table class="w-full bg-white border border-gray-500">
-                    <tbody>
-                        <!-- Campos del formulario -->
-                        <tr>
-                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Nombre</td>
-                            <td class="py-2 px-4 border-b">
-                                <input type="text" name="nombre" id="nombre"
-                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                                    value="{{ old('nombre', $ubicacion->nombre) }}" required>
-                            </td>
-                        </tr>
+        <div>
+            <label for="imagen" class="block text-sm font-medium text-slate-700 mb-1.5">Nueva imagen (opcional)</label>
+            <input type="file" name="imagen" id="imagen" accept="image/*"
+                class="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            @if ($ubicacion->imagen)
+                <p class="mt-2 text-xs text-slate-500">Imagen actual: {{ $ubicacion->imagen }}</p>
+                @php
+                    $imagenUrl = filter_var($ubicacion->imagen, FILTER_VALIDATE_URL)
+                        ? $ubicacion->imagen
+                        : asset('storage/imagen/'.$ubicacion->imagen);
+                @endphp
+                <img src="{{ $imagenUrl }}" alt="Imagen actual" class="mt-2 max-h-40 rounded-lg border border-slate-200">
+            @endif
+            @error('imagen')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
 
-                        <tr>
-                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Dirección</td>
-                            <td class="py-2 px-4 border-b">
-                                <input type="text" name="direccion" id="direccion"
-                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                                    value="{{ old('direccion', $ubicacion->direccion) }}" required>
-                            </td>
-                        </tr>
-
-
-                        <tr>
-                            <td class="py-2 px-4 border-b-2 text-center font-semibold text-gray-600">Enlace Maps</td>
-                            <td class="py-2 px-4 border-b">
-                                <textarea name="enlace_maps" id="enlace_maps"
-                                    class="w-48 border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('enlace_maps', $ubicacion->enlace_maps) }}</textarea>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="py-2 px-4 border-b-2 text-center font-semibold text-gray-600">Iframe</td>
-                            <td class="py-2 px-4 border-b-2">
-                                <textarea name="iframe" id="iframe"
-                                    class="w-48 border-2 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" rows="4">{{ old('iframe', $ubicacion->iframe) }}</textarea>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="py-2 px-4 border-b text-center font-semibold text-gray-600">Imagen</td>
-                            <td class="py-2 px-4 border-b-2">
-                                <input type="file" name="imagen" id="imagen" accept="image/*"
-                                    class="py-2 px-3 focus:outline-none focus:border-blue-500">
-
-                                @if ($ubicacion->imagen)
-                                    <div class="flex justify-center items-center mt-2">
-                                        <img src="{{ asset('storage/imagen/' . $ubicacion->imagen) }}"
-                                            alt="Imagen Actual" class="max-w-full h-auto">
-                                    </div>
-                                    <p class="text-gray-500 text-xl mt-1">Imagen actual: {{ $ubicacion->imagen }}</p>
-                                @else
-                                    <p class="text-gray-500 text-xl mt-1">Sin imagen actual</p>
-                                @endif
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Botón para actualizar la ubicación -->
-            <div class="mt-4 text-center">
-                <button type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 text-xls rounded-md hover:bg-blue-700 focus:outline-none">
-                    Actualizar Ubicación
-                </button>
-            </div>
-        </form>
-    </x-administrador>
+        <x-admin-form-actions :cancel-route="route('admin.ubicacion.index')" submit-label="Guardar cambios" />
+    </form>
+</x-admin-form-card>

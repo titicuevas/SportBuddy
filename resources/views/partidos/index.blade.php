@@ -1,225 +1,122 @@
 <x-app-layout>
-    {{-- Crear la pista con éxito --}}
-
     @if (session('success'))
-        <div class="flex items-center justify-center mb-6">
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                class="fixed px-4 py-2 bg-green-500 text-white rounded-md shadow-md">
-                <p class="text-center text-xl">{{ session('success') }}</p>
-            </div>
-        </div>
+        <x-flash-message>{{ session('success') }}</x-flash-message>
     @endif
 
+    @if (session('error'))
+        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
+    @endif
 
-    {{-- Mis Partidos --}}
-    <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
-        <h2 class="text-3xl text-center font-bold mb-4 w-full">Mis Partidos</h2>
+    <x-page-hero title="Partidos" subtitle="Encuentra compañeros y únete a nuevos encuentros" />
 
-        @forelse ($partidosInscritos ?? [] as $partido)
-            @php
-                $fechaHoraPartido = \Carbon\Carbon::parse($partido->fecha_hora);
-                $fechaHoraActual = \Carbon\Carbon::now();
-            @endphp
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 pb-12">
+        {{-- Barra de resumen --}}
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 px-5 py-4 sm:px-8 sm:py-5 mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex flex-wrap gap-6 sm:gap-10">
+                <div>
+                    <p class="text-2xl font-bold text-indigo-600">{{ $partidosInscritos->count() }}</p>
+                    <p class="text-sm text-gray-600">Mis inscripciones</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-emerald-600">{{ $partidos->count() }}</p>
+                    <p class="text-sm text-gray-600">Disponibles</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-800">{{ $partidosInscritos->count() + $partidos->count() }}</p>
+                    <p class="text-sm text-gray-600">Próximos en total</p>
+                </div>
+            </div>
 
-            {{-- Verificar si el partido está en el futuro --}}
-            @if ($fechaHoraPartido->gt($fechaHoraActual))
-                <article id="partido" class="card card2 w-96 mb-8">
-                    <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
-                        class="btn btn-sm btn-primary">
-                        <header class="card__header bg-cover h-72"
-                            style="background-image: url('{{ $partido->ubicacion->image_path }}');">
-                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->ubicacion->nombre }}</h1>
-                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->deporte->nombre }}</h1>
-                        </header>
-                    </a>
-                    <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
-                        <div class="card__address flex">
-                            <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
-                                <path
-                                    d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
-                                </path>
-                            </svg>
-                            <div
-                                class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
-                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
-                                    {{ $partido->ubicacion->direccion }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                            <div class="text-left">
-                                <label for="fecha" class="block mb-2 text-2xl font-bold text-black">Fecha:</label>
-                                <p class="text-gray-700 text-xl">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
-                                </p>
-                            </div>
-                            <div class="text-right">
-                                <label for="hora" class="block mb-2 text-2xl font-bold text-black">Hora:</label>
-                                <p class="text-gray-700 text-xl">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
-                                </p>
-                            </div>
-                        </div>
+            <a href="{{ route('partidos.create') }}"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Crear partido
+            </a>
+        </div>
+
+        {{-- Mis partidos --}}
+        <section class="mb-14" aria-labelledby="mis-partidos-heading">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-1 rounded-full bg-indigo-500" aria-hidden="true"></div>
+                    <div>
+                        <h2 id="mis-partidos-heading" class="text-2xl font-bold text-gray-900">Mis partidos</h2>
+                        <p class="text-sm text-gray-500 mt-0.5">Partidos a los que ya estás apuntado</p>
                     </div>
-                </article>
-            @endif
+                </div>
+                @if ($partidosInscritos->isNotEmpty())
+                    <span class="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                        {{ $partidosInscritos->count() }} {{ $partidosInscritos->count() === 1 ? 'partido' : 'partidos' }}
+                    </span>
+                @endif
+            </div>
 
-        @empty
-            <p class="text-center text-gray-700">No estás apuntado a ningún partido.</p>
-        @endforelse
-    </div>
-
-    <br>
-
-
-    <h2 class="text-3xl text-center font-bold mb-4 w-full">Partidos Disponibles</h2>
-
-
-    <div class="container mx-auto mt-12 flex flex-wrap justify-center space-x-4">
-        @forelse ($partidos as $partido)
-            @php
-                $fechaHoraPartido = \Carbon\Carbon::parse($partido->fecha_hora);
-            @endphp
-            @if ($fechaHoraPartido > \Carbon\Carbon::now())
-                <article id="partido" class="card card2 w-96 mb-8">
-                    <a href="{{ route('partidos.show', $partido) }}" name="partido" id="partido"
-                        class="btn btn-sm btn-primary">
-                        <header class="card__header bg-cover h-72"
-                            style="background-image: url('{{ $partido->ubicacion->image_path }}');">
-                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->ubicacion->nombre }}
-                            </h1>
-                            <h1 class="text-2xl font-bold text-black text-shadow">{{ $partido->deporte->nombre }}</h1>
-                        </header>
-                    </a>
-                    <div class="card__body p-6 bg-white text-base text-gray-700 border-t-4 border-gray-200">
-                        <div class="card__address flex">
-                            <svg class="icon icon--marker w-4 h-5" viewBox="0 0 9 12">
-                                <path
-                                    d="M4.2,0c-2.303,0.003 -4.197,1.897 -4.2,4.2c0,2.133 3.346,6.48 3.727,6.969l0.473,0.606l0.473,-0.606c0.381,-0.488 3.727,-4.836 3.727,-6.969c0,-2.316 -1.885,-4.2 -4.2,-4.2">
-                                </path>
-                            </svg>
-                            <div
-                                class="card_address_street whitespace-nowrap overflow-hidden text-ellipsis ml-2 text-xl">
-                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank">
-                                    {{ $partido->ubicacion->direccion }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="slots grid grid-cols-2 gap-2 min-h-14 pt-2 mt-5 text-center">
-                            <div class="text-left">
-                                <label for="fecha" class="block mb-2 text-2xl font-bold text-black">Fecha:</label>
-                                <p class="text-gray-700 text-xl">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
-                                </p>
-                            </div>
-                            <div class="text-right">
-                                <label for="hora" class="block mb-2 text-2xl font-bold text-black">Hora:</label>
-                                <p class="text-gray-700 text-xl">
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
-                                </p>
-                            </div>
-                        </div>
+            @if ($partidosInscritos->isNotEmpty())
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    @foreach ($partidosInscritos as $partido)
+                        <x-partido-card :partido="$partido" variant="inscrito" />
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12 px-6 bg-white rounded-2xl border border-dashed border-gray-200">
+                    <div class="mx-auto w-14 h-14 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 mb-4">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
                     </div>
-                </article>
+                    <h3 class="text-lg font-semibold text-gray-900">Aún no tienes partidos</h3>
+                    <p class="mt-2 text-gray-500 max-w-md mx-auto">Explora los partidos disponibles más abajo o crea uno nuevo e invita a tus amigos.</p>
+                    <a href="#partidos-disponibles-heading"
+                        class="mt-5 inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                        Ver partidos disponibles ↓
+                    </a>
+                </div>
             @endif
-        @empty
-            <!-- No hay partidos o todos los partidos han pasado -->
-        @endforelse
+        </section>
 
-        @if (count($partidos) == 0)
-            <p class="text-center text-gray-700">Todavía no hay partidos disponibles.</p>
-        @elseif (count($partidos) > 0 &&
-                $partidos->every(function ($partido) {
-                    return \Carbon\Carbon::parse($partido->fecha_hora) <= \Carbon\Carbon::now();
-                }))
-            <p class="text-center text-gray-700">Todos los partidos han pasado.</p>
-        @endif
+        {{-- Partidos disponibles --}}
+        <section aria-labelledby="partidos-disponibles-heading">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-6 pt-6 border-t border-gray-200">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-1 rounded-full bg-emerald-500" aria-hidden="true"></div>
+                    <div>
+                        <h2 id="partidos-disponibles-heading" class="text-2xl font-bold text-gray-900">Partidos disponibles</h2>
+                        <p class="text-sm text-gray-500 mt-0.5">Abiertos para unirte</p>
+                    </div>
+                </div>
+                @if ($partidos->isNotEmpty())
+                    <span class="text-sm font-medium text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+                        {{ $partidos->count() }} {{ $partidos->count() === 1 ? 'partido' : 'partidos' }}
+                    </span>
+                @endif
+            </div>
+
+            @if ($partidos->isNotEmpty())
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    @foreach ($partidos as $partido)
+                        <x-partido-card :partido="$partido" variant="disponible" />
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12 px-6 bg-white rounded-2xl border border-dashed border-gray-200">
+                    <div class="mx-auto w-14 h-14 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 mb-4">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">No hay partidos abiertos</h3>
+                    <p class="mt-2 text-gray-500 max-w-md mx-auto">Sé el primero en organizar un encuentro en tu zona.</p>
+                    <a href="{{ route('partidos.create') }}"
+                        class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Crear el primer partido
+                    </a>
+                </div>
+            @endif
+        </section>
     </div>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Aquí puedes verificar si la ventana modal ya está presente y si no, crearla.
-            // Luego, muestra el mensaje obtenido de la respuesta JSON.
-
-            // Ejemplo de cómo mostrar un mensaje en una ventana modal usando JavaScript puro
-            const showModalWithMessage = (message) => {
-                // Muestra la ventana modal y establece el mensaje
-                // Aquí deberías usar el código específico de tu biblioteca/modal.
-                alert(message);
-            };
-
-            // Escucha la respuesta del servidor después de crear el partido
-            const url = '{{ route('partidos.store') }}';
-            fetch(url, {
-                    method: 'POST',
-                    // ... (Agrega las opciones necesarias, como headers y body)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Muestra la ventana modal con el mensaje
-                    showModalWithMessage(data.message);
-                })
-                .catch(error => {
-                    console.error('Error al crear el partido:', error);
-                    // Maneja errores si es necesario
-                });
-        });
-    </script>
-
-
-
-
-    {{-- Boton Delete --}}
-
-    <script>
-        $(document).ready(function() {
-            $('.delete-partido').on('click', function() {
-                // Get the ID of the partido to be deleted
-                const partidoId = $(this).data('partido-id');
-
-                // Send a POST request to the 'destroy' route with the partido ID
-                $.post('/partidos/' + partidoId, {
-                    _token: '{{ csrf_token() }}',
-                    _method: 'DELETE',
-                }, function(data) {
-                    // If the request is successful, remove the partido row from the table
-                    if (data === 'Partido eliminado correctamente.') {
-                        $('#partido-' + partidoId).remove();
-
-                        // Print asignaciones for the deleted partido
-                        printAsignaciones(partido);
-                    }
-                });
-            });
-        });
-
-        function printAsignaciones(partido) {
-            for (const asignacion of partido.asignaciones) {
-                console.log(asignacion);
-            }
-        }
-    </script>
-
-
-
-
-    {{-- Ventana externa abierta --}}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('a[target="_blank"]').forEach(function(link) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.open(this.getAttribute('href'), '_blank', 'width=600,height=400');
-                });
-            });
-        });
-    </script>
-
-
-
-
-
-
 </x-app-layout>

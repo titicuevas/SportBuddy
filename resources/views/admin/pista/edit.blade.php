@@ -1,134 +1,36 @@
-<x-administrador>
-    @section('contenido')
+<x-admin-form-card title="Editar pista" :back-route="route('admin.pista.index')">
+    <form action="{{ route('admin.pista.update', $pista) }}" method="post" class="space-y-5">
+        @csrf
+        @method('PUT')
 
+        <x-admin-select label="Ubicación" name="ubicacion_id" :required="true">
+            @foreach ($ubicaciones as $ubicacion)
+                <option value="{{ $ubicacion->id }}" @selected(old('ubicacion_id', $pista->ubicacion_id) == $ubicacion->id)>
+                    {{ $ubicacion->nombre }}
+                </option>
+            @endforeach
+        </x-admin-select>
 
-    @if (session('success'))
-    <div x-data="{ show: false }" x-show="show" x-init="() => {
-        show = true;
-        setTimeout(() => show = false, 5000);
-    }"
-        class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-md transition-all duration-300">
-        <p class="text-center text-base">{{ session('success') }}</p>
-    </div>
-@endif
+        <x-admin-select label="Superficie" name="superficie_id" :required="true">
+            @foreach ($superficies as $superficie)
+                <option value="{{ $superficie->id }}" @selected(old('superficie_id', $pista->superficie_id) == $superficie->id)>
+                    {{ $superficie->tipo }}
+                </option>
+            @endforeach
+        </x-admin-select>
 
+        <x-admin-select label="Deporte" name="deporte_id" :required="true">
+            @foreach ($deportes as $deporte)
+                <option value="{{ $deporte->id }}" @selected(old('deporte_id', $pista->deporte_id) == $deporte->id)>
+                    {{ $deporte->nombre }}
+                </option>
+            @endforeach
+        </x-admin-select>
 
-@if (session('error'))
-            <div x-data="{ show: false }" x-show="show" x-init="() => {
-                show = true;
-                setTimeout(() => show = false, 5000);
-            }"
-                class="fixed inset-x-0 mx-auto top-4 px-4 py-2 bg-red-500 text-white rounded-md shadow-md transition-all duration-300">
-                <p class="text-center text-base">{{ session('error') }}</p>
+        <x-admin-field label="Número de pista" name="numero" type="number" :value="$pista->numero" :min="1" :required="true" />
+        <x-admin-field label="Precio con luz (€)" name="precio_con_luz" type="number" step="0.01" :min="0" :value="$pista->precio_con_luz" />
+        <x-admin-field label="Precio sin luz (€)" name="precio_sin_luz" type="number" step="0.01" :min="0" :value="$pista->precio_sin_luz" :required="true" />
 
-                
-            </div>
-        @endif
-
-
-        <div class="flex items-center justify-center">
-            <h1 class="text-4xl text-blue-500 mb-6">Editar Pista</h1>
-        </div>
-
-        <form action="{{ route('admin.pista.update', $pista->id) }}" method="post">
-            @csrf
-            @method('PUT')
-
-
-            <div class="mx-auto max-w-2xl">
-                <table class="w-full bg-white border border-gray-500">
-                    <tbody>
-                        <!-- Ubicación -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Ubicación</td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <select name="ubicacion_id" id="ubicacion_id"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2 border-opacity-50" required>
-                                    @foreach ($ubicaciones as $ubicacion)
-                                        <option value="{{ $ubicacion->id }}"
-                                            {{ $pista->ubicacion_id == $ubicacion->id ? 'selected' : '' }}>
-                                            {{ $ubicacion->nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
-                        </tr>
-
-                        <!-- Superficie -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Superficie
-                            </td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <select name="superficie_id" id="superficie_id"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2 border-opacity-50" required>
-                                    @foreach ($superficies as $superficie)
-                                        <option value="{{ $superficie->id }}"
-                                            {{ $pista->superficie_id == $superficie->id ? 'selected' : '' }}>
-                                            {{ $superficie->tipo }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
-                        </tr>
-
-                        <!-- Deporte -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Deporte</td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <select name="deporte_id" id="deporte_id"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2 border-opacity-50" required>
-                                    @foreach ($deportes as $deporte)
-                                        <option value="{{ $deporte->id }}"
-                                            {{ $pista->deporte_id == $deporte->id ? 'selected' : '' }}>
-                                            {{ $deporte->nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
-                        </tr>
-
-                        <!-- Número de Pista -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Número de
-                                Pista</td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <input type="text" name="numero" id="numero"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2" value="{{ $pista->numero }}"
-                                    required>
-                            </td>
-                        </tr>
-
-                        <!-- Precio con Luz -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Precio con
-                                Luz</td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <input type="text" name="precio_con_luz" id="precio_con_luz"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2"
-                                    value="{{ $pista->precio_con_luz }}">
-                            </td>
-                        </tr>
-
-                        <!-- Precio sin Luz -->
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-500 text-gray-600 text-xl font-semibold">Precio sin
-                                Luz</td>
-                            <td class="py-2 px-4 border-b border-gray-500">
-                                <input type="text" name="precio_sin_luz" id="precio_sin_luz"
-                                    class="w-full border-gray-300 text-xl rounded-md p-2"
-                                    value="{{ $pista->precio_sin_luz }}" required>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Botón Guardar Cambios -->
-            <div class="mt-8 flex justify-center">
-                <button type="submit"
-                    class="bg-blue-500 text-white py-2 text-xl px-4 rounded-md hover:bg-blue-700 focus:outline-none">
-                    Guardar Cambios
-                </button>
-            </div>
-        </form>
-    </x-administrador>
+        <x-admin-form-actions :cancel-route="route('admin.pista.index')" submit-label="Guardar cambios" />
+    </form>
+</x-admin-form-card>

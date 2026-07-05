@@ -4,24 +4,21 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\StorePartidoRequest;
-use App\Http\Requests\UpdatePartidoRequest;
-use App\Models\Partido;
-use App\Models\Equipo;
-use App\Models\Deporte;
-use App\Models\Ubicacion;
 use App\Models\Asignamiento;
-use App\Models\Superficie;
-use App\Models\Pista;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use App\Events\MensajeEnviado;
-use App\Models\Mensaje;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Rules\UniquePistaHoraRule;
-use Illuminate\Support\Facades\Log;
 use App\Models\Comentario;
+use App\Models\Deporte;
+use App\Models\Mensaje;
+use App\Models\Partido;
+use App\Models\Pista;
+use App\Models\Superficie;
+use App\Models\Ubicacion;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use App\Rules\UniquePistaHoraRule;
+use App\Services\StatsService;
+use App\Services\WeatherService;
 
 
 
@@ -33,23 +30,27 @@ class PartidoController extends Controller
      */
     public function index()
     {
-        // Obtén el usuario actualmente autenticado
-        $usuario = auth()->user();
+        $usuarioId = auth()->id();
+        $cacheVersion = Cache::get('partidos.cache.version', 1);
 
-        // Obtén todos los partidos
-        $partidos = Partido::with('user')->get();
+        $partidos = Cache::remember("partidos.v{$cacheVersion}.disponibles.{$usuarioId}", 60, function () use ($usuarioId) {
+            return Partido::query()
+                ->future()
+                ->whereDoesntHave('asignamientos', fn ($q) => $q->where('user_id', $usuarioId))
+                ->withCardData()
+                ->orderBy('fecha_hora')
+                ->get();
+        });
 
+        $partidosInscritos = Cache::remember("partidos.v{$cacheVersion}.inscritos.{$usuarioId}", 60, function () use ($usuarioId) {
+            return Partido::query()
+                ->future()
+                ->forUser($usuarioId)
+                ->withCardData()
+                ->orderBy('fecha_hora')
+                ->get();
+        });
 
-        // Obtén todos los partidos ordenados por fecha_hora
-        $partidos = Partido::with('user')->orderBy('fecha_hora', 'asc')->get();
-
-        // Obtén los partidos en los que el usuario está inscrito
-        $misPartidos = Asignamiento::where('user_id', $usuario->id)->pluck('partido_id');
-
-        // Filtra los partidos para mostrar solo los que el usuario está inscrito
-        $partidosInscritos = $partidos->whereIn('id', $misPartidos);
-
-        // Pasa los partidos y "Mis Partidos" a la vista
         return view('partidos.index', compact('partidos', 'partidosInscritos'));
     }
 
@@ -59,49 +60,9 @@ class PartidoController extends Controller
 
     public function create()
     {
-        $ubicaciones = Ubicacion::all();
-        $deportes = Deporte::all();
+        $ubicaciones = Ubicacion::query()->orderBy('nombre')->get();
 
-        // Obtén la fecha y hora actual
-        $now = Carbon::now();
-
-        // Filtra las horas que ya han pasado
-        $horasDisponibles = $this->obtenerHorasDisponibles($now);
-
-        return view('partidos.create', [
-
-            'ubicaciones' => $ubicaciones,
-            'deportes' => $deportes,
-            'horasDisponibles' => $horasDisponibles,
-        ]);
-    }
-
-    // Función para obtener las horas disponibles a partir de la fecha y hora actuales
-    private function obtenerHorasDisponibles($now)
-    {
-        $horasDisponibles = [];
-
-        // Lógica para obtener las horas disponibles, teniendo en cuenta partidos/reservas existentes
-        $horasPosibles = collect(range($now->hour, 22));
-
-        // Filtra las horas que ya han pasado
-        $horasFiltradas = $horasPosibles->filter(function ($hora) use ($now) {
-            return ($hora > $now->hour) || ($hora == $now->hour && $hora > $now->minute);
-        });
-
-        foreach ($horasFiltradas as $hora) {
-            // Verifica si hay un partido o reserva en esa pista a esa hora y fecha
-            $horaCompleta = $hora . ':00';
-            $partidoEnHora = Partido::where('fecha_hora', $now->format('Y-m-d') . ' ' . $horaCompleta)->exists();
-            $pistaOcupada = Partido::where('fecha_hora', $now->format('Y-m-d') . ' ' . $horaCompleta)
-                ->whereNotNull('pista_id')->exists();
-
-            if (!$partidoEnHora && !$pistaOcupada) {
-                $horasDisponibles[] = $horaCompleta;
-            }
-        }
-
-        return $horasDisponibles;
+        return view('partidos.create', compact('ubicaciones'));
     }
 
 
@@ -115,172 +76,109 @@ class PartidoController extends Controller
      */
     public function store(StorePartidoRequest $request)
     {
-        //dd($request->all()); // Muestra los datos recibidos antes de la validación
-        $superficie = Superficie::where('tipo', $request->input('tipo_superficie'))->first();
-        $deporte = Deporte::where('nombre', $request->input('deporte'))->first();
-
-        // Obtén la fecha y hora seleccionadas por el usuario
-        $fechaHoraSeleccionada = Carbon::parse($request->input('fecha') . ' ' . $request->input('hora'));
-
-        // Verifica si hay algún partido existente en la misma hora, mismo día y misma pista
-        if (Partido::where('pista_id', $request->input('pista_id'))
-            ->where('fecha_hora', $fechaHoraSeleccionada)
-            ->exists()
-        ) {
-            return redirect()->route('partidos.create')->with('error', 'Ya hay un partido programado en la misma hora, mismo día y misma pista.');
-        }
-
-        // Verifica si la pista está ocupada en la misma hora y día
-        if (Partido::where('pista_id', $request->input('pista_id'))
-            ->where('fecha_hora', $fechaHoraSeleccionada)
-            ->exists()
-        ) {
-            return redirect()->back()->with('error', 'La pista ya está ocupada en la misma hora y día.');
-        }
-
-
-
-        $request->validate([
-            'fecha' => 'required',
+        $validated = $request->validate([
+            'fecha' => ['required', 'date', 'after_or_equal:today', new UniquePistaHoraRule($request->input('hora'), $request->input('pista_id'))],
             'hora' => 'required',
-            'ubicacion_id' => 'required',
-            'deporte' => 'required',
-            'precio' => 'required',
-            new UniquePistaHoraRule('partidos', $request->input('hora'), $request->input('pista_id')),
+            'ubicacion_id' => 'required|exists:ubicaciones,id',
+            'deporte' => 'required|exists:deportes,nombre',
+            'pista_id' => 'required|exists:pistas,id',
+            'precio' => 'required|numeric|min:0',
+            'tipo_superficie' => 'required|exists:superficies,tipo',
         ]);
 
-        $user = auth()->user()->id;
-        $equipo1 = Equipo::find(1);
-        $equipo2 = Equipo::find(2);
+        $fechaHora = Carbon::parse($validated['fecha'].' '.$validated['hora']);
 
-        // Obtén la pista seleccionada por el usuario
-        $pista = Pista::find($request->pista_id);
-
-        // Calcula el precio según la elección del usuario
-        $precioSeleccionado = $request->precio;
-
-        // Obtén la fecha y hora seleccionadas por el usuario
-        $fechaHoraSeleccionada = Carbon::parse($request->input('fecha') . ' ' . $request->input('hora'));
-
-        // Verifica si la hora seleccionada es igual o posterior a la hora actual
-        $now = Carbon::now();
-        if ($fechaHoraSeleccionada <= $now) {
-            return redirect()->back()->with('error', 'La hora seleccionada debe ser posterior a la hora actual.');
+        if ($fechaHora <= now()) {
+            return back()->with('error', 'La hora seleccionada debe ser posterior a la hora actual.');
         }
 
-        Log::info('Fecha y Hora Seleccionadas:', ['fechaHoraSeleccionada' => $fechaHoraSeleccionada]);
+        $superficie = Superficie::where('tipo', $validated['tipo_superficie'])->firstOrFail();
+        $deporte = Deporte::where('nombre', $validated['deporte'])->firstOrFail();
+        $userId = auth()->id();
 
-        // Intenta insertar directamente usando el constructor de consultas
-        DB::table('partidos')->insert([
-            'fecha_hora' => $fechaHoraSeleccionada,
-            'equipo1' => $equipo1->id,
-            'equipo2' => $equipo2->id,
-            'user_id' => $user,
-            'superficie_id' => $superficie->id,
-            'pista_id' => $request->input('pista_id'),
-            'ubicacion_id' => $request->input('ubicacion_id'),
-            'deporte_id' => $deporte->id,
-            'precio' => $precioSeleccionado,
-        ]);
+        try {
+            DB::transaction(function () use ($fechaHora, $superficie, $deporte, $validated, $userId) {
+                $partido = Partido::create([
+                    'fecha_hora' => $fechaHora,
+                    'equipo1' => 1,
+                    'equipo2' => 2,
+                    'user_id' => $userId,
+                    'superficie_id' => $superficie->id,
+                    'pista_id' => $validated['pista_id'],
+                    'ubicacion_id' => $validated['ubicacion_id'],
+                    'deporte_id' => $deporte->id,
+                    'precio' => $validated['precio'],
+                ]);
 
-        // TODO: hay que meter en la tabla asignamiento el usuario que crea el partido al azar en un equipo
-        $ultimoPartido = Partido::orderBy('id', 'desc')->first();
+                Asignamiento::create([
+                    'partido_id' => $partido->id,
+                    'equipo_id' => 1,
+                    'user_id' => $userId,
+                ]);
+            });
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (str_contains($e->getMessage(), 'partidos_pista_fecha_hora_unique')) {
+                return back()->with('error', 'Ya hay un partido en esa pista a esa hora.');
+            }
 
-        // TODO: hay que coger uno de los dos equipos aleatoriamente para asignárselo a la tabla asignamiento
-        Asignamiento::create([
-            'partido_id' => $ultimoPartido->id,
-            'equipo_id' => $equipo1->id,
-            'user_id' => $user,
-        ]);
+            throw $e;
+        }
+
+        $this->bumpPartidosCache();
+        $this->clearHorasOcupadasCache((int) $validated['pista_id'], $validated['fecha']);
 
         return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
+    }
+
+    private function bumpPartidosCache(): void
+    {
+        $version = (int) Cache::get('partidos.cache.version', 1);
+        Cache::put('partidos.cache.version', $version + 1);
+        StatsService::bump();
+    }
+
+    private function clearHorasOcupadasCache(int $pistaId, string $fecha): void
+    {
+        Cache::forget("horas_ocupadas.{$pistaId}.{$fecha}");
     }
 
 
 
     public function show(Partido $partido)
     {
-        // Obtener el usuario actual
+        $partido->load([
+            'user:id,name',
+            'ubicacion:id,nombre,direccion,enlace_maps,iframe',
+            'pista:id,numero',
+            'deporte:id,nombre',
+            'asignamientos.user:id,name',
+            'comentarios' => fn ($q) => $q->with('user:id,name')->orderBy('created_at'),
+        ]);
+
         $usuarioActual = auth()->user();
+        $inscrito = $partido->usuarioInscrito($usuarioActual->id);
+        $limite = Partido::limitePorDeporte($partido->deporte->nombre);
+        $partidoCompleto = $partido->asignamientos->count() >= $limite * 2;
 
-        // Verificar si el usuario actual está inscrito en el partido
-        $inscrito = Asignamiento::where('user_id', $usuarioActual->id)->where('partido_id', $partido->id)->first();
-
-        // Verificar si el partido está completo
-        $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
-        $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
-        $partidoCompleto = $totalJugadores >= $limite * 2;
-
-        return view('partidos.show', [
-            'partido' => $partido,
-            'usuarioActual' => $usuarioActual,
-            'inscrito' => $inscrito,
-            'partidoCompleto' => $partidoCompleto,
-        ]);
+        return view('partidos.show', compact('partido', 'usuarioActual', 'inscrito', 'partidoCompleto'));
     }
 
 
-
-    // Intento ver el perfil del usuario
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Partido $partido)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePartidoRequest $request, Partido $partido, $id)
-    {
-        $partido = Partido::findOrFail($id);
-
-        $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required|time',
-            'equipo1' => 'required|integer',
-            'equipo2' => 'required|integer',
-            'user_id' => 'required|integer',
-            'resultado' => 'required|string',
-            'ubicacion_id' => 'required|integer',
-            'deporte_id' => 'required|integer',
-        ]);
-
-        $partido->fecha = $request->input('fecha');
-        $partido->hora = $request->input('hora');
-        $partido->equipo1 = $request->input('equipo1');
-        $partido->equipo2 = $request->input('equipo2');
-        $partido->user_id = $request->input('user_id');
-        $partido->superficie_id = $request->input('superficie_id');
-        $partido->pista_id = $request->input('pista_id');
-        $partido->resultado = $request->input('resultado');
-        $partido->ubicacion_id = $request->input('ubicacion_id');
-        $partido->deporte_id = $request->input('deporte_id');
-
-        $partido->save();
-
-        return redirect()->route('partidos.index');
-    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Partido $partido)
     {
-        // Elimina todas las asignaciones asociadas al partido
+        abort_unless(auth()->id() === $partido->user_id, 403);
+
+        Mensaje::where('partido_id', $partido->id)->delete();
         Asignamiento::where('partido_id', $partido->id)->delete();
-
-        // Elimina los comentarios asociados al partido
         $partido->comentarios()->delete();
-
-        // Elimina el partido
         $partido->delete();
 
-        // Mensaje de confirmación
+        $this->bumpPartidosCache();
+
         return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
     }
 
@@ -294,55 +192,56 @@ class PartidoController extends Controller
     public function inscribirPartido(Partido $partido)
     {
         $user = auth()->user();
+        $partido->load('deporte:id,nombre');
+        $limite = Partido::limitePorDeporte($partido->deporte->nombre);
 
-        // Verificar si el usuario ya está inscrito en el partido
-        $inscrito = Asignamiento::where('user_id', $user->id)->where('partido_id', $partido->id)->first();
-        if ($inscrito) {
-            return redirect()->route('partidos.show', $partido)->with('success', 'Ya estás inscrito en el partido.');
+        if (Asignamiento::where('partido_id', $partido->id)->where('user_id', $user->id)->exists()) {
+            return back()->with('success', 'Ya estás inscrito en el partido.');
         }
 
-        // Verificar si el partido ya está completo
-        $totalJugadores = Asignamiento::where('partido_id', $partido->id)->count();
-        $limite = $this->obtenerLimitePorDeporte($partido->deporte->nombre);
+        $conteos = Asignamiento::query()
+            ->where('partido_id', $partido->id)
+            ->selectRaw('equipo_id, COUNT(*) as total')
+            ->groupBy('equipo_id')
+            ->pluck('total', 'equipo_id');
+
+        $totalJugadores = $conteos->sum();
 
         if ($totalJugadores >= $limite * 2) {
-            return redirect()->route('partidos.show', $partido)->with('error', 'El partido está completo. No es posible inscribirse.');
+            return back()->with('error', 'El partido está completo.');
         }
 
-        // Después de inscribir al usuario, puedes enviar un mensaje
-        $contenidoMensaje = '¡Nuevo jugador inscrito! ' . $user->name . ' se ha unido al partido.';
+        $equiposDisponibles = collect();
 
-
-        // Obtener los equipos del partido
-        $equipo1 = Equipo::find(1);
-        $equipo2 = Equipo::find(2);
-
-        // Contadores de jugadores en cada equipo
-        $num_equipo1 = $equipo1->asignamientos->where('partido_id', $partido->id)->count();
-        $num_equipo2 = $equipo2->asignamientos->where('partido_id', $partido->id)->count();
-
-        // Seleccionar aleatoriamente uno de los equipos disponibles
-        if ($num_equipo1 < $limite && $num_equipo2 < $limite) {
-            $equiposDisponibles = [$equipo1, $equipo2];
-        } elseif ($num_equipo1 < $limite) {
-            $equiposDisponibles = [$equipo1];
-        } elseif ($num_equipo2 < $limite) {
-            $equiposDisponibles = [$equipo2];
-        } else {
-            return redirect()->route('partidos.show', $partido)->with('error', 'No se pudo asignar a un equipo. El partido puede estar completo.');
+        if (($conteos[1] ?? 0) < $limite) {
+            $equiposDisponibles->push(1);
         }
 
-        // Seleccionar aleatoriamente uno de los equipos disponibles
-        $equipoAleatorio = $equiposDisponibles[array_rand($equiposDisponibles)];
+        if (($conteos[2] ?? 0) < $limite) {
+            $equiposDisponibles->push(2);
+        }
 
-        // Crear un nuevo registro en la tabla de asignamientos
-        Asignamiento::create([
-            'partido_id' => $partido->id,
-            'equipo_id' => $equipoAleatorio->id,
-            'user_id' => $user->id,
-        ]);
+        if ($equiposDisponibles->isEmpty()) {
+            return back()->with('error', 'No se pudo asignar a un equipo.');
+        }
 
-        return redirect()->route('partidos.show', $partido)->with('success', 'Te has inscrito al partido correctamente');
+        try {
+            Asignamiento::create([
+                'partido_id' => $partido->id,
+                'equipo_id' => $equiposDisponibles->random(),
+                'user_id' => $user->id,
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (str_contains($e->getMessage(), 'asignamientos_partido_user_unique')) {
+                return back()->with('success', 'Ya estás inscrito en el partido.');
+            }
+
+            throw $e;
+        }
+
+        $this->bumpPartidosCache();
+
+        return back()->with('success', 'Te has inscrito al partido correctamente.');
     }
 
 
@@ -351,73 +250,65 @@ class PartidoController extends Controller
 
     public function desapuntarse(Partido $partido)
     {
-        $user = auth()->user()->id;
-        $asignamiento =  Asignamiento::where('partido_id', $partido->id)
-            ->where('user_id', $user)->first();
+        $userId = auth()->id();
 
-        // Crear una instancia del modelo Comentario
-        $comentario = new Comentario();
+        Comentario::where('partido_id', $partido->id)
+            ->where('user_id', $userId)
+            ->delete();
 
-        // Eliminar comentarios del usuario que se ha desapuntado
-        $comentario->eliminarComentariosUsuario($partido, $user);
+        Asignamiento::where('partido_id', $partido->id)
+            ->where('user_id', $userId)
+            ->delete();
 
-        // Eliminar la asignación
-        if ($asignamiento) {
-            Asignamiento::where('partido_id', $partido->id)
-                ->where('user_id', $asignamiento->user_id)->where('equipo_id', $asignamiento->equipo_id)->delete();
+        $this->bumpPartidosCache();
+
+        return back()->with('success', 'Te has desapuntado del partido correctamente.');
+    }
+
+
+
+
+
+    public function obtenerHorasOcupadas(int $pistaId, string $fecha)
+    {
+        $horas = Cache::remember("horas_ocupadas.{$pistaId}.{$fecha}", 30, function () use ($pistaId, $fecha) {
+            return Partido::query()
+                ->where('pista_id', $pistaId)
+                ->whereDate('fecha_hora', $fecha)
+                ->pluck('fecha_hora')
+                ->map(fn ($fechaHora) => Carbon::parse($fechaHora)->format('H:i'))
+                ->values()
+                ->all();
+        });
+
+        return response()->json($horas);
+    }
+
+    public function clima(Partido $partido, WeatherService $weather)
+    {
+        $partido->load('ubicacion:id,nombre,direccion');
+
+        return response()->json(
+            $weather->getForUbicacion($partido->ubicacion, Carbon::parse($partido->fecha_hora))
+        );
+    }
+
+    public function climaUbicacion(Request $request, Ubicacion $ubicacion, WeatherService $weather)
+    {
+        $request->validate([
+            'fecha' => ['nullable', 'date'],
+            'hora' => ['nullable', 'date_format:H:i'],
+        ]);
+
+        $fechaHora = $request->filled('fecha')
+            ? Carbon::parse($request->fecha)
+            : now();
+
+        if ($request->filled('hora')) {
+            [$hora, $minuto] = explode(':', $request->hora);
+            $fechaHora->setTime((int) $hora, (int) $minuto);
         }
 
-        return redirect()->route('partidos.show', $partido)->with('success', 'Te has desapuntado del partido correctamente.');
-    }
-
-
-
-
-
-    public function actualizarEstadoPago(Request $request, $partidoId)
-    {
-        $partido = Partido::findOrFail($partidoId);
-
-        // Actualiza el estado del pago en la base de datos
-        $partido->update(['pago_aprobado' => $request->pago_aprobado]);
-
-        // Almacena el estado del pago en la sesión
-        session(['pago_aprobado_' . $partidoId => $request->pago_aprobado]);
-
-        return response()->json(['success' => true]);
-    }
-
-
-
-
-
-    // Función para obtener el límite según el deporte
-    private function obtenerLimitePorDeporte($deporte)
-    {
-        switch ($deporte) {
-            case 'Futbol 7':
-                return 7;
-            case 'Futbol Sala':
-                return 5;
-            case 'Padel':
-                return 2; // Cambiado a 2 jugadores por equipo para pádel
-            case 'Baloncesto':
-                return 5;
-            case 'Tenis':
-                return 1;
-            case 'Judo':
-                return 1;
-            default:
-                return 0; // Valor predeterminado
-        }
-    }
-
-
-
-    private function usuarioApuntado($partido)
-    {
-        $usuario = auth()->user();
-
-        return $partido->asignamientos()->where('user_id', $usuario->id)->exists();
+        return response()->json($weather->getForUbicacion($ubicacion, $fechaHora));
     }
 }

@@ -1,21 +1,26 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Mensaje;
 
 class MensajeService
 {
-public function getMensajes($partidoId)
-{
-return Mensaje::where('partido_id', $partidoId)->get();
-}
+    public function getMensajes(int $partidoId)
+    {
+        return Mensaje::query()
+            ->with('user:id,name,foto')
+            ->where('partido_id', $partidoId)
+            ->orderBy('created_at')
+            ->get();
+    }
 
-public function crearMensaje($contenido, $partidoId)
-{
-return Mensaje::create([
-'user_id' => auth()->user()->id,
-'partido_id' => $partidoId,
-'contenido' => $contenido,
-]);
-}
+    public function crearMensaje(string $contenido, int $partidoId): Mensaje
+    {
+        return Mensaje::create([
+            'user_id' => auth()->id(),
+            'partido_id' => $partidoId,
+            'contenido' => $contenido,
+        ]);
+    }
 }

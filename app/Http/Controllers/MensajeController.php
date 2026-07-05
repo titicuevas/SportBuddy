@@ -2,46 +2,60 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Http\Request;
-use App\Models\Mensaje;
-use App\Http\Livewire\Mensajes;
+use App\Models\Partido;
 use App\Services\MensajeService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MensajeController extends Controller
 {
-    protected $mensajeService;
+    public function __construct(
+        protected MensajeService $mensajeService
+    ) {}
 
-    public function __construct(MensajeService $mensajeService)
+    public function index(Partido $partido): View
     {
-        $this->mensajeService = $mensajeService;
-    }
+        $this->authorizePartidoAccess($partido);
 
-    public function index($partidoId)
-{
-    // Verifica si $partidoId está definida antes de pasarla a la vista
-    if (!isset($partidoId)) {
-        // Puedes manejar el caso de que $partidoId no esté definida, redirigiendo o mostrando un error
-        // Ejemplo: return redirect()->route('alguna_ruta');
-    }
-
-    return view('mensajes.index', ['partidoId' => $partidoId])
-        ->with('mensajes', $this->mensajeService->getMensajes($partidoId));
-}
-
-
-
-
-
-
-    public function store(Request $request, $partidoId)
-    {
-        $request->validate([
-            'contenido' => 'required|string|max:255',
+        $partido->load([
+            'deporte:id,nombre',
+            'ubicacion:id,nombre',
         ]);
 
-        $mensaje = $this->mensajeService->crearMensaje($request->input('contenido'), $partidoId);
+        return view('mensajes.chat', [
+            'partido' => $partido,
+            'mensajes' => $this->mensajeService->getMensajes($partido->id),
+        ]);
+    }
 
-        return redirect()->back();
+    public function store(Request $request, Partido $partido): RedirectResponse
+    {
+        $this->authorizePartidoAccess($partido);
+
+        $validated = $request->validate([
+            'contenido' => ['required', 'string', 'max:255'],
+        ]);
+
+        $this->mensajeService->crearMensaje($validated['contenido'], $partido->id);
+
+        return redirect()
+            ->route('mensajes.index', $partido)
+            ->with('success', 'Mensaje enviado.');
+    }
+
+    private function authorizePartidoAccess(Partido $partido): void
+    {
+        $userId = auth()->id();
+
+        if ($partido->user_id === $userId) {
+            return;
+        }
+
+        if ($partido->asignamientos()->where('user_id', $userId)->exists()) {
+            return;
+        }
+
+        abort(403, 'Solo los jugadores inscritos pueden acceder al chat.');
     }
 }

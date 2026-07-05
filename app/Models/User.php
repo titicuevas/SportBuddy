@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'foto',
-        'roles_id'
+        'rol_id'
     ];
 
     /**
@@ -49,12 +49,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function asignamientos()
     {
-        return $this->hasMany(Partido::class, 'user_id');
+        return $this->hasMany(Asignamiento::class);
     }
 
-    public function partidos()
+    public function partidosInscritos()
     {
-        return $this->hasMany(Partido::class, 'partido_id');
+        return $this->belongsToMany(Partido::class, 'asignamientos', 'user_id', 'partido_id');
     }
 
     public function partidosCreados()

@@ -1,615 +1,350 @@
 <x-app-layout>
+    @if (session('success'))
+        <x-flash-message>{{ session('success') }}</x-flash-message>
+    @endif
 
+    @if (session('error'))
+        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
+    @endif
 
-    <br>
-    <br>
-    <br>
+    @if (session('info'))
+        <x-flash-message type="info">{{ session('info') }}</x-flash-message>
+    @endif
 
+    @php
+        $fecha = \Carbon\Carbon::parse($partido->fecha_hora);
+        $mapIframe = $partido->ubicacion->iframe
+            ? str_replace('<iframe', '<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"', $partido->ubicacion->iframe)
+            : '';
+    @endphp
 
+    <x-page-hero :title="$partido->deporte->nombre" :subtitle="$partido->ubicacion->nombre . ' · ' . $fecha->format('d/m/Y H:i')" />
 
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <div class="flex justify-center items-center h-screen">
-        <div class="flex flex-col space-y-4">
+            {{-- Columna 1: datos y acciones --}}
+            <section class="lg:col-span-4" aria-labelledby="datos-partido-heading">
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 h-full">
+                    <h2 id="datos-partido-heading" class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="h-6 w-1 rounded-full bg-indigo-500" aria-hidden="true"></span>
+                        Datos del partido
+                    </h2>
 
-
-            <!-- Parte 1 con fondo azul -->
-            <div class="bg-white p-6 rounded-lg flex space-x-4">
-
-
-                <!-- Sección 1: Datos del partido -->
-                <div class="flex-1/4">
-                    <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
-
-                        <h1 class="text-3xl font-bold text-gray-900 mb-4">Datos del partido</h1>
-                        <hr class="w-full border-t-8 bg-gray-500 mt-1">
-
-
-
-
-                        <div class="mb-6">
-                            <p class="text-xl text-gray-700">
-                                <label for="fecha" class="block mb-2 text-lg font-bold text-black">Fecha:
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('d-m-Y') }}
-                            </p></label>
+                    <dl class="space-y-4">
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Fecha</dt>
+                            <dd class="text-lg text-gray-700">{{ $fecha->format('d-m-Y') }}</dd>
                         </div>
-
-                        <div class="mb-6">
-
-                            <p class="text-xl text-gray-700">
-                                <label for="hora" class="block mb-2 text-lg font-bold text-black">Hora:
-                                    {{ \Carbon\Carbon::parse($partido->fecha_hora)->format('H:i') }}
-                            </p></label>
-
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Hora</dt>
+                            <dd class="text-lg text-gray-700">{{ $fecha->format('H:i') }}</dd>
                         </div>
-
-                        <div class="mb-6">
-
-
-                            <label for="creador" class="block mb-2 text-lg font-bold text-black">Creador:
-                                <a href="{{ route('user.show', $partido->user) }}"
-                                    class="text-xl text-gray-700">{{ $partido->user->name }}</a>
-
-
-                            </label>
-
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Creador</dt>
+                            <dd>
+                                <a href="{{ route('user.show', $partido->user) }}" class="text-lg text-indigo-600 hover:text-indigo-800 font-medium">
+                                    {{ $partido->user->name }}
+                                </a>
+                            </dd>
                         </div>
-
-                        <div class="mb-6">
-
-
-                            <label for="ubicacion" class="block mb-2 text-lg font-bold text-black">Ubicación:
-                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank"
-                                    class="text-blue-500 hover:text-blue-700 underline">{{ $partido->ubicacion->nombre }}</a>
-                            </label>
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Ubicación</dt>
+                            <dd>
+                                <a href="{{ $partido->ubicacion->enlace_maps }}" target="_blank" rel="noopener noreferrer"
+                                    class="text-lg text-indigo-600 hover:text-indigo-800 font-medium">
+                                    {{ $partido->ubicacion->nombre }}
+                                </a>
+                            </dd>
                         </div>
-
-                        <div class="mb-6">
-                            <p class="text-xl text-gray-700">
-                                <label for="pista_id" class="block mb-2 text-lg font-bold text-black">Numero de Pista:
-                                    {{ $partido->pista->numero }}
-                            </p></label>
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Número de pista</dt>
+                            <dd class="text-lg text-gray-700">{{ $partido->pista->numero }}</dd>
                         </div>
-
-                        <div class="mb-6">
-                            <p class="text-xl text-gray-700">
-                                <label for="deporte" class="block mb-2 text-lg font-bold text-black">Deporte:
-                                    {{ $partido->deporte->nombre }}
-                            </p></label>
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Deporte</dt>
+                            <dd class="text-lg text-gray-700">{{ $partido->deporte->nombre }}</dd>
                         </div>
+                        <div>
+                            <dt class="text-sm font-bold text-gray-900">Precio pista</dt>
+                            <dd class="text-lg text-gray-700">{{ $partido->precio }}€</dd>
+                        </div>
+                    </dl>
 
-
-
-                        <div class="mb-6">
-                            <p class="text-xl text-gray-700">
-                                <label for="precio" class="block mb-2 text-lg font-bold text-black">Precio Pista:
-                                    {{ $partido->precio }}€
-                            </p></label>
-
-
-
-
-
-                            @if (auth()->user()->id == $partido->user->id)
-                                {{-- Botón de PayPal --}}
-                                <div id="paypal-button-container"></div>
-                                <div id="pista-pagada-message"
-                                    class="hidden bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
-                                    Pista Pagada 😊
+                    @if (auth()->user()->id == $partido->user->id && ! $partido->pago_aprobado)
+                        @if (config('services.paypal.client_id'))
+                            <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">Pago de la pista</p>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Importe: <span class="font-bold text-gray-900">{{ number_format($partido->precio, 2) }}€</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        Serás redirigido a PayPal. Si no quieres pagar, usa «Cancelar y volver» en la página de PayPal o el enlace de abajo.
+                                    </p>
                                 </div>
 
+                                <a href="{{ route('paypal.start', $partido) }}"
+                                    class="inline-flex w-full items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold text-white bg-[#0070ba] hover:bg-[#005ea6] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0070ba] focus:ring-offset-2">
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M7.34 8.5h3.46c2.07 0 3.47 1.2 3.47 3.05 0 2.2-1.74 3.56-4.07 3.56H8.14L7.34 8.5zm1.18-5.5h7.9c3.66 0 6.1 1.86 6.1 4.93 0 3.2-2.53 5.2-6.58 5.2h-2.9l-1.02 5.37H7.34L8.52 3z"/>
+                                    </svg>
+                                    Pagar con PayPal
+                                </a>
 
-                                <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&currency=EUR"></script>
-                                <script nonce="random_nonce_value">
-                                    document.addEventListener("DOMContentLoaded", function() {
-                                        const isPagoAprobado = localStorage.getItem('pago_aprobado_{{ $partido->id }}');
-
-                                        paypal.Buttons({
-                                            createOrder: function(data, actions) {
-                                                return actions.order.create({
-                                                    purchase_units: [{
-                                                        amount: {
-                                                            value: '{{ $partido->precio }}',
-                                                            currency_code: 'EUR'
-                                                        }
-                                                    }]
-                                                });
-                                            },
-                                            onApprove: function(data, actions) {
-                                                return actions.order.capture().then(function(details) {
-                                                    alert('Pago completado por ' + details.payer.name.given_name);
-                                                    document.getElementById('paypal-button-container').style.display =
-                                                        'none';
-                                                    document.getElementById('pista-pagada-message').style.display = 'block';
-
-                                                    // Almacena el estado del pago en localStorage
-                                                    localStorage.setItem('pago_aprobado_{{ $partido->id }}', true);
-
-                                                    // Actualiza el estado del pago en el servidor (puedes utilizar una solicitud HTTP o Laravel Echo, según tus preferencias)
-                                                    axios.post('{{ route('actualizar_estado_pago', $partido->id) }}', {
-                                                            pago_aprobado: true
-                                                        })
-                                                        .then(function(response) {
-                                                            // Maneja la respuesta, si es necesario
-                                                        })
-                                                        .catch(function(error) {
-                                                            console.error('Error al actualizar el estado del pago',
-                                                                error);
-                                                        });
-                                                });
-                                            }
-                                        }).render('#paypal-button-container');
-
-                                        // Mostrar el mensaje de "Pista Pagada" si el pago ya fue aprobado
-                                        if (isPagoAprobado) {
-                                            document.getElementById('paypal-button-container').style.display = 'none';
-                                            document.getElementById('pista-pagada-message').style.display = 'block';
-                                        }
-                                    });
-                                </script>
-                            @elseif ($partido->pago_aprobado)
-                                {{-- Mensaje de "Pista Pagada" --}}
-                                <div id="pista-pagada-message"
-                                    class="bg-green-200 text-green-800 border border-green-400 p-4 rounded mt-4">
-                                    Pista Pagada 😊
-                                </div>
-                            @endif
-
-
-
-
-                        </div>
-                    </div>
-
-
-
-
-
-                    {{-- Boton de Unirse al partido --}}
-                    <form method="POST" action="{{ route('partidos.inscribirse', $partido) }}"
-                        x-data="{ showModal: false }">
-                        @csrf
-                        {{-- Verificar si el usuario está inscrito --}}
-                        @if ($inscrito)
-                            <button type="button"
-                                class="bg-gray-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed"
-                                disabled>Ya
-                                estás inscrito</button>
-                        @elseif ($partidoCompleto)
-                            <button type="button"
-                                class="bg-red-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed"
-                                disabled>Partido Completo</button>
-                        @else
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue">Unirse
-                                al partido</button>
-                        @endif
-                    </form>
-
-
-
-
-
-
-
-
-
-
-                    {{-- Boton de Desapuntarse --}}
-                    <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}"
-                        x-data="{ showModal: false }">
-                        @csrf
-                        {{-- Verificar si el usuario está inscrito y no es el creador del partido --}}
-                        @if ($inscrito && $partido->user_id !== auth()->user()->id)
-                            <button type="submit"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-red">Desapuntarse
-                                del partido</button>
-                        @endif
-                    </form>
-
-
-
-                    {{-- Boton Borrarse del partido el creador --}}
-                    <!-- Agrega un botón solo si el usuario actual es el creador del partido -->
-                    @if (auth()->user()->id === $partido->user_id)
-                        <!-- Agrega un botón para eliminar el partido con una función de confirmación -->
-                        <form method="POST" action="{{ route('partidos.destroy', $partido) }}"
-                            x-data="{ showModal: false }">
-                            @csrf
-                            @method('DELETE')
-
-                            <!-- Botón para abrir la ventana modal -->
-                            <button type="button" x-on:click="showModal = true"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-red">
-                                Eliminar partido
-                            </button>
-
-
-
-
-
-
-
-                            <!-- Ventana modal de confirmación -->
-                            <div x-show="showModal" class="fixed inset-0 z-10 overflow-y-auto" style="display: none;">
-                                <div
-                                    class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                    <!-- Cubierta oscura trasera -->
-                                    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                                        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                                    </div>
-
-                                    <!-- Centro de la ventana modal -->
-                                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
-                                        aria-hidden="true">&#8203;</span>
-
-                                    <!-- Contenido de la ventana modal -->
-                                    <div x-show="showModal"
-                                        class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                                        style="max-width: 500px;">
-                                        <div class="bg-white p-5">
-                                            <h1 class="text-xl font-bold text-gray-900 mb-4">Eliminar partido</h1>
-                                            <p class="text-gray-700">¿Seguro que quieres eliminar este partido? Esta
-                                                acción
-                                                no se puede deshacer.</p>
-                                        </div>
-                                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                            <button type="submit"
-                                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300 sm:ml-3 sm:w-auto sm:text-sm">
-                                                Eliminar
-                                            </button>
-                                            <button type="button" x-on:click="showModal = false"
-                                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring focus:border-blue-300 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                                Cancelar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a href="{{ route('partidos.index') }}"
+                                    class="block w-full text-center text-sm font-medium text-gray-600 hover:text-gray-900 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                    Volver a partidos sin pagar
+                                </a>
                             </div>
-                        </form>
+                        @else
+                            <p class="mt-4 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                PayPal no está configurado. Añade PAYPAL_CLIENT_ID y PAYPAL_CLIENT_SECRET en el archivo .env.
+                            </p>
+                        @endif
+                    @elseif ($partido->pago_aprobado)
+                        <div class="bg-green-100 text-green-800 border border-green-300 p-4 rounded-lg mt-4" role="status">
+                            Pista pagada correctamente
+                        </div>
                     @endif
 
-
-
-
-
-
-
-
-
-
-
-
-                </div>
-
-                <!-- Sección 2: Mapa con fondo amarillo -->
-                <div class="flex-1/2">
-                    <div class="p-6 bg-gray rounded-lg">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center relative">
-                            Ubicacion y pronostico del tiempo
-                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
-                            <!-- Línea divisoria -->
-                        </h1> {!! $partido->ubicacion->iframe !!}
-
-                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
-                            <h2 class="text-lg  font-bold text-black">Pronóstico del tiempo</h2>
-                            <br>
-                            <div id="weather-info"></div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-
-
-
-
-
-
-                {{-- Script TIEMPO    Utilizo la librería Guzzle Para sacar el tiempo composer require guzzlehttp/guzzle  --}}
-
-
-
-                <style>
-                    .clima-icono {
-                        font-size: 3em;
-                        /* Ajusta el tamaño de fuente según tus preferencias */
-                    }
-                </style>
-
-
-
-                <script nonce="random_nonce_value">
-                    const apiKey = '9facddaf62df7e0216baad1b406319c9';
-                    const fechaPartido = '{{ \Carbon\Carbon::parse($partido->fecha)->format('d-m-Y') }}';
-                    const ciudadPartido = 'Sanlúcar de Barrameda, ES';
-                    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${ciudadPartido}&units=metric&appid=${apiKey}`;
-
-                    async function obtenerTiempo() {
-                        try {
-                            const response = await fetch(apiUrl);
-                            const data = await response.json();
-                            mostrarInfoTiempo(data);
-                        } catch (error) {
-                            console.error('Error al obtener el pronóstico del tiempo:', error);
-                        }
-                    }
-
-                    function mostrarInfoTiempo(data) {
-                        const weatherInfoDiv = document.getElementById('weather-info');
-
-                        if (data.main && data.weather && data.weather.length > 0) {
-                            const temperaturaCelsius = Math.round(data.main.temp);
-                            const descripcion = traducirDescripcion(data.weather[0].description);
-                            const fecha = fechaPartido; // Utiliza la fecha del partido
-                            const icono = obtenerIconoClima(data.weather[0].icon);
-
-                            const contenidoHTML = `
-                            <p><strong>Fecha:</strong> ${fecha}</p>
-                            <p><strong>Temperatura:</strong> ${temperaturaCelsius}°C</p>
-                            <p><strong>Descripción:</strong> ${descripcion}</p>
-                            <p class="clima-icono"><strong>Clima:</strong> ${icono}</p>
-                        `;
-
-                            weatherInfoDiv.innerHTML = contenidoHTML;
-                        } else {
-                            weatherInfoDiv.innerHTML = 'No se pudo obtener la información del tiempo.';
-                        }
-                    }
-
-                    function traducirDescripcion(descripcion) {
-                        // Puedes agregar más traducciones según sea necesario
-                        const traducciones = {
-                            'clear sky': 'cielo despejado',
-                            'few clouds': 'pocas nubes',
-                            'scattered clouds': 'nubes dispersas',
-                            'broken clouds': 'nubes rotas',
-                            'shower rain': 'lluvia',
-                            'rain': 'lluvia',
-                            'thunderstorm': 'tormenta',
-                            'snow': 'nieve',
-                            'mist': 'niebla',
-                        };
-
-                        return traducciones[descripcion.toLowerCase()] || descripcion;
-                    }
-
-                    function obtenerIconoClima(codigoIcono) {
-                        // Mapea códigos de iconos a emojis
-                        const iconos = {
-                            '01d': '🌞', // clear sky (día)
-                            '01n': '🌕', // clear sky (noche)
-                            '02d': '⛅', // few clouds (día)
-                            '02n': '☁️', // few clouds (noche)
-                            '03d': '☁️', // scattered clouds (día)
-                            '03n': '☁️', // scattered clouds (noche)
-                            '04d': '☁️', // broken clouds (día)
-                            '04n': '☁️', // broken clouds (noche)
-                            '09d': '🌧️', // shower rain (día)
-                            '09n': '🌧️', // shower rain (noche)
-                            '10d': '🌧️', // rain (día)
-                            '10n': '🌧️', // rain (noche)
-                            '11d': '⛈️', // thunderstorm (día)
-                            '11n': '⛈️', // thunderstorm (noche)
-                            '13d': '❄️', // snow (día)
-                            '13n': '❄️', // snow (noche)
-                            '50d': '🌫️', // mist (día)
-                            '50n': '🌫️', // mist (noche)
-                        };
-
-                        return iconos[codigoIcono] || '🤷'; // Icono predeterminado para casos desconocidos
-                    }
-
-                    obtenerTiempo();
-                </script>
-
-
-
-
-
-
-
-                <!-- Parte 2 dividida en dos con fondo verde -->
-                <div class="bg-gray p-6 rounded-lg flex space-x-4">
-
-                    <!-- Parte 2.1 - EQUIPO 1 -->
-                    <div class="flex-1">
-                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
-                            <h2 class="text-2xl font-bold text-black mb-4">EQUIPO 1</h2>
-                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
-
-                            @foreach ($partido->asignamientos as $asignamiento)
-                                @if ($asignamiento->equipo_id == 1)
-                                    <a href="{{ route('user.show', $asignamiento->user) }}"
-                                        class="text-blue-500 hover:text-blue-700 underline block text-center mb-2">
-                                        {{ $asignamiento->user->name }}
-                                    </a>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Parte 2.2 - EQUIPO 2 -->
-                    <div class="flex-1">
-                        <div class="p-6 bg-gray overflow-hidden shadow-sm sm:rounded-lg">
-                            <h2 class="text-2xl font-bold text-black mb-4">EQUIPO 2</h2>
-                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
-
-                            @foreach ($partido->asignamientos as $asignamiento)
-                                @if ($asignamiento->equipo_id == 2)
-                                    <a href="{{ route('user.show', $asignamiento->user->id) }}"
-                                        class="text-blue-500 hover:text-blue-700 underline block text-center mb-2">
-                                        {{ $asignamiento->user->name }}
-                                    </a>
-                                @endif
-                            @endforeach
-                        </div>
-
-                        {{-- Comentarios --}}
-                        <div class="mt-8">
-                            <h2 class="text-2xl font-bold text-black mb-4">Comentarios</h2>
-                            <hr class="w-full border-t-8 bg-gray-500 mt-1 mb-6">
-
-
-                            <!-- Formulario para agregar comentario -->
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        <form method="POST" action="{{ route('partidos.inscribirse', $partido) }}" class="inline">
+                            @csrf
                             @if ($inscrito)
-                                <form id="comentario-form" method="POST"
-                                    action="{{ route('comentarios.store', $partido->id) }}" class="mb-4">
-                                    @csrf
-                                    <input type="hidden" name="partido_id" value="{{ $partido->id }}">
-                                    <div class="flex">
-                                        <textarea name="contenido" id="contenido" class="w-full p-2 border rounded resize-none"
-                                            placeholder="Escribe tu comentario"></textarea>
-                                        <button type="button" onclick="enviarComentario()"
-                                            class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar
-                                            Comentario</button>
-                                    </div>
-                                </form>
+                                <button type="button"
+                                    class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg cursor-not-allowed"
+                                    disabled>Ya estás inscrito</button>
+                            @elseif ($partidoCompleto)
+                                <button type="button"
+                                    class="px-4 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg cursor-not-allowed"
+                                    disabled>Partido completo</button>
                             @else
-                                <p class="text-gray-700">Debes estar inscrito para agregar comentarios.</p>
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    Unirse al partido
+                                </button>
                             @endif
+                        </form>
 
-                            <!-- Mostrar comentarios existentes -->
-                            <div id="comentarios-section" class="max-h-96 overflow-y-auto mt-4">
-                                @foreach ($partido->comentarios->sortBy('created_at') as $comentario)
-                                    <div class="bg-white p-4 mb-4 rounded-lg flex justify-between">
-                                        <div>
-                                            <p class="text-gray-700">
-                                                <strong>{{ $comentario->user->name }}</strong>
-                                                <span class="text-sm text-gray-500"></span>:
-                                                {{ $comentario->contenido }}
-                                            </p>
-                                        </div>
-                                        <div class="text-right">
-                                            <span
-                                                class="text-sm text-gray-500">{{ $comentario->created_at->format('H:i') }}</span>
+                        @if ($inscrito && $partido->user_id !== auth()->user()->id)
+                            <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                                    Desapuntarse
+                                </button>
+                            </form>
+                        @endif
+
+                        @if (auth()->user()->id === $partido->user_id)
+                            <form method="POST" action="{{ route('partidos.destroy', $partido) }}"
+                                x-data="{ showModal: false }" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" x-on:click="showModal = true"
+                                    class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                                    Eliminar partido
+                                </button>
+
+                                <div x-show="showModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+                                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true" x-on:click="showModal = false"></div>
+                                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                            <div class="bg-white p-5">
+                                                <h3 class="text-xl font-bold text-gray-900 mb-2">Eliminar partido</h3>
+                                                <p class="text-gray-700">¿Seguro que quieres eliminar este partido? Esta acción no se puede deshacer.</p>
+                                            </div>
+                                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                                                <button type="submit"
+                                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 sm:w-auto">
+                                                    Eliminar
+                                                </button>
+                                                <button type="button" x-on:click="showModal = false"
+                                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                                                    Cancelar
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                        </div>
+                                </div>
+                            </form>
+                        @endif
 
+                        @if ($inscrito || auth()->id() === $partido->user_id)
+                            <a href="{{ route('mensajes.index', $partido) }}"
+                                class="px-4 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                                Chat del partido
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </section>
+
+            {{-- Columna 2: mapa y clima --}}
+            <section class="lg:col-span-4" aria-labelledby="ubicacion-heading">
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 h-full">
+                    <h2 id="ubicacion-heading" class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="h-6 w-1 rounded-full bg-emerald-500" aria-hidden="true"></span>
+                        Ubicación y pronóstico
+                    </h2>
+
+                    @if ($mapIframe)
+                        <div class="w-full overflow-hidden rounded-lg [&_iframe]:w-full [&_iframe]:aspect-video">
+                            {!! $mapIframe !!}
+                        </div>
+                    @endif
+
+                    <div class="p-4 mt-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900">Pronóstico del tiempo</h3>
+                        <div id="weather-info" class="mt-2 text-gray-700" aria-live="polite">
+                            <p class="text-sm text-gray-500">Cargando pronóstico…</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {{-- Columna 3: equipos y comentarios --}}
+            <section class="lg:col-span-4 space-y-6" aria-labelledby="equipos-heading">
+                <h2 id="equipos-heading" class="sr-only">Equipos y comentarios</h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Equipo 1</h3>
+                        <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-indigo-300 rounded mb-4" aria-hidden="true"></div>
+                        @php $equipo1 = $partido->asignamientos->where('equipo_id', 1); @endphp
+                        @forelse ($equipo1 as $asignamiento)
+                            <a href="{{ route('user.show', $asignamiento->user) }}"
+                                class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
+                                {{ $asignamiento->user->name }}
+                            </a>
+                        @empty
+                            <p class="text-sm text-gray-500 text-center">Sin jugadores</p>
+                        @endforelse
                     </div>
 
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Equipo 2</h3>
+                        <div class="h-1 w-full bg-gradient-to-r from-emerald-500 to-emerald-300 rounded mb-4" aria-hidden="true"></div>
+                        @php $equipo2 = $partido->asignamientos->where('equipo_id', 2); @endphp
+                        @forelse ($equipo2 as $asignamiento)
+                            <a href="{{ route('user.show', $asignamiento->user) }}"
+                                class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
+                                {{ $asignamiento->user->name }}
+                            </a>
+                        @empty
+                            <p class="text-sm text-gray-500 text-center">Sin jugadores</p>
+                        @endforelse
+                    </div>
                 </div>
 
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Comentarios</h3>
 
-                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-                <script>
-                    // Declarar la función en el ámbito global
-                    function enviarComentario() {
-                        // Obtener datos del formulario
-                        var formData = $('#comentario-form').serialize();
+                    @if ($inscrito)
+                        <form id="comentario-form" method="POST" action="{{ route('comentarios.store', $partido->id) }}" class="mb-4 space-y-3">
+                            @csrf
+                            <input type="hidden" name="partido_id" value="{{ $partido->id }}">
+                            <textarea name="contenido" id="contenido" rows="3" aria-label="Escribe tu comentario"
+                                class="w-full p-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="Escribe tu comentario"></textarea>
+                            <button type="button" onclick="enviarComentario()"
+                                class="w-full sm:w-auto px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                Enviar
+                            </button>
+                        </form>
+                    @else
+                        <p class="text-gray-600 text-sm mb-4">Debes estar inscrito para agregar comentarios.</p>
+                    @endif
 
-                        // Enviar solicitud AJAX
-                        $.ajax({
-                            type: 'POST',
-                            url: $('#comentario-form').attr('action'),
-                            data: formData,
-                            success: function(response) {
-                                // Agregar el nuevo comentario al contenedor de comentarios
-                                $('#comentarios-section').append(response);
-
-                                // Limpiar el contenido del textarea
-                                $('#contenido').val('');
-
-                                // Desplazarse al nuevo comentario (scroll hacia abajo)
-                                var container = $('#comentarios-section');
-                                container.scrollTop(container.prop("scrollHeight"));
-                            },
-                            error: function(error) {
-                                console.log(error);
-                            }
-                        });
-                    }
-
-                    $(document).ready(function() {
-                        function cargarComentarios() {
-                            $.ajax({
-                                type: 'GET',
-                                url: '{{ route('comentarios.index', $partido->id) }}',
-                                success: function(response) {
-                                    $('#comentarios-section').html(response);
-
-                                    // Desplazarse al último comentario (scroll hacia abajo)
-                                    var container = $('#comentarios-section');
-                                    container.scrollTop(container.prop("scrollHeight"));
-                                },
-                                error: function(error) {
-                                    console.log(error);
-                                }
-                            });
-                        }
-
-                        /* // Actualizar comentarios cada 5 segundos
-                        setInterval(function() {
-                            cargarComentarios();
-                        }, 5000); */
-
-                        // Manejar clic en "Ver más comentarios"
-                        $('#ver-mas-comentarios').on('click', function() {
-                            cargarComentarios();
-                        });
-
-                        // Manejar tecla "Enter" en el área de texto
-                        $('#contenido').keyup(function(event) {
-                            if (event.key === 'Enter' && !event.shiftKey) {
-                                event.preventDefault();
-                                enviarComentario();
-                            }
-                        });
-
-                        // Agregar la hora al enviar un comentario
-                        $('#comentario-form').submit(function(event) {
-                            event.preventDefault(); // Evitar que el formulario se envíe normalmente
-
-                            // Obtener la hora actual
-                            var horaActual = obtenerHoraActual();
-
-                            // Obtener el contenido del comentario
-                            var comentarioContenido = $('#contenido').val();
-
-                            // Agregar el nuevo comentario al contenedor de comentarios
-                            $('#comentarios-section').append(
-                                '<div class="bg-white p-4 mb-4 rounded-lg"><p class="text-gray-700"><strong>{{ Auth::user()->name }}</strong> (' +
-                                horaActual + '): ' + comentarioContenido + '</p></div>');
-
-                            // Limpiar el contenido del textarea
-                            $('#contenido').val('');
-
-                            // Desplazarse al último comentario (scroll hacia abajo)
-                            var container = $('#comentarios-section');
-                            container.scrollTop(container.prop("scrollHeight"));
-                        });
-
-                        // Función para formatear la hora
-                        function obtenerHoraActual() {
-                            var fecha = new Date();
-                            var horas = fecha.getHours().toString().padStart(2, '0');
-                            var minutos = fecha.getMinutes().toString().padStart(2, '0');
-                            return horas + ':' + minutos;
-                        }
-                    });
-                </script>
-
-
-
-
-
-            </div>
+                    <div id="comentarios-section" class="max-h-80 overflow-y-auto space-y-3">
+                        @foreach ($partido->comentarios as $comentario)
+                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <p class="text-gray-800">
+                                    <strong>{{ $comentario->user->name }}</strong>
+                                    <span class="text-xs text-gray-500 ml-2">{{ $comentario->created_at->format('H:i') }}</span>
+                                </p>
+                                <p class="text-gray-700 mt-1">{{ $comentario->contenido }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
         </div>
 
+        <div class="mt-8 flex justify-center">
+            <a href="{{ route('partidos.index') }}"
+                class="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                Volver a partidos
+            </a>
+        </div>
     </div>
 
+    <script>
+        const fechaPartido = @json($fecha->format('d-m-Y'));
+        const climaUrl = @json(route('partidos.clima', $partido));
 
+        const iconos = {
+            '01d': '🌞', '01n': '🌕', '02d': '⛅', '02n': '☁️',
+            '03d': '☁️', '03n': '☁️', '04d': '☁️', '04n': '☁️',
+            '09d': '🌧️', '09n': '🌧️', '10d': '🌧️', '10n': '🌧️',
+            '11d': '⛈️', '11n': '⛈️', '13d': '❄️', '13n': '❄️',
+            '50d': '🌫️', '50n': '🌫️',
+        };
 
-    {{-- Botón para ir a la lista de partidos --}}
-    <div class="mt-8 flex justify-center">
-        <a href="{{ route('partidos.index') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Volver
-        </a>
-    </div>
+        async function obtenerTiempo() {
+            const weatherInfoDiv = document.getElementById('weather-info');
+            try {
+                const response = await fetch(climaUrl, { headers: { 'Accept': 'application/json' } });
+                const data = await response.json();
 
+                if (data.configured === false) {
+                    weatherInfoDiv.innerHTML = `<p class="text-sm text-gray-600">${data.error || 'Servicio meteorológico no configurado.'}</p>`;
+                    return;
+                }
+
+                if (!data.available) {
+                    weatherInfoDiv.innerHTML = `<p class="text-sm text-gray-600">${data.message || data.error || 'No se pudo obtener el tiempo.'}</p>`;
+                    return;
+                }
+
+                const icono = iconos[data.icon] || iconos[(data.icon || '').replace(/[dn]$/, 'd')] || '🌡️';
+
+                weatherInfoDiv.innerHTML = `
+                    <p><strong>Fecha:</strong> ${fechaPartido}</p>
+                    <p><strong>Temperatura:</strong> ${data.temp}°C <span class="text-gray-500">(sensación ${data.feels_like}°C)</span></p>
+                    <p><strong>Descripción:</strong> ${data.description}</p>
+                    <p class="text-sm text-gray-500">Humedad ${data.humidity}% · Viento ${data.wind} m/s</p>
+                    <p class="text-3xl mt-2">${icono}</p>
+                `;
+            } catch (error) {
+                console.error('Error al obtener el pronóstico:', error);
+                weatherInfoDiv.innerHTML = '<p class="text-sm text-gray-600">No se pudo obtener la información del tiempo.</p>';
+            }
+        }
+
+        obtenerTiempo();
+
+        function enviarComentario() {
+            const form = document.getElementById('comentario-form');
+            if (!form) return;
+
+            axios.post(form.action, new FormData(form))
+                .then(response => {
+                    document.getElementById('comentarios-section').insertAdjacentHTML('beforeend', response.data);
+                    document.getElementById('contenido').value = '';
+                    const container = document.getElementById('comentarios-section');
+                    container.scrollTop = container.scrollHeight;
+                })
+                .catch(error => console.error('Error al enviar comentario:', error));
+        }
+
+        document.getElementById('contenido')?.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                enviarComentario();
+            }
+        });
+    </script>
 </x-app-layout>

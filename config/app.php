@@ -109,7 +109,19 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'es_ES',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-verify email (solo desarrollo / tests)
+    |--------------------------------------------------------------------------
+    |
+    | En producción debe ser false: los usuarios deben verificar su correo.
+    | En local puedes usar true para saltar el paso sin SMTP configurado.
+    |
+    */
+
+    'auto_verify_email' => env('AUTO_VERIFY_EMAIL', false),
 
     /*
     |--------------------------------------------------------------------------

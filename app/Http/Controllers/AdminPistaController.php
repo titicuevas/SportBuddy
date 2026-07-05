@@ -17,7 +17,11 @@ class AdminPistaController extends Controller
      */
     public function index()
     {
-        $pistas = Pista::paginate(6); // Cambia 10 por el número de pistas que deseas mostrar por página
+        $pistas = Pista::query()
+            ->with(['ubicacion:id,nombre', 'deporte:id,nombre', 'superficie:id,tipo'])
+            ->orderBy('ubicacion_id')
+            ->orderBy('numero')
+            ->paginate(15);
         return view('admin.pista.index', compact('pistas'));
     }
 
@@ -26,9 +30,9 @@ class AdminPistaController extends Controller
      */
     public function create()
     {
-        $ubicaciones = Ubicacion::all();
-        $superficies = Superficie::all();
-        $deportes = Deporte::all();
+        $ubicaciones = Ubicacion::query()->orderBy('nombre')->get();
+        $superficies = Superficie::query()->orderBy('tipo')->get();
+        $deportes = Deporte::query()->orderBy('nombre')->get();
 
         return view('admin.pista.create', compact('ubicaciones', 'superficies', 'deportes'));
     }
@@ -85,9 +89,9 @@ class AdminPistaController extends Controller
      */
     public function edit(Pista $pista)
     {
-        $ubicaciones = Ubicacion::all();
-        $superficies = Superficie::all();
-        $deportes = Deporte::all();
+        $ubicaciones = Ubicacion::query()->orderBy('nombre')->get();
+        $superficies = Superficie::query()->orderBy('tipo')->get();
+        $deportes = Deporte::query()->orderBy('nombre')->get();
 
         return view('admin.pista.edit', compact('pista', 'ubicaciones', 'superficies', 'deportes'));
     }

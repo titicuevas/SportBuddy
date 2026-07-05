@@ -8,50 +8,44 @@ use Illuminate\Database\Eloquent\Model;
 class Ubicacion extends Model
 {
     use HasFactory;
+
     public $timestamps = false;
 
-
-
-    //Para que me coja la tabla ubicaciones que cambiamos ya que es un plural que no admite.
     protected $table = 'ubicaciones';
 
     protected $fillable = [
         'nombre',
         'direccion',
-        'ubicacion_id',
         'imagen',
         'enlace_maps',
+        'iframe',
     ];
-
-
-
-
-    public function deportes()
-    {
-        return $this->belongsToMany('App\Models\Deporte');
-    }
-
-
 
     public function partidos()
     {
-        return $this->belongsTo('App\Models\Partidos');
+        return $this->hasMany(Partido::class);
     }
-
 
     public function pistas()
     {
-        return $this->hasMany('App\Models\Pista');
+        return $this->hasMany(Pista::class);
     }
 
-    public function getImagePathAttribute()
+    public function getImagePathAttribute(): string
     {
-        // Asegúrate de que estás accediendo a la columna correcta en la base de datos
-        return asset('storage/imagen/' . $this->attributes['imagen']);
+        if (filter_var($this->imagen, FILTER_VALIDATE_URL)) {
+            return $this->imagen;
+        }
+
+        if ($this->imagen && file_exists(storage_path('app/public/imagen/'.$this->imagen))) {
+            return asset('storage/imagen/'.$this->imagen);
+        }
+
+        return match ($this->nombre) {
+            'Polideportivo' => 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80',
+            'Campo de Fútbol Las Palmeras' => 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&w=800&q=80',
+            'Padel La Jara', 'Club de pádel La Via', 'Padel Manzanilla Maruja' => 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=800&q=80',
+            default => 'https://images.unsplash.com/photo-1517649763962-0c6230660273?auto=format&fit=crop&w=800&q=80',
+        };
     }
-
-
-
-
-
 }

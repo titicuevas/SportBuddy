@@ -57,13 +57,19 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'foto' => $foto,
-
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        if (config('app.auto_verify_email')) {
+            $user->markEmailAsVerified();
+
+            return redirect()->intended(RouteServiceProvider::HOME)
+                ->with('status', 'Cuenta creada correctamente.');
+        }
+
+        return redirect()->route('verification.notice');
     }
 }

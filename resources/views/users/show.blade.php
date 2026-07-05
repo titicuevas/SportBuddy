@@ -1,54 +1,29 @@
 <x-app-layout>
+    <x-page-hero title="Perfil de usuario" :subtitle="$user->name" />
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gray-100 overflow-hidden shadow-sm sm:rounded-lg">
-                <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">Detalles del Usuario</h1>
+    <div class="max-w-lg mx-auto px-4 py-8 -mt-4">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-8 flex flex-col items-center text-center border-b border-gray-100 bg-gradient-to-br from-indigo-50 to-emerald-50">
+                <x-user-avatar :user="$user" size="xl" />
+                <h2 class="mt-4 text-2xl font-bold text-gray-900">{{ $user->name }} {{ $user->apellidos }}</h2>
+            </div>
 
-                <div class="flex items-center bg-gray-100 p-4">
-                    <!-- Vista previa de la foto -->
-                    <div class="flex-shrink-0 p-4">
-                        @if ($user->foto)
-                            <img class="h-32 w-32 border-2 border-black rounded-full"
-                                src="{{ Storage::url($user->foto) }}" alt="Foto de perfil" />
-                        @else
-                            <img class="h-32 w-32 border-2 border-black rounded-full"
-                                src="https://mastermdi.com/files/students/noImage.jpg" alt="usuario" />
-                        @endif
-                    </div>
-
-
-
-                    <div class="flex-1 p-4 text-gray-900">
-                        <div class="flex flex-col">
-                            <div class="mb-2">
-                                <label for="Nombre" class="font-bold text-lg text-gray-700">Nombre:</label>
-                                <span class="ml-2 text-xl text-gray-900">{{ $user->name }}</span>
-                            </div>
-
-                            {{-- <div class="mb-2">
-                                <label for="Apellidos" class="font-bold text-lg text-gray-700">Apellidos:</label>
-                                <span class="ml-2 text-xl text-gray-900">{{ $user->apellidos }}</span>
-                            </div> --}}
-
-                            <div class="mb-2">
-                                <label for="Email" class="font-bold text-lg text-gray-700">Email:</label>
-                                <span class="ml-2 text-xl text-gray-900">{{ $user->email }}</span>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="Telefono" class="font-bold text-lg text-gray-700">Teléfono:</label>
-                                <span class="ml-2 text-xl text-gray-900">{{ $user->telefono }}</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-center">
-                            <a href="{{ url()->previous() }}"
-                                class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue hover:bg-blue-700">
-                                Volver
-                            </a>
-                        </div>
-                    </div>
+            <dl class="p-6 space-y-4">
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                    <dt class="text-sm font-medium text-gray-500">Email</dt>
+                    <dd class="text-sm text-gray-900">{{ $user->email }}</dd>
                 </div>
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                    <dt class="text-sm font-medium text-gray-500">Teléfono</dt>
+                    <dd class="text-sm text-gray-900">{{ $user->telefono }}</dd>
+                </div>
+            </dl>
+
+            <div class="p-6 pt-0 flex justify-center">
+                <a href="{{ url()->previous() }}"
+                    class="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                    Volver
+                </a>
             </div>
         </div>
     </div>

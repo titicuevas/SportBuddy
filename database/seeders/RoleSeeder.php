@@ -13,13 +13,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear roles predeterminados
-        Role::create([
-            'nombre' => 'administrator',
-        ]);
-
-        Role::create([
-            'nombre' => 'estandar',
-        ]);
+        Role::firstOrCreate(['id' => 1], ['nombre' => 'administrator']);
+        Role::firstOrCreate(['id' => 2], ['nombre' => 'estandar']);
     }
 }

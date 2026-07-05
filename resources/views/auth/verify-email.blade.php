@@ -1,55 +1,46 @@
 <x-guest-layout>
+    <div class="relative min-h-[calc(100vh-8rem)] flex items-center justify-center py-12 px-4">
+        <div class="relative w-full max-w-md">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
 
-    <header class="bg-blue-500 text-white p-4">
-        <div class="container mx-auto flex justify-left items-center">
-            <a href="{{ url('/') }}">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-            <h1 class="text-3xl text-center font-bold">SportBuddy</h1>
-        </div>
-    </header>
+                <h1 class="text-2xl font-bold text-gray-900 mb-3">Verifica tu correo</h1>
+                <p class="text-sm text-gray-600 mb-6">
+                    Te hemos enviado un enlace a <strong>{{ auth()->user()->email }}</strong>.
+                    Haz clic en el enlace para activar tu cuenta y acceder a SportBuddy.
+                </p>
 
-    <div class="flex items-center justify-center mt-8">
-        <img src="https://i.giphy.com/aOften89vRbG.gif" alt="Mail Gif">
-    </div>
+                @if (session('status') == 'verification-link-sent')
+                    <div class="mb-4 p-3 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-lg">
+                        Hemos reenviado el correo de verificación.
+                    </div>
+                @endif
 
-    <div class="mb-4 text-sm text-gray-600 text-center">
-        {{ __('¡Gracias por registrarte! Antes de comenzar, ¿podrías verificar tu dirección de correo electrónico haciendo clic en el enlace que acabamos de enviarte por correo electrónico? Si no recibiste el correo electrónico, con gusto te enviaremos otro.') }}
-    </div>
+                @if (config('mail.default') === 'log')
+                    <div class="mb-4 p-3 text-sm text-amber-800 bg-amber-50 rounded-lg text-left">
+                        <strong>Modo desarrollo:</strong> el correo no se envía por SMTP.
+                        Busca el enlace en <code class="text-xs">storage/logs/laravel.log</code>.
+                    </div>
+                @endif
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600 text-center">
-            {{ __('Se ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionaste durante el registro.') }}
-        </div>
-    @endif
+                <form method="POST" action="{{ route('verification.send') }}" class="mb-4">
+                    @csrf
+                    <x-primary-button class="w-full justify-center">
+                        Reenviar correo
+                    </x-primary-button>
+                </form>
 
-    <div class="mt-4 flex items-center justify-center">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Reenviar correo de verificación') }}
-                </x-primary-button>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-sm text-gray-500 hover:text-gray-700">
+                        Cerrar sesión y usar otra cuenta
+                    </button>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-
-    <div class="mt-4 flex items-center justify-center">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            {{-- <button type="submit"
-                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Cerrar sesión') }}
-            </button> --}}
-        </form>
-    </div>
-
-    <div class="mt-8 text-center">
-        <a href="https://mailtrap.io/inboxes" class="text-blue-500 underline hover:text-blue-700">
-            {{ __('Ir a Mailtrap') }}
-        </a>
-    </div>
-
 </x-guest-layout>
