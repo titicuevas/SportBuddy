@@ -191,6 +191,15 @@ OPENWEATHER_API_KEY=...
 
 **Respaldo:** si Railway usa Railpack en lugar del Dockerfile, `railpack.json` incluye las dependencias de compilación (`bison`, `re2c`, etc.).
 
+**Subir variables desde tu `.env` local** (no commitees secretos):
+
+```bash
+npm i -g @railway/cli
+railway login
+railway link
+./scripts/railway-sync-env.sh https://TU-APP.up.railway.app
+```
+
 ---
 
 ## Estructura relevante

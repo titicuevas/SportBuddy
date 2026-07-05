@@ -14,7 +14,8 @@ bootstrap/cache/*
 .phpunit.result.cache
 tests
 propuesta
-scripts
+scripts/*
+!scripts/docker-entrypoint.sh
 *.md
 !README.md
 docker-compose.yml
