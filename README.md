@@ -1,18 +1,69 @@
 # SportBuddy
 
-Aplicación Laravel para organizar y encontrar partidos deportivos (fútbol, pádel, baloncesto, etc.).
+Aplicación web para **organizar y encontrar partidos deportivos** (fútbol, pádel, baloncesto, etc.) y conectar con otros jugadores. Pensada como un “BlaBlaCar del deporte”: publicas un partido, otros se apuntan y coordináis pista, hora y ubicación.
 
-## Desarrollo local rápido (recomendado)
+**Stack:** Laravel 10 · PHP 8.2+ · Blade · Tailwind CSS · Vite · PostgreSQL (Supabase en producción)
 
-Para evitar la latencia de Supabase (~300 ms por consulta), usa **SQLite** en local:
+---
+
+## Qué incluye la app
+
+### Usuarios
+- Registro, login y verificación de email (Breeze)
+- Dashboard con estadísticas y partidos próximos
+- Listado de partidos disponibles e inscritos (con caché)
+- Crear partido (ubicación, pista, deporte, hora, precio)
+- Detalle de partido: mapa, clima (OpenWeather), inscripción/desapuntarse
+- Chat por partido (jugadores inscritos + organizador)
+- Comentarios en partidos
+- Pago de pista con **PayPal** (redirección, no modal)
+- Perfil de usuario y edición de cuenta
+
+### Administración (`/admin`)
+- Panel con estadísticas (usuarios, deportes, ubicaciones, superficies, pistas, partidos)
+- CRUD de deportes, ubicaciones, superficies y pistas
+- Gestión de usuarios
+- Interfaz responsive (sidebar en escritorio, menú pantalla completa en móvil)
+
+---
+
+## Renovación 2026 (resumen de cambios)
+
+| Área | Mejoras |
+|------|---------|
+| **UI/UX** | Landing, dashboard, tarjetas de partido, layout guest, footer, cookies |
+| **Rendimiento** | Caché de partidos, estadísticas y clima; eager loading; índices en BD |
+| **Admin** | Layout nuevo, formularios unificados, paginación corregida |
+| **Chat** | Sistema por partido funcional (se eliminó código legacy roto) |
+| **PayPal** | Flujo por redirección con `PayPalService` |
+| **Tests** | 54 tests (auth, partidos, admin, mensajes, PayPal, clima…) |
+| **Deploy** | `Dockerfile` para Railway + `railpack.json` de respaldo |
+
+---
+
+## Requisitos
+
+- PHP 8.2+
+- Composer
+- Node.js 20+
+- PostgreSQL **o** SQLite (recomendado en local)
+
+---
+
+## Instalación local
+
+### Opción A — SQLite (recomendado, más rápido)
 
 ```bash
+git clone https://github.com/titicuevas/SportBuddy.git
+cd SportBuddy
+
 cp .env.example .env
 php artisan key:generate
 
 # En .env:
 # DB_CONNECTION=sqlite
-# DB_DATABASE=/ruta/absoluta/a/tu/proyecto/database/database.sqlite
+# DB_DATABASE=/ruta/absoluta/a/SportBuddy/database/database.sqlite
 
 touch database/database.sqlite
 composer install
@@ -22,244 +73,149 @@ php artisan storage:link
 php artisan serve
 ```
 
-O ejecuta el script de ayuda:
+En otra terminal (opcional, hot-reload de assets):
+
+```bash
+npm run dev
+```
+
+Abre [http://localhost:8000](http://localhost:8000).
+
+**Script de ayuda:**
 
 ```bash
 chmod +x scripts/setup-local.sh
 ./scripts/setup-local.sh
 ```
 
-**Usuarios de prueba** (contraseña `12345678`):
+### Opción B — PostgreSQL / Supabase
 
-| Rol     | Email            |
-|---------|------------------|
-| Admin   | admin@gmail.com  |
+Copia las credenciales de Supabase en `.env` (ver `.env.example`):
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=aws-0-eu-west-1.pooler.supabase.com
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=...
+DB_PASSWORD=...
+DB_SSLMODE=require
+```
+
+> En desarrollo local, Supabase añade ~300 ms por consulta. Si la app se siente lenta, usa SQLite.
+
+### Usuarios de prueba
+
+Contraseña para todos: **`12345678`**
+
+| Rol     | Email             |
+|---------|-------------------|
+| Admin   | admin@gmail.com   |
 | Usuario | enrique@gmail.com |
 
-**Tests:** `php artisan test` (46+ tests)
-
-**Producción / staging:** usa PostgreSQL (Supabase) y las variables de `.env.example`. El `Procfile` cachea config, rutas y vistas al desplegar.
-
-### Despliegue en Railway
-
-Railway detecta automáticamente el **`Dockerfile`** (recomendado). Usa PHP 8.2 preinstalado y no compila PHP con mise.
-
-Variables obligatorias en Railway:
-
-- `APP_KEY`, `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`
-- `DB_CONNECTION=pgsql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_SSLMODE=require`
-- `TRUSTED_PROXIES=*` (si hay proxy de Railway)
-
-Si Railway usa Railpack en lugar del Dockerfile, `railpack.json` incluye `re2c` y dependencias de compilación.
+El admin accede al panel desde el menú de usuario → **Modo Admin**.
 
 ---
 
-<img src="https://i.ibb.co/ncgYQk4/1d241c09-0831-4925-9103-a5d6cccf059e.jpg" alt="SportBuddy" border="0">
- 
- # Descripción general del proyecto
+## Variables de entorno
 
-SportBuddy es una aplicación diseñada para que los usuarios encuentren partidos de diferentes deportes y conozcan a nuevas personas para jugar esos partidos juntos. En SportBuddy, los usuarios pueden crear eventos deportivos y buscar compañeros para participar en ellos.
+Plantilla completa en [`.env.example`](.env.example). Las más importantes:
 
-## Funcionalidad principal de la aplicación
+| Variable | Uso |
+|----------|-----|
+| `APP_KEY` | `php artisan key:generate` |
+| `APP_URL` | URL pública de la app |
+| `DB_*` | Base de datos |
+| `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE` | Pagos (sandbox o live) |
+| `OPENWEATHER_API_KEY` | Pronóstico en detalle de partido |
+| `MAIL_*` | Correo (en local: `MAIL_MAILER=log`) |
+| `AUTO_VERIFY_EMAIL` | `true` en dev, `false` en producción |
 
-El propósito principal de nuestra aplicación es facilitar la conexión entre usuarios interesados en realizar actividades deportivas en conjunto. Un usuario tiene la capacidad de crear eventos deportivos específicos, tales como "Partido de fútbol el martes por la tarde", y otros usuarios pueden inscribirse para participar en dichos eventos. Además del fútbol, la aplicación también admite una variedad de deportes como baloncesto, pádel, running y ciclismo. En esencia, nuestra aplicación se asemeja a Blablacar, pero está orientada específicamente a la organización y participación en eventos deportivos.
+### PayPal (sandbox)
 
+1. Crea una app en el [Panel de desarrolladores de PayPal](https://developer.paypal.com/).
+2. Copia Client ID y Secret en `.env`.
+3. Usa `PAYPAL_MODE=sandbox` para pruebas.
 
-## Objetivos generales
+### OpenWeather
 
-    Objetivo: "Crear eventos para hacer deporte con diferentes personas".
+1. Regístrate en [OpenWeather](https://openweathermap.org/api).
+2. Añade la API key en `OPENWEATHER_API_KEY`.
 
-    Casos de uso:
+---
 
-        Invitado : "registrarse", "ver eventos","ver competiciones".
-
-        Usuarios: "iniciar sesion","cerrar sesion","crear evento","apuntarse al evento","editar perfil","borrar cuenta","buscar otros usuarios".
-
-        Administrador: "iniciar sesion","cerrar sesion","crear evento","modificar el evento","modificar perfiles de usuarios","eliminar un usuario","borrar comentarios".
-
-# Elemento de innovación
-
-Implementar un mapa donde concrete el lugar exacto del evento,pago a traves de PayPal y tiempo de la ubicacion.
-
-# Instrucciones de instalacion
-
-¡Te damos la bienvenida al proyecto SportBuddy! A continuación, encontrarás instrucciones detalladas para configurar y desplegar el proyecto en tu entorno local.
-
-Paso 1: Clonar proyecto e instalar la base de datos
-
-```bash 
-git clone https://github.com/titicuevas/SportBuddy
-```
-
-
-
-# Instalar PostgreSQL
-```bash 
-sudo apt install postgresql postgresql-client postgresql-contrib
-```
-
-Antes de proceder con las migraciones, es importante verificar que la base de datos PostgreSQL esté configurada correctamente. Asegúrate de haber creado un usuario nuevo y una base de datos para este propósito.
-
-Ejecuta el siguiente comando para crear un nuevo usuario (serás solicitado a ingresar una contraseña para el nuevo usuario): 
-```bash 
-sudo -u postgres createuser -P enrique2
-```
-Crea una nueva base de datos asignada a este usuario ejecutando: 
-```bash 
-sudo -u postgres createdb -O enrique2 pruebaFinal
-```
-La contraseña que vamos a establecer es: enrique2
-
-Paso 2 : Instalar composer y npm 
-```bash 
-sudo apt install composer
-```
-
-```bash 
-sudo apt install npm
-```
-
-Paso 3 : Configuracion del proyecto
-
-1. Antes de generar la clave, asegúrate de copiar el ejemplo del contenido del archivo .env que se muestra a continuación. Este archivo ya contiene algunas configuraciones predefinidas (excepto aquellas relacionadas con Paypal y Mailtrap).
-
-.env.example que nos trae el fichero y dejarlo como .env
-
-2.
-```bash 
-php artisan key:generate
-```
-3.Después de haber configurado el archivo .env, procede a ejecutar las migraciones de la base de datos:
+## Tests
 
 ```bash
- php artisan migrate
- ```
- 4.Ejecutaremos los seeders que tenemos en la base de datos:
-
- ```bash
- php artisan db:seed
- ```
-
-5. Si prefieres hacer las 2 cosas seguidas puedes usar este comando tambien. 
-
-```bash
-php artisan migrate:refresh --seed
+php artisan test
 ```
 
-## Configuracion del fichero `.env` editandolo a gusto del usuario.
+Suite actual: **54 tests** (auth, dashboard, partidos, admin, mensajes, PayPal mockeado, clima mockeado, modelos…).
 
+---
 
-```plaintext
+## Despliegue en Railway
 
-APP_NAME=SportBuddy
-APP_ENV=local
-APP_KEY=base64:NIzI0H9p1HGQN0K1K2SAP5uc/fKHN7le9jvaoRKFY/c=
-APP_DEBUG=true
-APP_URL=http://localhost
+El proyecto incluye un **`Dockerfile`** que Railway detecta automáticamente. Usa PHP 8.2 preinstalado (no compila PHP con mise/railpack).
 
-LOG_CHANNEL=stack
-LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=debug
+1. Conecta el repo de GitHub a Railway.
+2. En **Settings → Build**, confirma que el builder es **Dockerfile**.
+3. Configura las variables de entorno (mínimo):
 
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
+```env
+APP_KEY=base64:...          # obligatorio
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://tu-dominio.up.railway.app
+
+DB_CONNECTION=pgsql         # obligatorio (no uses mysql)
+DB_HOST=...                 # host del pooler Supabase
 DB_PORT=5432
-DB_DATABASE=pruebaFinal
-DB_USERNAME=enrique2
-DB_PASSWORD=enrique2
+DB_DATABASE=postgres
+DB_USERNAME=...
+DB_PASSWORD=...
+DB_SSLMODE=require
 
-BROADCAST_DRIVER=pusher
-CACHE_DRIVER=file
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=sync
-SESSION_DRIVER=file
-SESSION_LIFETIME=120
+TRUSTED_PROXIES=*
 
-MEMCACHED_HOST=127.0.0.1
-
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-Paypal Login Editar por el usuario
-
-PAYPAL_CLIENT_ID=
-PAYPAL_CLIENT_SECRET=
-
-Editado email con mailtrap  por el usuario
-
-MAIL_MAILER=
-MAIL_HOST=
-MAIL_PORT=
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_ENCRYPTION=
-
-
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=
-AWS_USE_PATH_STYLE_ENDPOINT=false
-
-Laravel Socket
-
-LARAVEL_WEBSOCKETS_PORT=6001
-LARAVEL_WEBSOCKETS_SSL=false
-
-
-Editar por el usuario
-
-PUSHER_APP_ID=
-PUSHER_APP_KEY=
-PUSHER_APP_SECRET=
-PUSHER_APP_CLUSTER=
-
-VITE_APP_NAME="${APP_NAME}"
-VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
-VITE_PUSHER_HOST="${PUSHER_HOST}"
-VITE_PUSHER_PORT="${PUSHER_PORT}"
-VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
-VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
-
-```
-
-**Para obtener la configuración necesaria para integrar PayPal en tu proyecto, incluyendo las credenciales API (Client ID y Secret), sigue estos pasos:
-
-    1. Crea una cuenta PayPal.
-
-   2. Accede al Panel de Desarrollador de PayPal. Aquí podrás gestionar tus aplicaciones y obtener las credenciales API necesarias.
-        Para obtener tus credenciales API, primero necesitas crear una aplicación en el Panel de Desarrollador:
-            Haz clic en "Crear Aplicación". Serás llevado a una página donde puedes nombrar tu nueva aplicación. El nombre que elijas te ayudará a identificar la aplicación en tu panel, pero no afecta la funcionalidad de la API.
-            Selecciona la cuenta sandbox asociada que deseas usar para pruebas. PayPal proporciona cuentas sandbox que simulan el entorno de pago en vivo para pruebas de desarrollo.
-
-    Obten tus Credenciales API
-
-Una vez que hayas creado tu aplicación, serás redirigido a la página de detalles de la aplicación, donde encontrarás tus credenciales API. Inclúyelas en tu archivo .env de la siguiente manera:
-
-PAYPAL_CLIENT_ID=
-PAYPAL_CLIENT_SECRET=
+PAYPAL_CLIENT_ID=...
+PAYPAL_CLIENT_SECRET=...
 PAYPAL_MODE=sandbox
 
-**Para obtener la configuración necesaria para integrar Mailtrap en tu proyecto, sigue estos pasos:
+OPENWEATHER_API_KEY=...
+```
 
-    1.Crea una cuenta en Mailtrap si aún no tienes una.
+> Si ves `could not find driver (Connection: mysql)` es que falta `DB_CONNECTION=pgsql` en Railway.
 
-    2.Inicia sesión en tu cuenta de Mailtrap.
-    
-    3.En el dashboard, haz clic en "SMTP Settings" en el menú lateral izquierdo.
-    
-    4.Copia el nombre de host, el puerto, el nombre de usuario y la contraseña proporcionados en la sección "SMTP Settings" de Mailtrap.
-    
-    5.Estas credenciales las puedes incluir en tu archivo .env de la siguiente manera:
-    ```bash
-    MAIL_HOST=smtp.mailtrap.io
-    MAIL_PORT=2525
-    MAIL_USERNAME=tu_usuario_de_mailtrap
-    MAIL_PASSWORD=tu_contraseña_de_mailtrap
-    MAIL_ENCRYPTION=tls
-    ```
-# Ejecutar la aplicacion.
+4. Despliega. El contenedor ejecuta migraciones y cachea config/rutas/vistas al arrancar.
 
-1. Ejecuta el comando `php artisan serve` para iniciar el servidor de desarrollo y `npm run dev` para el diseño.
-2. Acceder a la aplicación en `http://localhost:8000`.
+**Respaldo:** si Railway usa Railpack en lugar del Dockerfile, `railpack.json` incluye las dependencias de compilación (`bison`, `re2c`, etc.).
+
+---
+
+## Estructura relevante
+
+```
+app/
+  Http/Controllers/     # Partidos, PayPal, Admin, Dashboard…
+  Services/             # PayPal, Weather, Stats, Mensajes
+  Models/               # Partido, Ubicacion, Deporte, Pista…
+resources/views/
+  components/           # partido-card, administrador, admin-form-card…
+  admin/                # Panel de administración
+  partidos/             # Listado, crear, detalle
+tests/                  # Feature + Unit
+Dockerfile              # Despliegue Railway
+```
+
+---
+
+## Autores
+
+**Enrique Cuevas García** — Proyecto final DAW, curso 2023/24.
+
+---
+
+## Licencia
+
+MIT (ver `composer.json`).

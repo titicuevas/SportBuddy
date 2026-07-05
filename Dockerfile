@@ -61,10 +61,6 @@ RUN mkdir -p \
 ENV PORT=8080
 EXPOSE 8080
 
-CMD set -e; \
-    php artisan migrate --force; \
-    php artisan config:cache; \
-    php artisan route:cache; \
-    php artisan view:cache; \
-    php artisan storage:link --force 2>/dev/null || true; \
-    exec php artisan serve --host=0.0.0.0 --port="${PORT}"
+RUN chmod +x scripts/docker-entrypoint.sh
+
+CMD ["scripts/docker-entrypoint.sh"]
