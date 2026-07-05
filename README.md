@@ -40,6 +40,18 @@ chmod +x scripts/setup-local.sh
 
 **Producción / staging:** usa PostgreSQL (Supabase) y las variables de `.env.example`. El `Procfile` cachea config, rutas y vistas al desplegar.
 
+### Despliegue en Railway
+
+Railway detecta automáticamente el **`Dockerfile`** (recomendado). Usa PHP 8.2 preinstalado y no compila PHP con mise.
+
+Variables obligatorias en Railway:
+
+- `APP_KEY`, `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`
+- `DB_CONNECTION=pgsql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_SSLMODE=require`
+- `TRUSTED_PROXIES=*` (si hay proxy de Railway)
+
+Si Railway usa Railpack en lugar del Dockerfile, `railpack.json` incluye `re2c` y dependencias de compilación.
+
 ---
 
 <img src="https://i.ibb.co/ncgYQk4/1d241c09-0831-4925-9103-a5d6cccf059e.jpg" alt="SportBuddy" border="0">

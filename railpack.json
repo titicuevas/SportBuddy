@@ -1,7 +1,14 @@
 {
   "$schema": "https://schema.railpack.com",
-  "packages": {
-    "php": "8.2"
-  },
-  "buildAptPackages": ["bison"]
+  "provider": "php",
+  "buildAptPackages": [
+    "bison",
+    "re2c",
+    "flex",
+    "autoconf",
+    "automake",
+    "libtool",
+    "pkg-config",
+    "build-essential"
+  ]
 }
