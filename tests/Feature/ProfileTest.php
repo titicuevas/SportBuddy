@@ -31,17 +31,37 @@ class ProfileTest extends TestCase
                 'name' => 'Test User',
                 'apellidos' => $user->apellidos,
                 'telefono' => $user->telefono,
-                'email' => 'test@example.com',
+                'email' => $user->email,
             ]);
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/profile');
 
+        $this->assertSame('Test User', $user->refresh()->name);
+    }
+
+    public function test_changing_email_requires_reverification(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => $user->name,
+                'apellidos' => $user->apellidos,
+                'telefono' => $user->telefono,
+                'email' => 'nuevo@example.com',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('verification.notice'));
+
         $user->refresh();
 
-        $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
+        $this->assertSame('nuevo@example.com', $user->email);
+        $this->assertNull($user->email_verified_at);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void

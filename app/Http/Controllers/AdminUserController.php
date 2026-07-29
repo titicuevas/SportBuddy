@@ -3,28 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Services\StatsService;
 
 class AdminUserController extends Controller
 {
     public function index()
     {
-        // Obtener la lista de usuarios ordenados por nombre
-        $users = User::orderBy('name')->paginate(10); // Puedes ajustar el número de usuarios por página
+        $users = User::orderBy('name')->paginate(10);
 
         return view('admin.users.index', compact('users'));
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
+        abort_if($user->id === auth()->id(), 403, 'No puedes eliminar tu propia cuenta desde el panel.');
+        abort_if($user->esAdmin(), 403, 'No se pueden eliminar cuentas de administrador.');
 
-        // Encuentra el usuario por su ID
-        $user = User::findOrFail($id);
+        if ($user->partidosCreados()->exists() || $user->comentarios()->exists() || $user->mensajes()->exists()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No puedes eliminar el usuario porque tiene partidos, comentarios o mensajes asociados.');
+        }
 
-        // Elimina el usuario de la base de datos
+        $user->asignamientos()->delete();
         $user->delete();
 
-        // Redirige a la vista de usuarios después de la eliminación
+        StatsService::bump();
+
         return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }

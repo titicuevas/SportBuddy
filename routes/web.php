@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminPistaController;
 use App\Http\Controllers\AdminSuperficieController;
 use App\Http\Controllers\AdminUbicacionController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ContactanosController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MensajeController;
@@ -44,23 +45,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('paypal.return');
     Route::get('/partidos/{partido}/paypal/cancelar', [PayPalController::class, 'cancel'])
         ->name('paypal.cancel');
-    Route::post('/partidos/{partido}/paypal/order', [PayPalController::class, 'createOrder'])
-        ->name('paypal.create');
-    Route::post('/partidos/{partido}/paypal/capture', [PayPalController::class, 'captureOrder'])
-        ->name('paypal.capture');
 
     Route::get('/ubicaciones/{ubicacion}/clima', [PartidoController::class, 'climaUbicacion'])
         ->name('ubicaciones.clima');
 
     Route::get('/obtener-horas-ocupadas/{pistaId}/{fecha}', [PartidoController::class, 'obtenerHorasOcupadas']);
-    Route::get('/pistas-por-ubicacion/{ubicacionId}', [PistaController::class, 'pistasPorUbicacion']);
-    Route::get('/superficie-por-ubicacion/{ubicacionId}', [PistaController::class, 'superficiePorUbicacion']);
-    Route::get('/pistas/{pista}/deportes', [PistaController::class, 'deportePorPista']);
+    Route::get('/pistas-por-ubicacion/{ubicacion}', [PistaController::class, 'pistasPorUbicacion']);
     Route::get('/pistas/{pista}', [PistaController::class, 'show']);
 
     Route::get('/partidos/{partido}/clima', [PartidoController::class, 'clima'])->name('partidos.clima');
 
-    Route::get('/comentarios/{partidoId}', [ComentarioController::class, 'index'])->name('comentarios.index');
     Route::post('/partidos/{partido}/comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
 
     Route::get('/partidos/{partido}/mensajes', [MensajeController::class, 'index'])->name('mensajes.index');
@@ -70,9 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/profile/edit-foto', [ProfileController::class, 'editFoto'])->name('profile.edit-foto');
     Route::post('/profile/update-foto', [ProfileController::class, 'updateFoto'])->name('profile.update-foto');
-    Route::get('/profile/show/{user}', [ProfileController::class, 'show'])->name('profile.show');
 });
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comentario extends Model
 {
@@ -15,24 +16,13 @@ class Comentario extends Model
         'contenido',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function partido()
+    public function partido(): BelongsTo
     {
         return $this->belongsTo(Partido::class);
-    }
-
-    /**
-     * Elimina todos los comentarios de un usuario específico en el contexto de un partido.
-     *
-     * @param int $partidoId
-     * @param int $userId
-     */
-    public function eliminarComentariosUsuario($partido, $userId)
-    {
-        $this->where('partido_id', $partido->id)->where('user_id', $userId)->delete();
     }
 }

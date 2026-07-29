@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,11 +13,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'apellidos',
@@ -24,30 +20,19 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'foto',
-        'rol_id'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    public function asignamientos()
+    public function asignamientos(): HasMany
     {
         return $this->hasMany(Asignamiento::class);
     }
@@ -57,31 +42,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Partido::class, 'asignamientos', 'user_id', 'partido_id');
     }
 
-    public function partidosCreados()
+    public function partidosCreados(): HasMany
     {
         return $this->hasMany(Partido::class, 'user_id');
     }
 
-
-
     public function esAdmin(): bool
     {
-        // Reemplaza 1 con el valor real del rol de administrador
         return $this->rol_id === 1;
     }
 
-    public function chats()
-    {
-        return $this->belongsToMany('App\Models\Chat');
-    }
-
-    public function mensajes()
+    public function mensajes(): HasMany
     {
         return $this->hasMany(Mensaje::class);
     }
 
-
-    public function comentarios()
+    public function comentarios(): HasMany
     {
         return $this->hasMany(Comentario::class);
     }

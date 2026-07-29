@@ -1,24 +1,5 @@
 <x-app-layout>
-    @if (session('success'))
-        <x-flash-message>{{ session('success') }}</x-flash-message>
-    @endif
-
-    @if (session('error'))
-        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
-    @endif
-
-    @if (session('info'))
-        <x-flash-message type="info">{{ session('info') }}</x-flash-message>
-    @endif
-
-    @php
-        $fecha = \Carbon\Carbon::parse($partido->fecha_hora);
-        $mapIframe = $partido->ubicacion->iframe
-            ? str_replace('<iframe', '<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"', $partido->ubicacion->iframe)
-            : '';
-    @endphp
-
-    <x-page-hero :title="$partido->deporte->nombre" :subtitle="$partido->ubicacion->nombre . ' · ' . $fecha->format('d/m/Y H:i')" />
+    <x-page-hero :title="$partido->deporte->nombre" :subtitle="$partido->ubicacion->nombre . ' · ' . $partido->fecha_hora->format('d/m/Y H:i')" />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -34,11 +15,11 @@
                     <dl class="space-y-4">
                         <div>
                             <dt class="text-sm font-bold text-gray-900">Fecha</dt>
-                            <dd class="text-lg text-gray-700">{{ $fecha->format('d-m-Y') }}</dd>
+                            <dd class="text-lg text-gray-700">{{ $partido->fecha_hora->format('d-m-Y') }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-bold text-gray-900">Hora</dt>
-                            <dd class="text-lg text-gray-700">{{ $fecha->format('H:i') }}</dd>
+                            <dd class="text-lg text-gray-700">{{ $partido->fecha_hora->format('H:i') }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-bold text-gray-900">Creador</dt>
@@ -71,7 +52,7 @@
                         </div>
                     </dl>
 
-                    @if (auth()->user()->id == $partido->user->id && ! $partido->pago_aprobado)
+                    @if (auth()->id() === $partido->user_id && ! $partido->pago_aprobado)
                         @if (config('services.paypal.client_id'))
                             <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3">
                                 <div>
@@ -109,35 +90,41 @@
                     @endif
 
                     <div class="mt-6 flex flex-wrap gap-2">
-                        <form method="POST" action="{{ route('partidos.inscribirse', $partido) }}" class="inline">
-                            @csrf
-                            @if ($inscrito)
-                                <button type="button"
-                                    class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg cursor-not-allowed"
-                                    disabled>Ya estás inscrito</button>
-                            @elseif ($partidoCompleto)
-                                <button type="button"
-                                    class="px-4 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg cursor-not-allowed"
-                                    disabled>Partido completo</button>
-                            @else
-                                <button type="submit"
-                                    class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    Unirse al partido
-                                </button>
-                            @endif
-                        </form>
-
-                        @if ($inscrito && $partido->user_id !== auth()->user()->id)
-                            <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}" class="inline">
+                        @if ($partido->fecha_hora->isFuture())
+                            <form method="POST" action="{{ route('partidos.inscribirse', $partido) }}" class="inline">
                                 @csrf
-                                <button type="submit"
-                                    class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                                    Desapuntarse
-                                </button>
+                                @if ($inscrito)
+                                    <button type="button"
+                                        class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg cursor-not-allowed"
+                                        disabled>Ya estás inscrito</button>
+                                @elseif ($partidoCompleto)
+                                    <button type="button"
+                                        class="px-4 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg cursor-not-allowed"
+                                        disabled>Partido completo</button>
+                                @else
+                                    <button type="submit"
+                                        class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        Unirse al partido
+                                    </button>
+                                @endif
                             </form>
+
+                            @if ($inscrito && $partido->user_id !== auth()->id())
+                                <form method="POST" action="{{ route('partidos.desapuntarse', $partido) }}" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                                        Desapuntarse
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                            <p class="text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                                Este partido ya ha finalizado.
+                            </p>
                         @endif
 
-                        @if (auth()->user()->id === $partido->user_id)
+                        @if (auth()->id() === $partido->user_id)
                             <form method="POST" action="{{ route('partidos.destroy', $partido) }}"
                                 x-data="{ showModal: false }" class="inline">
                                 @csrf
@@ -211,10 +198,10 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
                     <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <h3 class="text-lg font-bold text-gray-900 mb-3">Equipo 1</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">{{ $partido->equipo_local_nombre }}</h3>
                         <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-indigo-300 rounded mb-4" aria-hidden="true"></div>
-                        @php $equipo1 = $partido->asignamientos->where('equipo_id', 1); @endphp
-                        @forelse ($equipo1 as $asignamiento)
+                        @php $jugadoresEquipo1 = $partido->asignamientos->where('lado', $partido->ladoLocal()); @endphp
+                        @forelse ($jugadoresEquipo1 as $asignamiento)
                             <a href="{{ route('user.show', $asignamiento->user) }}"
                                 class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
                                 {{ $asignamiento->user->name }}
@@ -225,10 +212,10 @@
                     </div>
 
                     <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <h3 class="text-lg font-bold text-gray-900 mb-3">Equipo 2</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">{{ $partido->equipo_visitante_nombre }}</h3>
                         <div class="h-1 w-full bg-gradient-to-r from-emerald-500 to-emerald-300 rounded mb-4" aria-hidden="true"></div>
-                        @php $equipo2 = $partido->asignamientos->where('equipo_id', 2); @endphp
-                        @forelse ($equipo2 as $asignamiento)
+                        @php $jugadoresEquipo2 = $partido->asignamientos->where('lado', $partido->ladoVisitante()); @endphp
+                        @forelse ($jugadoresEquipo2 as $asignamiento)
                             <a href="{{ route('user.show', $asignamiento->user) }}"
                                 class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
                                 {{ $asignamiento->user->name }}
@@ -245,7 +232,6 @@
                     @if ($inscrito)
                         <form id="comentario-form" method="POST" action="{{ route('comentarios.store', $partido->id) }}" class="mb-4 space-y-3">
                             @csrf
-                            <input type="hidden" name="partido_id" value="{{ $partido->id }}">
                             <textarea name="contenido" id="contenido" rows="3" aria-label="Escribe tu comentario"
                                 class="w-full p-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 placeholder="Escribe tu comentario"></textarea>
@@ -260,13 +246,7 @@
 
                     <div id="comentarios-section" class="max-h-80 overflow-y-auto space-y-3">
                         @foreach ($partido->comentarios as $comentario)
-                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                <p class="text-gray-800">
-                                    <strong>{{ $comentario->user->name }}</strong>
-                                    <span class="text-xs text-gray-500 ml-2">{{ $comentario->created_at->format('H:i') }}</span>
-                                </p>
-                                <p class="text-gray-700 mt-1">{{ $comentario->contenido }}</p>
-                            </div>
+                            @include('comentario.comment', ['comentario' => $comentario])
                         @endforeach
                     </div>
                 </div>
@@ -282,7 +262,7 @@
     </div>
 
     <script>
-        const fechaPartido = @json($fecha->format('d-m-Y'));
+        const fechaPartido = @json($partido->fecha_hora->format('d-m-Y'));
         const climaUrl = @json(route('partidos.clima', $partido));
 
         const iconos = {
@@ -337,7 +317,12 @@
                     const container = document.getElementById('comentarios-section');
                     container.scrollTop = container.scrollHeight;
                 })
-                .catch(error => console.error('Error al enviar comentario:', error));
+                .catch(error => {
+                    const message = error.response?.data?.message
+                        || error.response?.data?.error
+                        || 'No se pudo enviar el comentario.';
+                    alert(message);
+                });
         }
 
         document.getElementById('contenido')?.addEventListener('keydown', function(event) {

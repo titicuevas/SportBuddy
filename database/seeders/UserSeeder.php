@@ -31,12 +31,18 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $data) {
-            User::create([
+            $rolId = $data['rol_id'];
+            unset($data['rol_id']);
+
+            $user = User::create([
                 ...$data,
                 'password' => '12345678',
                 'foto' => '',
                 'email_verified_at' => now(),
             ]);
+
+            $user->rol_id = $rolId;
+            $user->save();
         }
     }
 }

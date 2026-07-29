@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreUbicacionRequest;
+use App\Http\Requests\StoreAdminUbicacionRequest;
+use App\Http\Requests\UpdateAdminUbicacionRequest;
 use App\Models\Ubicacion;
+use App\Services\StatsService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class AdminUbicacionController extends Controller
 {
@@ -20,92 +23,69 @@ class AdminUbicacionController extends Controller
         return view('admin.ubicacion.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAdminUbicacionRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'direccion' => 'required|string',
-            'enlace_maps' => 'nullable|string',
-            'iframe' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
-        ], [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'direccion.required' => 'La dirección es obligatoria.',
-            'imagen.image' => 'El archivo debe ser una imagen.',
-            'imagen.mimes' => 'La imagen debe ser de tipo JPEG.',
-            'imagen.max' => 'La imagen no debe superar los 2 MB.',
-            // Puedes personalizar los mensajes de error según tus necesidades
-        ]);
-
-        // Lógica para guardar la ubicación y la imagen
-        $ubicacion = new Ubicacion();
-        $ubicacion->nombre = $request->nombre;
-        $ubicacion->direccion = $request->direccion;
-        $ubicacion->enlace_maps = $request->enlace_maps;
-        $ubicacion->iframe = $request->iframe;
+        $datos = $request->safe()->except('imagen');
 
         if ($request->hasFile('imagen')) {
-            // Obtén el nombre original del archivo
-            $nombreOriginal = $request->file('imagen')->getClientOriginalName();
-
-            // Almacena la imagen con el nombre original
-            $request->file('imagen')->storeAs('public/imagen', $nombreOriginal);
-            $ubicacion->imagen = $nombreOriginal;
+            $datos['imagen'] = $this->guardarImagen($request->file('imagen'));
         }
 
-        $ubicacion->save();
+        Ubicacion::create($datos);
+
+        StatsService::bump();
 
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada exitosamente.');
     }
-
-
-
-
-
 
     public function edit(Ubicacion $ubicacion)
     {
         return view('admin.ubicacion.edit', compact('ubicacion'));
     }
 
-
-
-
-    public function update(Request $request, Ubicacion $ubicacion)
+    public function update(UpdateAdminUbicacionRequest $request, Ubicacion $ubicacion)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'direccion' => 'required|string',
-            'enlace_maps' => 'nullable|string',
-            'iframe' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
-        ]);
-
-        // Actualizar los atributos de la ubicación
-        $ubicacion->nombre = $request->nombre;
-        $ubicacion->direccion = $request->direccion;
-        $ubicacion->enlace_maps = $request->enlace_maps;
-        $ubicacion->iframe = $request->iframe;
+        $datos = $request->safe()->except('imagen');
 
         if ($request->hasFile('imagen')) {
-            // Obtener el nombre original del archivo
-            $nombreOriginal = $request->file('imagen')->getClientOriginalName();
-
-            // Almacenar la imagen con el nombre original
-            $imagenPath = $request->file('imagen')->storeAs('imagen', $nombreOriginal, 'public');
-            $ubicacion->imagen = 'imagen/' . $nombreOriginal;
+            $this->borrarImagenLocal($ubicacion->imagen);
+            $datos['imagen'] = $this->guardarImagen($request->file('imagen'));
         }
 
-        $ubicacion->save();
+        $ubicacion->update($datos);
 
+        StatsService::bump();
 
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación actualizada exitosamente.');
     }
 
     public function destroy(Ubicacion $ubicacion)
     {
+        if ($ubicacion->pistas()->exists() || $ubicacion->partidos()->exists()) {
+            return redirect()->route('admin.ubicacion.index')
+                ->with('error', 'No puedes eliminar la ubicación porque tiene pistas o partidos asociados.');
+        }
+
+        $this->borrarImagenLocal($ubicacion->imagen);
         $ubicacion->delete();
 
+        StatsService::bump();
+
         return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación eliminada exitosamente.');
+    }
+
+    private function guardarImagen(UploadedFile $imagen): string
+    {
+        $nombre = $imagen->hashName();
+        $imagen->storeAs('public/imagen', $nombre);
+
+        return $nombre;
+    }
+
+    private function borrarImagenLocal(?string $imagen): void
+    {
+        if ($imagen && ! filter_var($imagen, FILTER_VALIDATE_URL)) {
+            Storage::delete('public/imagen/'.$imagen);
+        }
     }
 }

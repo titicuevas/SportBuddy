@@ -29,7 +29,7 @@
                     Examinar
                 </button>
 
-                <button type="button" class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors hidden" id="btn-eliminar-foto">
+                <button type="button" class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors {{ $user->foto ? '' : 'hidden' }}" id="btn-eliminar-foto">
                     Eliminar foto
                 </button>
 
@@ -86,6 +86,10 @@
             btnGuardar.addEventListener('click', function() {
                 fetch(@json(route('profile.update-foto')), {
                     method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
                     body: new FormData(formActualizarFoto),
                 })
                 .then(response => response.json())
@@ -103,6 +107,10 @@
                         }
                         imgPerfil.src = data.fotoPerfilURL;
                         btnGuardar.disabled = true;
+                        btnExaminar.classList.remove('hidden');
+                        btnEliminar.classList.remove('hidden');
+                        inputFoto.value = '';
+                        document.getElementById('foto_eliminada').value = 0;
                         alert('Foto actualizada');
                     }
                 })

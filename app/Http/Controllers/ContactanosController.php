@@ -10,8 +10,10 @@ class ContactanosController extends Controller
 {
     public function __invoke(): RedirectResponse
     {
+        $user = auth()->user();
+
         Mail::to(config('mail.from.address', 'contacto@sportbuddy.test'))
-            ->send(new CantactanosMailable);
+            ->send(new CantactanosMailable($user));
 
         return back()->with('success', 'Mensaje enviado correctamente.');
     }

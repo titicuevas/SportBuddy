@@ -11,27 +11,11 @@ use Illuminate\Support\Facades\View;
 
 class ComentarioController extends Controller
 {
-    public function index($partidoId)
-    {
-        $comentarios = Comentario::query()
-            ->with('user:id,name')
-            ->where('partido_id', $partidoId)
-            ->orderByDesc('created_at')
-            ->skip(3)
-            ->take(3)
-            ->get();
-
-        return View::make('comentario.index', ['comentarios' => $comentarios])->render();
-    }
-
-    public function store(Request $request)
+    public function store(Request $request, Partido $partido)
     {
         $request->validate([
-            'partido_id' => 'required|exists:partidos,id',
-            'contenido' => 'required|string|max:500',
+            'contenido' => ['required', 'string', 'max:500'],
         ]);
-
-        $partido = Partido::findOrFail($request->partido_id);
 
         $inscrito = Asignamiento::where('user_id', auth()->id())
             ->where('partido_id', $partido->id)
@@ -42,9 +26,11 @@ class ComentarioController extends Controller
         try {
             $comentario = Comentario::create([
                 'user_id' => auth()->id(),
-                'partido_id' => $request->partido_id,
+                'partido_id' => $partido->id,
                 'contenido' => $request->contenido,
             ]);
+
+            $comentario->load('user:id,name');
 
             return View::make('comentario.comment', ['comentario' => $comentario])->render();
         } catch (QueryException) {

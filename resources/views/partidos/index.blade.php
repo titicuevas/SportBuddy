@@ -1,12 +1,4 @@
 <x-app-layout>
-    @if (session('success'))
-        <x-flash-message>{{ session('success') }}</x-flash-message>
-    @endif
-
-    @if (session('error'))
-        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
-    @endif
-
     <x-page-hero title="Partidos" subtitle="Encuentra compañeros y únete a nuevos encuentros" />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 pb-12">

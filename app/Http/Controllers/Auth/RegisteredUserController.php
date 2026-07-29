@@ -13,42 +13,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
-
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-
         $request->validate([
-
-
             'name' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'string', 'max:9'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()]
-
+            'telefono' => ['required', 'string', 'regex:/^\d{9}$/'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto')->store('public/photoProfile');
-
-        }else {
-            $foto = null;
-        }
 
         $user = User::create([
             'name' => $request->name,
@@ -56,7 +36,6 @@ class RegisteredUserController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'foto' => $foto,
         ]);
 
         event(new Registered($user));

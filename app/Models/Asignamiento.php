@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Asignamiento extends Model
 {
@@ -16,21 +17,16 @@ class Asignamiento extends Model
     protected $fillable = [
         'partido_id',
         'user_id',
-        'equipo_id',
+        'lado',
     ];
 
-    public function partido()
+    public function partido(): BelongsTo
     {
         return $this->belongsTo(Partido::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function equipo()
-    {
-        return $this->belongsTo(Equipo::class);
     }
 }

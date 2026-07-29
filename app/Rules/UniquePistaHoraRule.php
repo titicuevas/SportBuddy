@@ -10,12 +10,16 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class UniquePistaHoraRule implements ValidationRule
 {
     public function __construct(
-        protected string $hora,
-        protected int|string $pistaId
+        protected ?string $hora,
+        protected int|string|null $pistaId,
     ) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (! $this->hora || ! $this->pistaId || ! $value) {
+            return;
+        }
+
         $fechaHora = Carbon::parse($value.' '.$this->hora);
 
         $exists = Partido::where('pista_id', $this->pistaId)

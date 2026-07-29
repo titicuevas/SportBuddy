@@ -18,7 +18,7 @@ class AdminTest extends TestCase
 
     public function test_non_admin_users_cannot_access_admin(): void
     {
-        $user = User::factory()->create(['rol_id' => 2]);
+        $user = User::factory()->create();
 
         $this->actingAs($user)
             ->get(route('admin.index'))
@@ -27,7 +27,7 @@ class AdminTest extends TestCase
 
     public function test_admin_can_access_admin_panel(): void
     {
-        $admin = User::factory()->create(['rol_id' => 1]);
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->get(route('admin.index'))
@@ -38,7 +38,7 @@ class AdminTest extends TestCase
 
     public function test_admin_can_access_superficies(): void
     {
-        $admin = User::factory()->create(['rol_id' => 1]);
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->get(route('admin.superficie.index'))

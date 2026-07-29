@@ -3,34 +3,26 @@
 namespace Database\Seeders;
 
 use App\Models\Deporte;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DeporteSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-
-     //Creo las seeder para la base de datos
     public function run(): void
     {
-        $deporte1 = Deporte::create([
-            'nombre' => 'Futbol 7'
+        $deportes = [
+            ['nombre' => 'Futbol 7', 'jugadores_por_equipo' => 7],
+            ['nombre' => 'Futbol Sala', 'jugadores_por_equipo' => 5],
+            ['nombre' => 'Padel', 'jugadores_por_equipo' => 2],
+            ['nombre' => 'Baloncesto', 'jugadores_por_equipo' => 5],
+            ['nombre' => 'Tenis', 'jugadores_por_equipo' => 1],
+            ['nombre' => 'Judo', 'jugadores_por_equipo' => 1],
+        ];
 
-
-        ]);
-
-        $deporte2 = Deporte::create([
-            'nombre' => 'Futbol Sala',
-
-
-        ]);
-
-        $deporte3 = Deporte::create([
-            'nombre' => 'Padel',
-
-
-        ]);
+        foreach ($deportes as $deporte) {
+            Deporte::firstOrCreate(
+                ['nombre' => $deporte['nombre']],
+                ['jugadores_por_equipo' => $deporte['jugadores_por_equipo']]
+            );
+        }
     }
 }

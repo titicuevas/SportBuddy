@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Partido;
 use App\Services\PayPalService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -70,7 +69,8 @@ class PayPalController extends Controller
                     ->with('error', 'El pago no pudo verificarse.');
             }
 
-            $partido->update(['pago_aprobado' => true]);
+            $partido->pago_aprobado = true;
+            $partido->save();
 
             return redirect()->route('partidos.show', $partido)
                 ->with('success', 'Pista pagada correctamente.');
@@ -88,43 +88,5 @@ class PayPalController extends Controller
 
         return redirect()->route('partidos.show', $partido)
             ->with('info', 'Has cancelado el pago. Puedes pagar la pista más tarde.');
-    }
-
-    public function createOrder(Partido $partido): JsonResponse
-    {
-        abort_unless(auth()->id() === $partido->user_id, 403);
-        abort_if($partido->pago_aprobado, 400, 'Este partido ya está pagado.');
-
-        if (! $this->paypal->isConfigured()) {
-            return response()->json(['error' => 'PayPal no está configurado.'], 503);
-        }
-
-        $order = $this->paypal->createOrder($partido);
-
-        return response()->json(['id' => $order['id']]);
-    }
-
-    public function captureOrder(Request $request, Partido $partido): JsonResponse
-    {
-        abort_unless(auth()->id() === $partido->user_id, 403);
-        abort_if($partido->pago_aprobado, 400, 'Este partido ya está pagado.');
-
-        $request->validate([
-            'order_id' => 'required|string',
-        ]);
-
-        if (! $this->paypal->isConfigured()) {
-            return response()->json(['error' => 'PayPal no está configurado.'], 503);
-        }
-
-        $capture = $this->paypal->captureOrder($request->order_id);
-
-        if (! $this->paypal->verifyCaptureForPartido($capture, $partido)) {
-            return response()->json(['error' => 'El pago no pudo verificarse.'], 422);
-        }
-
-        $partido->update(['pago_aprobado' => true]);
-
-        return response()->json(['success' => true, 'pago_aprobado' => true]);
     }
 }

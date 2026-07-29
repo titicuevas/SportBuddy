@@ -6,7 +6,6 @@ use App\Models\Asignamiento;
 use App\Models\Partido;
 use App\Models\User;
 use Database\Seeders\DeporteSeeder;
-use Database\Seeders\EquipoSeeder;
 use Database\Seeders\PistaSeeder;
 use Database\Seeders\SuperficieSeeder;
 use Database\Seeders\UbicacionSeeder;
@@ -17,7 +16,6 @@ trait CreatesPartidos
     {
         $this->seed([
             DeporteSeeder::class,
-            EquipoSeeder::class,
             UbicacionSeeder::class,
             SuperficieSeeder::class,
             PistaSeeder::class,
@@ -26,10 +24,12 @@ trait CreatesPartidos
 
     protected function createFuturePartido(User $creator): Partido
     {
+        $fechaHora = now()->addDays(3)->addHours(Partido::query()->count());
+
         return Partido::create([
-            'fecha_hora' => now()->addDays(3),
-            'equipo1' => 1,
-            'equipo2' => 2,
+            'fecha_hora' => $fechaHora,
+            'equipo_local_nombre' => 'Equipo Azul',
+            'equipo_visitante_nombre' => 'Equipo Naranja',
             'user_id' => $creator->id,
             'superficie_id' => 1,
             'pista_id' => 1,
@@ -39,12 +39,12 @@ trait CreatesPartidos
         ]);
     }
 
-    protected function enrollUserInPartido(User $user, Partido $partido, int $equipoId = 1): void
+    protected function enrollUserInPartido(User $user, Partido $partido, ?int $lado = null): void
     {
         Asignamiento::create([
             'partido_id' => $partido->id,
             'user_id' => $user->id,
-            'equipo_id' => $equipoId,
+            'lado' => $lado ?? $partido->ladoLocal(),
         ]);
     }
 }

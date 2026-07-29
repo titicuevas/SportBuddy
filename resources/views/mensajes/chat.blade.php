@@ -1,8 +1,4 @@
 <x-app-layout>
-    @if (session('success'))
-        <x-flash-message>{{ session('success') }}</x-flash-message>
-    @endif
-
     <x-page-hero
         :title="'Chat del partido'"
         :subtitle="$partido->deporte->nombre . ' · ' . $partido->ubicacion->nombre"

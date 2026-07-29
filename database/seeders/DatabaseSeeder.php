@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DeporteSeeder::class,
-            EquipoSeeder::class,
             UbicacionSeeder::class,
             SuperficieSeeder::class,
             PistaSeeder::class,

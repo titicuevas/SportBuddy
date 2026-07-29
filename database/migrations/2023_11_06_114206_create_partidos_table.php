@@ -14,14 +14,12 @@ return new class extends Migration
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
             $table->timestamp('fecha_hora')->nullable();
-            $table->bigInteger('equipo1');
-            $table->bigInteger('equipo2');
+            $table->string('equipo_local_nombre')->default('Equipo Azul');
+            $table->string('equipo_visitante_nombre')->default('Equipo Naranja');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('superficie_id')->constrained();
             $table->foreignId('pista_id')->constrained();
             $table->string('resultado')->nullable();
-            $table->foreign('equipo1')->references('id')->on('equipos')->onDelete('cascade');
-            $table->foreign('equipo2')->references('id')->on('equipos')->onDelete('cascade');
             $table->foreignId('ubicacion_id')->constrained('ubicaciones')->onDelete('cascade');
             $table->foreignId('deporte_id')->constrained()->onDelete('cascade');
             $table->decimal('precio', 8, 2)->nullable();

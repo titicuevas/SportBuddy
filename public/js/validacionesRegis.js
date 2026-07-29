@@ -1,12 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("register-form");
 
-    if (registerForm) {
-        registerForm.addEventListener("submit", function (event) {
-            if (!validateRegisterForm()) {
-                event.preventDefault();
-            }
-        });
+    if (!registerForm) {
+        return;
+    }
+
+    registerForm.addEventListener("submit", function (event) {
+        if (!validateRegisterForm()) {
+            event.preventDefault();
+        }
+    });
+
+    function showError(inputElement, errorMessage, errorElementId) {
+        hideError(errorElementId);
+
+        const errorDiv = document.createElement("div");
+        errorDiv.id = errorElementId;
+        errorDiv.className = "text-sm text-red-600 mt-2";
+        errorDiv.textContent = errorMessage;
+        inputElement.parentNode.insertBefore(errorDiv, inputElement.nextSibling);
+    }
+
+    function hideError(errorElementId) {
+        document.getElementById(errorElementId)?.remove();
     }
 
     function validateRegisterForm() {
@@ -15,120 +31,44 @@ document.addEventListener("DOMContentLoaded", function () {
         const telefonoInput = document.getElementById("telefono");
         const emailInput = document.getElementById("email");
         const passwordInput = document.getElementById("password");
-        const confirmPasswordInput = document.getElementById(
-            "password_confirmation"
-        );
+        const confirmPasswordInput = document.getElementById("password_confirmation");
 
-        // Función para crear y mostrar mensajes de error
-        function showError(inputElement, errorMessage, errorElementId) {
-            // Elimina cualquier mensaje de error existente
-            hideError(inputElement, errorElementId);
-
-            // Crea un nuevo div para el mensaje de error
-            const errorDiv = document.createElement("div");
-            errorDiv.id = errorElementId;
-            errorDiv.className = "text-sm text-red-600 mt-2";
-            errorDiv.textContent = errorMessage;
-
-            // Agrega el nuevo div al DOM, justo después del inputElement
-            inputElement.parentNode.insertBefore(
-                errorDiv,
-                inputElement.nextSibling
-            );
-        }
-
-        // Función para ocultar mensajes de error
-        function hideError(inputElement, errorElementId) {
-            const existingError = document.getElementById(errorElementId);
-
-            // Verifica si el mensaje de error existe y lo elimina
-            if (existingError) {
-                existingError.remove();
-            }
-        }
-
-        // Validación de nombre
         if (nameInput.value.trim() === "") {
-            showError(
-                nameInput,
-                "Por favor, introduce un nombre.",
-                "nameError"
-            );
+            showError(nameInput, "Por favor, introduce un nombre.", "nameError");
             return false;
-        } else {
-            hideError(nameInput, "nameError");
         }
+        hideError("nameError");
 
-        // Validación de apellidos
         if (apellidosInput.value.trim() === "") {
-            showError(
-                apellidosInput,
-                "Por favor, introduce apellidos.",
-                "apellidosError"
-            );
+            showError(apellidosInput, "Por favor, introduce apellidos.", "apellidosError");
             return false;
-        } else {
-            hideError(apellidosInput, "apellidosError");
         }
+        hideError("apellidosError");
 
-        // Validación de teléfono
-        if (
-            telefonoInput.value.trim() === "" ||
-            !/^\d+$/.test(telefonoInput.value.trim())
-        ) {
-            showError(
-                telefonoInput,
-                "Por favor, introduce un teléfono válido.",
-                "telefonoError"
-            );
+        if (!/^\d{9}$/.test(telefonoInput.value.trim())) {
+            showError(telefonoInput, "Introduce un teléfono de 9 dígitos.", "telefonoError");
             return false;
-        } else {
-            hideError(telefonoInput, "telefonoError");
         }
+        hideError("telefonoError");
 
-        // Validación de correo electrónico
         if (emailInput.value.trim() === "") {
-            showError(
-                emailInput,
-                "Por favor, introduce un correo electrónico.",
-                "emailError"
-            );
+            showError(emailInput, "Por favor, introduce un correo electrónico.", "emailError");
             return false;
-        } else {
-            hideError(emailInput, "emailError");
         }
+        hideError("emailError");
 
-        // Validación de contraseña
-        if (passwordInput.value.trim() === "") {
-            showError(
-                passwordInput,
-                "Por favor, introduce una contraseña.",
-                "passwordError"
-            );
+        if (passwordInput.value.length < 8) {
+            showError(passwordInput, "La contraseña debe tener al menos 8 caracteres.", "passwordError");
             return false;
-        } else {
-            hideError(passwordInput, "passwordError");
         }
+        hideError("passwordError");
 
-        // Validación de complejidad de la contraseña
-        const passwordRegex =
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-
-        if (!passwordRegex.test(passwordInput.value)) {
-            showError(
-                passwordInput,
-                "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.",
-                "passwordError"
-            );
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            showError(confirmPasswordInput, "Las contraseñas no coinciden.", "passwordConfirmationError");
             return false;
-        } else {
-            hideError(passwordInput, "passwordError");
         }
+        hideError("passwordConfirmationError");
 
         return true;
     }
-
-    console.log(
-        "El script de validación para el formulario de registro está funcionando correctamente."
-    );
 });

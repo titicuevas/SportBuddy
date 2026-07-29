@@ -12,7 +12,7 @@ class AdminFormTest extends TestCase
 
     public function test_admin_create_forms_render_with_new_layout(): void
     {
-        $admin = User::factory()->create(['rol_id' => 1]);
+        $admin = User::factory()->admin()->create();
 
         $routes = [
             route('admin.deportes.create'),

@@ -7,37 +7,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAdminDeporteRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'nombre' => ['required', 'string', new UniqueInsensitive('deportes', 'nombre')],
-        ];
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'nombre.unique' => 'El deporte ya existe en la base de datos.',
+            'nombre' => ['required', 'string', 'max:255', new UniqueInsensitive('deportes', 'nombre')],
+            'jugadores_por_equipo' => ['required', 'integer', 'min:1', 'max:30'],
         ];
     }
 }

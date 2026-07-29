@@ -33,12 +33,11 @@
 </head>
 
 <body class="bg-slate-100 font-sans antialiased overflow-x-hidden">
-    @if (session('success'))
-        <x-flash-message>{{ session('success') }}</x-flash-message>
-    @endif
-    @if (session('error'))
-        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
-    @endif
+    @foreach (['success', 'error', 'info', 'warning'] as $__flashType)
+        @if (session($__flashType))
+            <x-flash-message :type="$__flashType">{{ session($__flashType) }}</x-flash-message>
+        @endif
+    @endforeach
 
     <div class="min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]" x-data="{ menuOpen: false }" @keydown.escape.window="menuOpen = false">
         {{-- Sidebar escritorio --}}

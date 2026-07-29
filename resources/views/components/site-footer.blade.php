@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
             <div class="text-center sm:text-left">
-                <p class="font-semibold text-white">&copy; 2024 SportBuddy</p>
+                <p class="font-semibold text-white">&copy; {{ date('Y') }} SportBuddy</p>
                 <p class="text-sm text-slate-400 mt-1">Creado por Enrique Cuevas García</p>
             </div>
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ubicacion extends Model
 {
@@ -21,12 +22,12 @@ class Ubicacion extends Model
         'iframe',
     ];
 
-    public function partidos()
+    public function partidos(): HasMany
     {
         return $this->hasMany(Partido::class);
     }
 
-    public function pistas()
+    public function pistas(): HasMany
     {
         return $this->hasMany(Pista::class);
     }

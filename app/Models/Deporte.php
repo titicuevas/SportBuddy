@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Deporte extends Model
 {
@@ -13,17 +15,22 @@ class Deporte extends Model
 
     protected $fillable = [
         'nombre',
+        'jugadores_por_equipo',
         'imagen',
     ];
 
-    public function partidos()
+    protected $casts = [
+        'jugadores_por_equipo' => 'integer',
+    ];
+
+    public function partidos(): HasMany
     {
-        return $this->hasMany('App\Models\Partido')->onDelete('cascade');
+        return $this->hasMany(Partido::class);
     }
 
-    public function ubicaciones()
+    public function ubicaciones(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Ubicacion');
+        return $this->belongsToMany(Ubicacion::class);
     }
 
     public static function coverImageUrl(string $nombre = ''): string
@@ -39,9 +46,13 @@ class Deporte extends Model
         };
     }
 
-    public function getImagePathAttribute()
+    public function getImagePathAttribute(): string
     {
-        // Asegúrate de que estás accediendo a la columna correcta en la base de datos
-        return asset('storage/imagen/' . $this->attributes['imagen']);
+        return asset('storage/imagen/'.($this->attributes['imagen'] ?? ''));
+    }
+
+    public function limitePorEquipo(): int
+    {
+        return max(1, (int) ($this->jugadores_por_equipo ?? 1));
     }
 }

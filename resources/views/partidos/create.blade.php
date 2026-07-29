@@ -1,10 +1,6 @@
 <x-app-layout>
     <x-page-hero title="Crear partido" subtitle="Reserva una pista y publica tu encuentro" />
 
-    @if (session('error'))
-        <x-flash-message type="error">{{ session('error') }}</x-flash-message>
-    @endif
-
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 pb-12 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
@@ -145,7 +141,7 @@
                 'nombre' => $u->nombre,
                 'direccion' => $u->direccion,
                 'imagen' => $u->image_path,
-            ])))" @ubicacion-cambiada.window="onUbicacion($event.detail)" @fecha-cambiada.window="onFecha($event.detail)" @hora-cambiada.window="onHora($event.detail)">
+            ])))">
 
                 {{-- Vista previa ubicación --}}
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">

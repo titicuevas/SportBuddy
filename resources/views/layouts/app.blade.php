@@ -32,6 +32,12 @@
     @endif
 
     <main id="main-content" class="flex-1">
+        @foreach (['success', 'error', 'info', 'warning'] as $type)
+            @if (session($type))
+                <x-flash-message :type="$type">{{ session($type) }}</x-flash-message>
+            @endif
+        @endforeach
+
         {{ $slot }}
     </main>
 

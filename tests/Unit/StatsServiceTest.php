@@ -29,8 +29,8 @@ class StatsServiceTest extends TestCase
 
         $second = Partido::create([
             'fecha_hora' => now()->addDays(5),
-            'equipo1' => 1,
-            'equipo2' => 2,
+            'equipo_local_nombre' => 'Equipo Azul',
+            'equipo_visitante_nombre' => 'Equipo Naranja',
             'user_id' => $user->id,
             'superficie_id' => 1,
             'pista_id' => 1,

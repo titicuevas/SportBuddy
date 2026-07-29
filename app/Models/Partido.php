@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Partido extends Model
 {
@@ -12,8 +14,8 @@ class Partido extends Model
 
     protected $fillable = [
         'fecha_hora',
-        'equipo1',
-        'equipo2',
+        'equipo_local_nombre',
+        'equipo_visitante_nombre',
         'user_id',
         'superficie_id',
         'resultado',
@@ -21,7 +23,6 @@ class Partido extends Model
         'deporte_id',
         'pista_id',
         'precio',
-        'pago_aprobado',
         'pista_tiene_luz',
         'precio_con_luz',
     ];
@@ -47,28 +48,13 @@ class Partido extends Model
     public function scopeWithCardData(Builder $query): Builder
     {
         return $query
-            ->with(['ubicacion:id,nombre,direccion,imagen,enlace_maps', 'deporte:id,nombre', 'user:id,name'])
+            ->with(['ubicacion:id,nombre,direccion,imagen,enlace_maps', 'deporte:id,nombre,jugadores_por_equipo', 'user:id,name'])
             ->withCount('asignamientos');
-    }
-
-    public static function limitePorDeporte(string $deporte): int
-    {
-        return match ($deporte) {
-            'Futbol 7' => 7,
-            'Futbol Sala' => 5,
-            'Padel' => 2,
-            'Baloncesto' => 5,
-            'Tenis' => 1,
-            'Judo' => 1,
-            default => 0,
-        };
     }
 
     public function plazasTotales(): int
     {
-        $deporte = $this->relationLoaded('deporte') ? $this->deporte->nombre : '';
-
-        return self::limitePorDeporte($deporte) * 2;
+        return ($this->relationLoaded('deporte') ? $this->deporte->limitePorEquipo() : 0) * 2;
     }
 
     public function plazasOcupadas(): int
@@ -88,59 +74,59 @@ class Partido extends Model
         return $total > 0 && $this->plazasOcupadas() >= $total;
     }
 
-    public function equipo1()
-    {
-        return $this->belongsTo(Equipo::class, 'equipo1');
-    }
-
-    public function equipo2()
-    {
-        return $this->belongsTo(Equipo::class, 'equipo2');
-    }
-
-    public function ubicacion()
+    public function ubicacion(): BelongsTo
     {
         return $this->belongsTo(Ubicacion::class);
     }
 
-    public function deporte()
+    public function deporte(): BelongsTo
     {
         return $this->belongsTo(Deporte::class);
     }
 
-    public function asignamientos()
+    public function asignamientos(): HasMany
     {
         return $this->hasMany(Asignamiento::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function pista()
+    public function pista(): BelongsTo
     {
         return $this->belongsTo(Pista::class);
     }
 
-    public function superficie()
+    public function superficie(): BelongsTo
     {
         return $this->belongsTo(Superficie::class);
     }
 
-    public function mensajes()
+    public function mensajes(): HasMany
     {
         return $this->hasMany(Mensaje::class);
     }
 
-    public function comentarios()
+    public function comentarios(): HasMany
     {
         return $this->hasMany(Comentario::class);
     }
 
-    public function jugadoresPorEquipo(int $equipoId): int
+    public function ladoLocal(): int
     {
-        return $this->asignamientos->where('equipo_id', $equipoId)->count();
+        return 1;
+    }
+
+    public function ladoVisitante(): int
+    {
+        return 2;
+    }
+
+    public function jugadoresPorLado(int $lado): int
+    {
+        return $this->asignamientos->where('lado', $lado)->count();
     }
 
     public function usuarioInscrito(?int $userId): bool

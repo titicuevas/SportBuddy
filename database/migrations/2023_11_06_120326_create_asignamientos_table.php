@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('asignamientos', function (Blueprint $table) {
             $table->foreignId('partido_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
-            $table->foreignId('equipo_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
+            $table->unsignedTinyInteger('lado');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');//Para borrar si hay otro usuario metido
-            $table->primary(['partido_id', 'equipo_id', 'user_id']);
+            $table->primary(['partido_id', 'lado', 'user_id']);
         });
     }
 

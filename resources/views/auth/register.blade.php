@@ -6,7 +6,7 @@
         <div class="absolute inset-0 bg-emerald-900/70"></div>
 
         <div class="relative w-full max-w-md">
-            <form id="register-form" method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
+            <form id="register-form" method="POST" action="{{ route('register') }}"
                 class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 space-y-5" novalidate>
                 @csrf
 

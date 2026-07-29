@@ -2,27 +2,26 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueInsensitive;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDeporteRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                new UniqueInsensitive('deportes', 'nombre', $this->route('deporte')?->id),
+            ],
+            'jugadores_por_equipo' => ['required', 'integer', 'min:1', 'max:30'],
         ];
     }
 }

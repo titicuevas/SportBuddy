@@ -2,31 +2,30 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
 
-class UniqueInsensitive implements Rule
+class UniqueInsensitive implements ValidationRule
 {
-    protected $table;
-    protected $column;
+    public function __construct(
+        protected string $table,
+        protected string $column,
+        protected int|string|null $ignoreId = null,
+        protected string $idColumn = 'id',
+    ) {}
 
-    public function __construct($table, $column)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $this->table = $table;
-        $this->column = $column;
-    }
+        $query = DB::table($this->table)
+            ->whereRaw('LOWER('.$this->column.') = ?', [strtolower((string) $value)]);
 
-    public function passes($attribute, $value)
-    {
-        $count = DB::table($this->table)
-            ->whereRaw('LOWER(' . $this->column . ') = ?', [strtolower($value)])
-            ->count();
+        if ($this->ignoreId !== null) {
+            $query->where($this->idColumn, '!=', $this->ignoreId);
+        }
 
-        return $count === 0;
-    }
-
-    public function message()
-    {
-        return 'El :attribute ya existe en la base de datos.';
+        if ($query->exists()) {
+            $fail('El :attribute ya existe en la base de datos.');
+        }
     }
 }
