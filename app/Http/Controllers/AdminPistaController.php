@@ -21,6 +21,7 @@ class AdminPistaController extends Controller
             ->orderBy('ubicacion_id')
             ->orderBy('numero')
             ->paginate(15);
+
         return view('admin.pista.index', compact('pistas'));
     }
 

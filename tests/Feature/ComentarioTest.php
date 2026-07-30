@@ -56,4 +56,37 @@ class ComentarioTest extends TestCase
 
         $this->assertSame($partidoDestino->id, $comentario->partido_id);
     }
+
+    public function test_non_enrolled_user_cannot_comment(): void
+    {
+        $this->seedPartidoFixtures();
+        $owner = User::factory()->create();
+        $outsider = User::factory()->create();
+        $partido = $this->createFuturePartido($owner);
+
+        $this->actingAs($outsider)
+            ->post(route('comentarios.store', $partido), [
+                'contenido' => 'No debería poder comentar.',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('comentarios', [
+            'partido_id' => $partido->id,
+            'user_id' => $outsider->id,
+        ]);
+    }
+
+    public function test_partido_owner_can_comment(): void
+    {
+        $this->seedPartidoFixtures();
+        $owner = User::factory()->create();
+        $partido = $this->createFuturePartido($owner);
+
+        $this->actingAs($owner)
+            ->post(route('comentarios.store', $partido), [
+                'contenido' => 'Comentario del organizador.',
+            ])
+            ->assertOk()
+            ->assertSee('Comentario del organizador.');
+    }
 }

@@ -64,10 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
         hideError("passwordError");
 
         if (passwordInput.value !== confirmPasswordInput.value) {
-            showError(confirmPasswordInput, "Las contraseñas no coinciden.", "passwordConfirmationError");
+            showError(confirmPasswordInput, "Las contraseñas no coinciden.", "confirmPasswordError");
             return false;
         }
-        hideError("passwordConfirmationError");
+        hideError("confirmPasswordError");
 
         return true;
     }

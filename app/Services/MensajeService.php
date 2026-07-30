@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Models\Mensaje;
+use Illuminate\Database\Eloquent\Collection;
 
 class MensajeService
 {
-    public function getMensajes(int $partidoId)
+    public function getMensajes(int $partidoId): Collection
     {
         return Mensaje::query()
             ->with('user:id,name,foto')

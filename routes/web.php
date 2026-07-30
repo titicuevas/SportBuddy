@@ -49,9 +49,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/ubicaciones/{ubicacion}/clima', [PartidoController::class, 'climaUbicacion'])
         ->name('ubicaciones.clima');
 
-    Route::get('/obtener-horas-ocupadas/{pistaId}/{fecha}', [PartidoController::class, 'obtenerHorasOcupadas']);
-    Route::get('/pistas-por-ubicacion/{ubicacion}', [PistaController::class, 'pistasPorUbicacion']);
-    Route::get('/pistas/{pista}', [PistaController::class, 'show']);
+    Route::get('/obtener-horas-ocupadas/{pista}/{fecha}', [PartidoController::class, 'obtenerHorasOcupadas'])
+        ->name('pistas.horas-ocupadas');
+    Route::get('/pistas-por-ubicacion/{ubicacion}', [PistaController::class, 'pistasPorUbicacion'])
+        ->name('pistas.por-ubicacion');
+    Route::get('/pistas/{pista}', [PistaController::class, 'show'])
+        ->name('pistas.show');
 
     Route::get('/partidos/{partido}/clima', [PartidoController::class, 'clima'])->name('partidos.clima');
 

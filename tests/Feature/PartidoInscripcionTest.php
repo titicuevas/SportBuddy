@@ -103,8 +103,7 @@ class PartidoInscripcionTest extends TestCase
         $this->seedPartidoFixtures();
         $owner = User::factory()->create();
         $player = User::factory()->create();
-        $partido = $this->createFuturePartido($owner);
-        $partido->update(['fecha_hora' => now()->subDay()]);
+        $partido = $this->createPastPartido($owner);
 
         $this->actingAs($player)
             ->post(route('partidos.inscribirse', $partido))

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\StoreAdminDeporteRequest;
 use App\Http\Requests\UpdateDeporteRequest;
 use App\Models\Deporte;

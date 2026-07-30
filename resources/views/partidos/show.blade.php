@@ -200,8 +200,7 @@
                     <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-lg font-bold text-gray-900 mb-3">{{ $partido->equipo_local_nombre }}</h3>
                         <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-indigo-300 rounded mb-4" aria-hidden="true"></div>
-                        @php $jugadoresEquipo1 = $partido->asignamientos->where('lado', $partido->ladoLocal()); @endphp
-                        @forelse ($jugadoresEquipo1 as $asignamiento)
+                        @forelse ($jugadoresLocal as $asignamiento)
                             <a href="{{ route('user.show', $asignamiento->user) }}"
                                 class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
                                 {{ $asignamiento->user->name }}
@@ -214,8 +213,7 @@
                     <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-lg font-bold text-gray-900 mb-3">{{ $partido->equipo_visitante_nombre }}</h3>
                         <div class="h-1 w-full bg-gradient-to-r from-emerald-500 to-emerald-300 rounded mb-4" aria-hidden="true"></div>
-                        @php $jugadoresEquipo2 = $partido->asignamientos->where('lado', $partido->ladoVisitante()); @endphp
-                        @forelse ($jugadoresEquipo2 as $asignamiento)
+                        @forelse ($jugadoresVisitante as $asignamiento)
                             <a href="{{ route('user.show', $asignamiento->user) }}"
                                 class="text-indigo-600 hover:text-indigo-800 font-medium block text-center mb-2 py-1 rounded hover:bg-indigo-50 transition-colors">
                                 {{ $asignamiento->user->name }}

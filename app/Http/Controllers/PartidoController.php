@@ -113,11 +113,21 @@ class PartidoController extends Controller
         $usuarioActual = auth()->user();
         $inscrito = $partido->usuarioInscrito($usuarioActual->id);
         $partidoCompleto = $partido->estaCompleto();
+        $jugadoresLocal = $partido->asignamientos->where('lado', $partido->ladoLocal());
+        $jugadoresVisitante = $partido->asignamientos->where('lado', $partido->ladoVisitante());
         $mapIframe = $partido->ubicacion->iframe
             ? str_replace('<iframe', '<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"', $partido->ubicacion->iframe)
             : '';
 
-        return view('partidos.show', compact('partido', 'usuarioActual', 'inscrito', 'partidoCompleto', 'mapIframe'));
+        return view('partidos.show', compact(
+            'partido',
+            'usuarioActual',
+            'inscrito',
+            'partidoCompleto',
+            'jugadoresLocal',
+            'jugadoresVisitante',
+            'mapIframe'
+        ));
     }
 
     public function destroy(Partido $partido)
@@ -225,11 +235,13 @@ class PartidoController extends Controller
         return back()->with('success', 'Te has desapuntado del partido correctamente.');
     }
 
-    public function obtenerHorasOcupadas(int $pistaId, string $fecha)
+    public function obtenerHorasOcupadas(Pista $pista, string $fecha)
     {
-        $horas = Cache::remember("horas_ocupadas.{$pistaId}.{$fecha}", 30, function () use ($pistaId, $fecha) {
+        abort_unless(preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha), 404);
+
+        $horas = Cache::remember("horas_ocupadas.{$pista->id}.{$fecha}", 30, function () use ($pista, $fecha) {
             return Partido::query()
-                ->where('pista_id', $pistaId)
+                ->where('pista_id', $pista->id)
                 ->whereDate('fecha_hora', $fecha)
                 ->pluck('fecha_hora')
                 ->map(fn ($fechaHora) => Carbon::parse($fechaHora)->format('H:i'))

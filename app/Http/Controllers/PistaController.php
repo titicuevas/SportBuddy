@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Pista;
 use App\Models\Ubicacion;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
 class PistaController extends Controller
 {
-    public function show(Pista $pista)
+    public function show(Pista $pista): JsonResponse
     {
         $pista->load(['superficie:id,tipo', 'deporte:id,nombre']);
 
@@ -22,7 +23,7 @@ class PistaController extends Controller
         ]);
     }
 
-    public function pistasPorUbicacion(Ubicacion $ubicacion)
+    public function pistasPorUbicacion(Ubicacion $ubicacion): JsonResponse
     {
         $pistas = Cache::remember("pistas.ubicacion.{$ubicacion->id}", 300, fn () =>
             Pista::query()->where('ubicacion_id', $ubicacion->id)->get(['id', 'numero'])

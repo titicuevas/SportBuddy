@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Services\StatsService;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke()
+    public function __invoke(): View
     {
-        $data = StatsService::dashboardForUser(auth()->id());
-
-        return view('dashboard', $data);
+        return view('dashboard', StatsService::dashboardForUser(auth()->id()));
     }
 }

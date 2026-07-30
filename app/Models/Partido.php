@@ -135,7 +135,20 @@ class Partido extends Model
             return false;
         }
 
-        return $this->asignamientos->contains('user_id', $userId);
+        if ($this->relationLoaded('asignamientos')) {
+            return $this->asignamientos->contains('user_id', $userId);
+        }
+
+        return $this->asignamientos()->where('user_id', $userId)->exists();
+    }
+
+    public function usuarioPuedeInteractuar(?int $userId): bool
+    {
+        if (! $userId) {
+            return false;
+        }
+
+        return (int) $this->user_id === $userId || $this->usuarioInscrito($userId);
     }
 
     public function getCardImageAttribute(): string

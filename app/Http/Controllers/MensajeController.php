@@ -16,7 +16,7 @@ class MensajeController extends Controller
 
     public function index(Partido $partido): View
     {
-        $this->authorizePartidoAccess($partido);
+        abort_unless($partido->usuarioPuedeInteractuar(auth()->id()), 403, 'Solo los jugadores inscritos pueden acceder al chat.');
 
         $partido->load([
             'deporte:id,nombre',
@@ -26,12 +26,13 @@ class MensajeController extends Controller
         return view('mensajes.chat', [
             'partido' => $partido,
             'mensajes' => $this->mensajeService->getMensajes($partido->id),
+            'currentUserId' => auth()->id(),
         ]);
     }
 
     public function store(Request $request, Partido $partido): RedirectResponse
     {
-        $this->authorizePartidoAccess($partido);
+        abort_unless($partido->usuarioPuedeInteractuar(auth()->id()), 403, 'Solo los jugadores inscritos pueden acceder al chat.');
 
         $validated = $request->validate([
             'contenido' => ['required', 'string', 'max:255'],
@@ -42,20 +43,5 @@ class MensajeController extends Controller
         return redirect()
             ->route('mensajes.index', $partido)
             ->with('success', 'Mensaje enviado.');
-    }
-
-    private function authorizePartidoAccess(Partido $partido): void
-    {
-        $userId = auth()->id();
-
-        if ($partido->user_id === $userId) {
-            return;
-        }
-
-        if ($partido->asignamientos()->where('user_id', $userId)->exists()) {
-            return;
-        }
-
-        abort(403, 'Solo los jugadores inscritos pueden acceder al chat.');
     }
 }

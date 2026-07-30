@@ -39,6 +39,21 @@ trait CreatesPartidos
         ]);
     }
 
+    protected function createPastPartido(User $creator): Partido
+    {
+        return Partido::create([
+            'fecha_hora' => now()->subDay(),
+            'equipo_local_nombre' => 'Equipo Azul',
+            'equipo_visitante_nombre' => 'Equipo Naranja',
+            'user_id' => $creator->id,
+            'superficie_id' => 1,
+            'pista_id' => 1,
+            'ubicacion_id' => 1,
+            'deporte_id' => 2,
+            'precio' => 15,
+        ]);
+    }
+
     protected function enrollUserInPartido(User $user, Partido $partido, ?int $lado = null): void
     {
         Asignamiento::create([

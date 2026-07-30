@@ -64,6 +64,25 @@ class ProfileTest extends TestCase
         $this->assertNull($user->email_verified_at);
     }
 
+    public function test_profile_phone_must_have_nine_digits(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->patch('/profile', [
+                'name' => $user->name,
+                'apellidos' => $user->apellidos,
+                'telefono' => '12345',
+                'email' => $user->email,
+            ]);
+
+        $response
+            ->assertSessionHasErrors('telefono')
+            ->assertRedirect('/profile');
+    }
+
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
     {
         $user = User::factory()->create();

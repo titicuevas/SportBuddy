@@ -17,10 +17,18 @@
 
             <div class="p-4 space-y-4 max-h-[28rem] overflow-y-auto" aria-live="polite">
                 @forelse ($mensajes as $mensaje)
-                    @php $esMio = $mensaje->user_id === auth()->id(); @endphp
-                    <div class="flex {{ $esMio ? 'justify-end' : 'justify-start' }}">
-                        <div class="max-w-[85%] rounded-2xl px-4 py-2.5 {{ $esMio ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-900' }}">
-                            <p class="text-xs font-semibold {{ $esMio ? 'text-indigo-100' : 'text-gray-500' }} mb-1">
+                    @php($esMio = $mensaje->user_id === $currentUserId)
+                    <div @class(['flex', 'justify-end' => $esMio, 'justify-start' => ! $esMio])>
+                        <div @class([
+                            'max-w-[85%] rounded-2xl px-4 py-2.5',
+                            'bg-indigo-600 text-white' => $esMio,
+                            'bg-gray-100 text-gray-900' => ! $esMio,
+                        ])>
+                            <p @class([
+                                'text-xs font-semibold mb-1',
+                                'text-indigo-100' => $esMio,
+                                'text-gray-500' => ! $esMio,
+                            ])>
                                 {{ $esMio ? 'Tú' : $mensaje->user->name }}
                                 · {{ $mensaje->created_at->format('d/m H:i') }}
                             </p>

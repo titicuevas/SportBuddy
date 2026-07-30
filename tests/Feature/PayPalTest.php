@@ -86,4 +86,15 @@ class PayPalTest extends TestCase
             ->assertRedirect(route('partidos.show', $partido))
             ->assertSessionHas('error');
     }
+
+    public function test_cannot_start_paypal_for_past_partido(): void
+    {
+        $this->seedPartidoFixtures();
+        $owner = User::factory()->create();
+        $partido = $this->createPastPartido($owner);
+
+        $this->actingAs($owner)
+            ->get(route('paypal.start', $partido))
+            ->assertForbidden();
+    }
 }

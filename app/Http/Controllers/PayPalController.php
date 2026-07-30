@@ -17,6 +17,7 @@ class PayPalController extends Controller
     public function start(Partido $partido): RedirectResponse
     {
         abort_unless(auth()->id() === $partido->user_id, 403);
+        abort_if($partido->fecha_hora->isPast(), 403, 'Este partido ya ha finalizado.');
         abort_if($partido->pago_aprobado, 400, 'Este partido ya está pagado.');
 
         if (! $this->paypal->isConfigured()) {
@@ -43,6 +44,7 @@ class PayPalController extends Controller
     public function return(Request $request, Partido $partido): RedirectResponse
     {
         abort_unless(auth()->id() === $partido->user_id, 403);
+        abort_if($partido->fecha_hora->isPast(), 403, 'Este partido ya ha finalizado.');
 
         if ($partido->pago_aprobado) {
             return redirect()->route('partidos.show', $partido)

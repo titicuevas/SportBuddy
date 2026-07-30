@@ -1,7 +1,6 @@
 @props(['partido', 'variant' => 'disponible'])
 
 @php
-    $fecha = \Carbon\Carbon::parse($partido->fecha_hora);
     $plazasTotales = $partido->plazasTotales();
     $plazasOcupadas = $partido->plazasOcupadas();
     $completo = $partido->estaCompleto();
@@ -31,10 +30,10 @@
 
             <div class="absolute top-3 left-3 flex flex-wrap gap-2">
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/95 text-gray-800 shadow-sm">
-                    {{ $fecha->translatedFormat('D d M') }}
+                    {{ $partido->fecha_hora->translatedFormat('D d M') }}
                 </span>
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/95 text-gray-800 shadow-sm">
-                    {{ $fecha->format('H:i') }}
+                    {{ $partido->fecha_hora->format('H:i') }}
                 </span>
             </div>
 
