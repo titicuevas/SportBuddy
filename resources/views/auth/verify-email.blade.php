@@ -14,7 +14,7 @@
                     Haz clic en el enlace para activar tu cuenta y acceder a SportBuddy.
                 </p>
 
-                @if (session('status') == 'verification-link-sent')
+                @if (session('status') === 'verification-link-sent')
                     <div class="mb-4 p-3 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-lg">
                         Hemos reenviado el correo de verificación.
                     </div>

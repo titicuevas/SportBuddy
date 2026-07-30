@@ -17,7 +17,7 @@
                     @csrf
 
                     <div>
-                        <x-input-label for="email" :value="__('Email')" />
+                        <x-input-label for="email" value="Correo electrónico" />
                         <x-text-input id="email" class="block mt-1 w-full @error('email') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror" type="email" name="email"
                             :value="old('email')" required autofocus autocomplete="username" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -25,7 +25,7 @@
 
                     <div>
                         <x-input-label for="password" :value="__('Contraseña')" />
-                        <x-text-input id="password" class="block mt-1 w-full @error('email') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror" type="password" name="password"
+                        <x-text-input id="password" class="block mt-1 w-full @error('password') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror" type="password" name="password"
                             required autocomplete="current-password" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>

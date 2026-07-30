@@ -18,7 +18,11 @@
                             'nombre' => $u->nombre,
                             'direccion' => $u->direccion,
                             'imagen' => $u->image_path,
-                        ])))"
+                        ])), {
+                            pistasPorUbicacion: @js(url('/pistas-por-ubicacion')),
+                            pistaShow: @js(url('/pistas')),
+                            horasOcupadas: @js(url('/obtener-horas-ocupadas')),
+                        })"
                         x-init="init()">
                         @csrf
 
@@ -249,9 +253,10 @@
             return WEATHER_ICONS[(icon || '01d').substring(0, 2)] || '🌡️';
         }
 
-        function crearPartidoForm(ubicaciones) {
+        function crearPartidoForm(ubicaciones, endpoints) {
             return {
                 ubicaciones,
+                endpoints,
                 ubicacionId: '',
                 fecha: '',
                 fechaMinima: new Date().toISOString().split('T')[0],
@@ -292,12 +297,12 @@
 
                     this.cargandoPistas = true;
                     try {
-                        const res = await fetch(`/pistas-por-ubicacion/${this.ubicacionId}`);
+                        const res = await fetch(`${this.endpoints.pistasPorUbicacion}/${this.ubicacionId}`);
                         if (res.ok) {
                             this.pistas = await res.json();
                         }
                     } catch (e) {
-                        console.error(e);
+                        this.pistas = [];
                     } finally {
                         this.cargandoPistas = false;
                     }
@@ -308,7 +313,7 @@
                     if (!this.pistaId) return;
 
                     try {
-                        const res = await fetch(`/pistas/${this.pistaId}`);
+                        const res = await fetch(`${this.endpoints.pistaShow}/${this.pistaId}`);
                         if (res.ok) {
                             const data = await res.json();
                             this.tipoSuperficie = data.tipo_superficie || '';
@@ -318,7 +323,8 @@
                             this.precioConLuz = parseFloat(data.precio_con_luz) || null;
                         }
                     } catch (e) {
-                        console.error(e);
+                        this.tipoSuperficie = '';
+                        this.deporte = '';
                     }
 
                     await this.cargarFranjas();
@@ -343,7 +349,7 @@
                     this.opcionesPrecio = [];
 
                     try {
-                        const res = await fetch(`/obtener-horas-ocupadas/${this.pistaId}/${this.fecha}`);
+                        const res = await fetch(`${this.endpoints.horasOcupadas}/${this.pistaId}/${this.fecha}`);
                         this.horasOcupadas = res.ok ? await res.json() : [];
                     } catch (e) {
                         this.horasOcupadas = [];

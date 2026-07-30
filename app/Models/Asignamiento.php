@@ -20,6 +20,10 @@ class Asignamiento extends Model
         'lado',
     ];
 
+    protected $casts = [
+        'lado' => 'integer',
+    ];
+
     public function partido(): BelongsTo
     {
         return $this->belongsTo(Partido::class);

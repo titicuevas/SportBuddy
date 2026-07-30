@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\ProfileUpdateFotoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Asignamiento;
+use App\Models\Comentario;
+use App\Models\Mensaje;
+use App\Services\StatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -73,22 +78,33 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(DeleteUserRequest $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
 
         Auth::logout();
 
         DB::transaction(function () use ($user) {
+            if ($user->foto) {
+                Storage::delete($user->foto);
+            }
+
+            $partidoIds = $user->partidosCreados()->pluck('id');
+
+            if ($partidoIds->isNotEmpty()) {
+                Mensaje::whereIn('partido_id', $partidoIds)->delete();
+                Comentario::whereIn('partido_id', $partidoIds)->delete();
+                Asignamiento::whereIn('partido_id', $partidoIds)->delete();
+                $user->partidosCreados()->delete();
+            }
+
             $user->comentarios()->delete();
             $user->mensajes()->delete();
             $user->asignamientos()->delete();
             $user->delete();
         });
+
+        StatsService::bump();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

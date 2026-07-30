@@ -21,8 +21,7 @@
         <div class="mb-4">
             <x-input-label for="name" :value="__('Nombre')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)"
-                autofocus autocomplete="name" />
-            <!-- Muestra mensajes de error para el nombre -->
+                autofocus autocomplete="given-name" />
             <div class="mt-2 text-sm text-red-600" id="nameError"></div>
             <x-input-error class="mt-2 text-red-600" :messages="$errors->get('name')" />
         </div>
@@ -31,25 +30,23 @@
         <div class="mb-4">
             <x-input-label for="apellidos" :value="__('Apellidos')" />
             <x-text-input id="apellidos" name="apellidos" type="text" class="mt-1 block w-full" :value="old('apellidos', $user->apellidos)"
-                required autofocus autocomplete="apellidos" />
-            <!-- Muestra mensajes de error para los apellidos -->
+                required autocomplete="family-name" />
             <div class="mt-2 text-sm text-red-600" id="apellidosError"></div>
             <x-input-error class="mt-2 text-red-600" :messages="$errors->get('apellidos')" />
         </div>
 
         <!-- Teléfono -->
         <div class="mb-4">
-            <x-input-label for="telefono" :value="__('Telefono')" />
+            <x-input-label for="telefono" :value="__('Teléfono')" />
             <x-text-input id="telefono" name="telefono" type="text" class="mt-1 block w-full" :value="old('telefono', $user->telefono)"
-                required autofocus autocomplete="telefono" />
-            <!-- Muestra mensajes de error para el teléfono -->
+                required autocomplete="tel" inputmode="numeric" pattern="\d{9}" />
             <div class="mt-2 text-sm text-red-600" id="telefonoError"></div>
             <x-input-error class="mt-2 text-red-600" :messages="$errors->get('telefono')" />
         </div>
 
         <!-- Email -->
         <div class="mb-4">
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" value="Correo electrónico" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)"
                 required autocomplete="username" />
             <!-- Muestra mensajes de error para el correo electrónico -->
@@ -59,17 +56,17 @@
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div class="mt-2">
                     <p class="text-sm text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+                        Tu correo electrónico no está verificado.
 
                         <button form="send-verification"
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                            Haz clic aquí para reenviar el correo de verificación.
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
+                            Se ha enviado un nuevo enlace de verificación a tu correo.
                         </p>
                     @endif
                 </div>

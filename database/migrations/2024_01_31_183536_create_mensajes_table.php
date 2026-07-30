@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained(); // Relacionado con la tabla de usuarios
-            $table->foreignId('partido_id')->constrained(); // Relacionado con la tabla de partidos
+            $table->foreignId('partido_id')->constrained()->cascadeOnDelete(); // Relacionado con la tabla de partidos
             $table->text('contenido');
             $table->timestamps();
         });

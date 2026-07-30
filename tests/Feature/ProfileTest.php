@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Models\Mensaje;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\CreatesPartidos;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
+    use CreatesPartidos;
     use RefreshDatabase;
 
     public function test_profile_page_is_displayed(): void
@@ -119,6 +122,34 @@ class ProfileTest extends TestCase
 
         $this->assertGuest();
         $this->assertNull($user->fresh());
+    }
+
+    public function test_user_can_delete_account_that_created_partidos_with_messages(): void
+    {
+        $this->seedPartidoFixtures();
+
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $partido = $this->createFuturePartido($owner);
+        $this->enrollUserInPartido($owner, $partido);
+        $this->enrollUserInPartido($other, $partido, $partido->ladoVisitante());
+
+        Mensaje::create([
+            'contenido' => 'Nos vemos en la pista',
+            'user_id' => $other->id,
+            'partido_id' => $partido->id,
+        ]);
+
+        $this->actingAs($owner)
+            ->delete('/profile', ['password' => 'password'])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($owner->fresh());
+        $this->assertDatabaseMissing('partidos', ['id' => $partido->id]);
+        $this->assertDatabaseMissing('mensajes', ['partido_id' => $partido->id]);
+        $this->assertNotNull($other->fresh());
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void

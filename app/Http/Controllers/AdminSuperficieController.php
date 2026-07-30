@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdminSuperficieRequest;
-use App\Http\Requests\UpdateSuperficieRequest;
+use App\Http\Requests\UpdateAdminSuperficieRequest;
 use App\Models\Superficie;
 use App\Services\StatsService;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +37,7 @@ class AdminSuperficieController extends Controller
         return view('admin.superficie.edit', compact('superficie'));
     }
 
-    public function update(UpdateSuperficieRequest $request, Superficie $superficie): RedirectResponse
+    public function update(UpdateAdminSuperficieRequest $request, Superficie $superficie): RedirectResponse
     {
         $superficie->update($request->validated());
 

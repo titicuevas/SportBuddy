@@ -233,6 +233,7 @@
                             <textarea name="contenido" id="contenido" rows="3" aria-label="Escribe tu comentario"
                                 class="w-full p-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 placeholder="Escribe tu comentario"></textarea>
+                            <p id="comentario-error" class="text-sm text-red-600 hidden" role="alert" aria-live="polite"></p>
                             <button type="button" onclick="enviarComentario()"
                                 class="w-full sm:w-auto px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 Enviar
@@ -297,7 +298,6 @@
                     <p class="text-3xl mt-2">${icono}</p>
                 `;
             } catch (error) {
-                console.error('Error al obtener el pronóstico:', error);
                 weatherInfoDiv.innerHTML = '<p class="text-sm text-gray-600">No se pudo obtener la información del tiempo.</p>';
             }
         }
@@ -306,7 +306,13 @@
 
         function enviarComentario() {
             const form = document.getElementById('comentario-form');
+            const errorEl = document.getElementById('comentario-error');
             if (!form) return;
+
+            if (errorEl) {
+                errorEl.textContent = '';
+                errorEl.classList.add('hidden');
+            }
 
             axios.post(form.action, new FormData(form))
                 .then(response => {
@@ -317,9 +323,13 @@
                 })
                 .catch(error => {
                     const message = error.response?.data?.message
+                        || error.response?.data?.errors?.contenido?.[0]
                         || error.response?.data?.error
                         || 'No se pudo enviar el comentario.';
-                    alert(message);
+                    if (errorEl) {
+                        errorEl.textContent = message;
+                        errorEl.classList.remove('hidden');
+                    }
                 });
         }
 

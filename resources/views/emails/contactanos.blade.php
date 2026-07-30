@@ -12,7 +12,7 @@
 
     <ul>
         <li><strong>Nombre:</strong> {{ $user->name }} {{ $user->apellidos }}</li>
-        <li><strong>Email:</strong> {{ $user->email }}</li>
+        <li><strong>Correo electrónico:</strong> {{ $user->email }}</li>
         @if ($user->telefono)
             <li><strong>Teléfono:</strong> {{ $user->telefono }}</li>
         @endif

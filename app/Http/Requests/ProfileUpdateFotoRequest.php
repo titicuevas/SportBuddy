@@ -18,4 +18,13 @@ class ProfileUpdateFotoRequest extends FormRequest
             'foto_eliminada' => ['nullable', 'in:0,1'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'foto.image' => 'El archivo debe ser una imagen.',
+            'foto.mimes' => 'La foto debe ser JPEG, PNG o WebP.',
+            'foto.max' => 'La foto no puede superar los 2 MB.',
+        ];
+    }
 }

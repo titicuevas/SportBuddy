@@ -10,7 +10,7 @@
                     <th class="px-4 py-3 text-left font-semibold text-gray-700">Nombre</th>
                     <th class="px-4 py-3 text-left font-semibold text-gray-700">Apellidos</th>
                     <th class="px-4 py-3 text-left font-semibold text-gray-700">Teléfono</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Correo electrónico</th>
                     <th class="px-4 py-3 text-right font-semibold text-gray-700">Acciones</th>
                 </tr>
             </thead>

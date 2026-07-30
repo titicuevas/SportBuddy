@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\UniqueInsensitive;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDeporteRequest extends FormRequest
+class UpdateAdminDeporteRequest extends FormRequest
 {
     public function authorize(): bool
     {

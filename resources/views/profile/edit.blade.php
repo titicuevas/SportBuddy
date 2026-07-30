@@ -45,6 +45,8 @@
                     <button type="submit" class="hidden"></button>
                 </form>
             </div>
+
+            <p id="foto-status" class="mt-4 text-center text-sm hidden" role="status" aria-live="polite"></p>
         </div>
 
         <div class="p-6 bg-white shadow-sm border border-gray-100 rounded-2xl">
@@ -60,6 +62,14 @@
             var imgPerfil = document.getElementById('imgPerfil');
             var inputFoto = document.getElementById('foto');
             var formActualizarFoto = document.getElementById('form-actualizar-foto');
+
+            var fotoStatus = document.getElementById('foto-status');
+
+            function setFotoStatus(message, isError) {
+                fotoStatus.textContent = message;
+                fotoStatus.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+                fotoStatus.classList.add(isError ? 'text-red-600' : 'text-emerald-600');
+            }
 
             btnExaminar.addEventListener('click', function() { inputFoto.click(); });
 
@@ -95,7 +105,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'error') {
-                        alert(data.message);
+                        setFotoStatus(data.message || 'No se pudo actualizar la foto.', true);
                     } else {
                         if (imgPerfil.tagName !== 'IMG') {
                             var img = document.createElement('img');
@@ -111,10 +121,12 @@
                         btnEliminar.classList.remove('hidden');
                         inputFoto.value = '';
                         document.getElementById('foto_eliminada').value = 0;
-                        alert('Foto actualizada');
+                        setFotoStatus('Foto actualizada.', false);
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(function() {
+                    setFotoStatus('No se pudo actualizar la foto. Inténtalo de nuevo.', true);
+                });
             });
 
             inputFoto.addEventListener('change', function() {

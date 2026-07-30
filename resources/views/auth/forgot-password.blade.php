@@ -16,7 +16,7 @@
                 <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
                     @csrf
                     <div>
-                        <x-input-label for="email" :value="__('Email')" />
+                        <x-input-label for="email" value="Correo electrónico" />
                         <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -24,7 +24,7 @@
                         Enviar enlace
                     </x-primary-button>
                     <p class="text-center text-sm">
-                        <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Volver al login</a>
+                        <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Volver al inicio de sesión</a>
                     </p>
                 </form>
             </div>

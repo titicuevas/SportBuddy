@@ -39,7 +39,7 @@
                 </div>
 
                 <div>
-                    <x-input-label for="email" :value="__('Email')" />
+                    <x-input-label for="email" value="Correo electrónico" />
                     <x-text-input id="email" class="mt-1 block w-full" type="email" name="email"
                         :value="old('email')" autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />

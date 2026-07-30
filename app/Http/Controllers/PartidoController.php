@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClimaUbicacionRequest;
 use App\Http\Requests\StorePartidoRequest;
 use App\Models\Asignamiento;
 use App\Models\Comentario;
@@ -15,7 +16,6 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -244,7 +244,7 @@ class PartidoController extends Controller
                 ->where('pista_id', $pista->id)
                 ->whereDate('fecha_hora', $fecha)
                 ->pluck('fecha_hora')
-                ->map(fn ($fechaHora) => Carbon::parse($fechaHora)->format('H:i'))
+                ->map(fn ($fechaHora) => $fechaHora->format('H:i'))
                 ->values()
                 ->all();
         });
@@ -261,13 +261,8 @@ class PartidoController extends Controller
         );
     }
 
-    public function climaUbicacion(Request $request, Ubicacion $ubicacion, WeatherService $weather): JsonResponse
+    public function climaUbicacion(ClimaUbicacionRequest $request, Ubicacion $ubicacion, WeatherService $weather): JsonResponse
     {
-        $request->validate([
-            'fecha' => ['nullable', 'date'],
-            'hora' => ['nullable', 'date_format:H:i'],
-        ]);
-
         $fechaHora = $request->filled('fecha')
             ? Carbon::parse($request->fecha)
             : now();

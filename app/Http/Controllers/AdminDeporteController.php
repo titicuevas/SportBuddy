@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdminDeporteRequest;
-use App\Http\Requests\UpdateDeporteRequest;
+use App\Http\Requests\UpdateAdminDeporteRequest;
 use App\Models\Deporte;
 use App\Services\StatsService;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +37,7 @@ class AdminDeporteController extends Controller
         return view('admin.deportes.edit', compact('deporte'));
     }
 
-    public function update(UpdateDeporteRequest $request, Deporte $deporte): RedirectResponse
+    public function update(UpdateAdminDeporteRequest $request, Deporte $deporte): RedirectResponse
     {
         $deporte->update($request->validated());
 

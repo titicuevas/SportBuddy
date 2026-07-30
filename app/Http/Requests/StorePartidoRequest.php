@@ -19,7 +19,7 @@ class StorePartidoRequest extends FormRequest
     {
         return [
             'fecha' => ['required', 'date', 'after_or_equal:today', new UniquePistaHoraRule($this->input('hora'), $this->input('pista_id'))],
-            'hora' => ['required'],
+            'hora' => ['required', 'date_format:H:i'],
             'ubicacion_id' => ['required', 'exists:ubicaciones,id'],
             'deporte' => ['required', 'exists:deportes,nombre'],
             'pista_id' => ['required', 'exists:pistas,id'],
