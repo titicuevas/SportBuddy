@@ -2,22 +2,26 @@
 
 namespace Database\Factories;
 
+use App\Models\Superficie;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Superficie>
+ * @extends Factory<Superficie>
  */
 class SuperficieFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Superficie::class;
+
     public function definition(): array
     {
         return [
-            //
+            'tipo' => fake()->unique()->randomElement([
+                'Cesped artificial',
+                'Tierra batida',
+                'Moqueta',
+                'Parquet',
+                'Hormigon',
+            ]).' '.fake()->unique()->numerify('##'),
         ];
     }
 }

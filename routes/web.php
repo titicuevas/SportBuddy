@@ -15,6 +15,7 @@ use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\PistaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\Pista;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'))->name('welcome');
@@ -73,7 +74,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', AdminDashboardController::class)->name('admin.index');
 
-    Route::get('/index', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::redirect('/index', '/admin/users', 301);
+    Route::redirect('/pista/index', '/admin/pista', 301);
+    Route::get('/pista/edit/{pista}', fn (Pista $pista) => redirect()->route('admin.pista.edit', $pista, 301));
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/ubicacion', [AdminUbicacionController::class, 'index'])->name('admin.ubicacion.index');
@@ -97,11 +102,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::put('/superficie/{superficie}', [AdminSuperficieController::class, 'update'])->name('admin.superficie.update');
     Route::delete('/superficie/{superficie}', [AdminSuperficieController::class, 'destroy'])->name('admin.superficie.destroy');
 
-    Route::get('/pista/index', [AdminPistaController::class, 'index'])->name('admin.pista.index');
+    Route::get('/pista', [AdminPistaController::class, 'index'])->name('admin.pista.index');
     Route::get('/pista/create', [AdminPistaController::class, 'create'])->name('admin.pista.create');
-    Route::post('/pista/store', [AdminPistaController::class, 'store'])->name('admin.pista.store');
-    Route::get('/pista/edit/{pista}', [AdminPistaController::class, 'edit'])->name('admin.pista.edit');
-    Route::put('/pista/update/{pista}', [AdminPistaController::class, 'update'])->name('admin.pista.update');
+    Route::post('/pista', [AdminPistaController::class, 'store'])->name('admin.pista.store');
+    Route::get('/pista/{pista}/edit', [AdminPistaController::class, 'edit'])->name('admin.pista.edit');
+    Route::put('/pista/{pista}', [AdminPistaController::class, 'update'])->name('admin.pista.update');
     Route::delete('/pista/{pista}', [AdminPistaController::class, 'destroy'])->name('admin.pista.destroy');
 });
 

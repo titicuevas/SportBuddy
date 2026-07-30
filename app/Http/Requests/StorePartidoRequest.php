@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Pista;
 use App\Rules\UniquePistaHoraRule;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -50,6 +51,26 @@ class StorePartidoRequest extends FormRequest
 
             if ($pista->superficie?->tipo !== $this->input('tipo_superficie')) {
                 $validator->errors()->add('tipo_superficie', 'La superficie no coincide con la de la pista seleccionada.');
+            }
+
+            $preciosPermitidos = collect([
+                $pista->precio_sin_luz,
+                $pista->precio_con_luz,
+            ])->filter(fn ($precio) => $precio !== null)
+                ->map(fn ($precio) => number_format((float) $precio, 2, '.', ''))
+                ->unique()
+                ->values();
+
+            $precioEnviado = number_format((float) $this->input('precio'), 2, '.', '');
+
+            if (! $preciosPermitidos->contains($precioEnviado)) {
+                $validator->errors()->add('precio', 'El precio no coincide con las tarifas de la pista.');
+            }
+
+            $fechaHora = Carbon::parse($this->input('fecha').' '.$this->input('hora'));
+
+            if ($fechaHora->lessThanOrEqualTo(now())) {
+                $validator->errors()->add('hora', 'La hora seleccionada debe ser posterior a la hora actual.');
             }
         });
     }

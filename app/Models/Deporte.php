@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Deporte extends Model
@@ -28,9 +27,9 @@ class Deporte extends Model
         return $this->hasMany(Partido::class);
     }
 
-    public function ubicaciones(): BelongsToMany
+    public function pistas(): HasMany
     {
-        return $this->belongsToMany(Ubicacion::class);
+        return $this->hasMany(Pista::class);
     }
 
     public static function coverImageUrl(string $nombre = ''): string

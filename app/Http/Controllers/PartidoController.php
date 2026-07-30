@@ -13,13 +13,16 @@ use App\Services\StatsService;
 use App\Services\WeatherService;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class PartidoController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $usuarioId = auth()->id();
         $cacheVersion = Cache::get('partidos.cache.version', 1);
@@ -45,23 +48,18 @@ class PartidoController extends Controller
         return view('partidos.index', compact('partidos', 'partidosInscritos'));
     }
 
-    public function create()
+    public function create(): View
     {
         $ubicaciones = Ubicacion::query()->orderBy('nombre')->get();
 
         return view('partidos.create', compact('ubicaciones'));
     }
 
-    public function store(StorePartidoRequest $request)
+    public function store(StorePartidoRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
         $fechaHora = Carbon::parse($validated['fecha'].' '.$validated['hora']);
-
-        if ($fechaHora <= now()) {
-            return back()->with('error', 'La hora seleccionada debe ser posterior a la hora actual.');
-        }
-
         $pista = Pista::findOrFail($validated['pista_id']);
         $userId = auth()->id();
 
@@ -77,6 +75,8 @@ class PartidoController extends Controller
                     'ubicacion_id' => $pista->ubicacion_id,
                     'deporte_id' => $pista->deporte_id,
                     'precio' => $validated['precio'],
+                    'pista_tiene_luz' => $pista->tiene_luz,
+                    'precio_con_luz' => $pista->precio_con_luz,
                 ]);
 
                 Asignamiento::create([
@@ -96,10 +96,10 @@ class PartidoController extends Controller
         $this->bumpPartidosCache();
         $this->clearHorasOcupadasCache((int) $validated['pista_id'], $validated['fecha']);
 
-        return redirect()->route('partidos.index')->with('success', 'Partido creado exitosamente.');
+        return redirect()->route('partidos.index')->with('success', 'Partido creado correctamente.');
     }
 
-    public function show(Partido $partido)
+    public function show(Partido $partido): View
     {
         $partido->load([
             'user:id,name',
@@ -130,7 +130,7 @@ class PartidoController extends Controller
         ));
     }
 
-    public function destroy(Partido $partido)
+    public function destroy(Partido $partido): RedirectResponse
     {
         abort_unless(auth()->id() === $partido->user_id, 403);
 
@@ -147,10 +147,10 @@ class PartidoController extends Controller
         $this->bumpPartidosCache();
         $this->clearHorasOcupadasCache($pistaId, $fecha);
 
-        return redirect()->route('partidos.index')->with('success', 'Partido eliminado exitosamente.');
+        return redirect()->route('partidos.index')->with('success', 'Partido eliminado correctamente.');
     }
 
-    public function inscribirPartido(Partido $partido)
+    public function inscribirPartido(Partido $partido): RedirectResponse
     {
         abort_if($partido->fecha_hora->isPast(), 403, 'Este partido ya ha finalizado.');
 
@@ -210,7 +210,7 @@ class PartidoController extends Controller
         return back()->with($resultado['type'], $resultado['message']);
     }
 
-    public function desapuntarse(Partido $partido)
+    public function desapuntarse(Partido $partido): RedirectResponse
     {
         abort_if($partido->fecha_hora->isPast(), 403, 'Este partido ya ha finalizado.');
 
@@ -235,7 +235,7 @@ class PartidoController extends Controller
         return back()->with('success', 'Te has desapuntado del partido correctamente.');
     }
 
-    public function obtenerHorasOcupadas(Pista $pista, string $fecha)
+    public function obtenerHorasOcupadas(Pista $pista, string $fecha): JsonResponse
     {
         abort_unless(preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha), 404);
 
@@ -252,7 +252,7 @@ class PartidoController extends Controller
         return response()->json($horas);
     }
 
-    public function clima(Partido $partido, WeatherService $weather)
+    public function clima(Partido $partido, WeatherService $weather): JsonResponse
     {
         $partido->load('ubicacion:id,nombre,direccion');
 
@@ -261,7 +261,7 @@ class PartidoController extends Controller
         );
     }
 
-    public function climaUbicacion(Request $request, Ubicacion $ubicacion, WeatherService $weather)
+    public function climaUbicacion(Request $request, Ubicacion $ubicacion, WeatherService $weather): JsonResponse
     {
         $request->validate([
             'fecha' => ['nullable', 'date'],

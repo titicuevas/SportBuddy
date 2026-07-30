@@ -23,6 +23,20 @@ class Pista extends Model
         'precio_con_luz',
     ];
 
+    protected $casts = [
+        'tiene_luz' => 'boolean',
+        'precio_sin_luz' => 'decimal:2',
+        'precio_con_luz' => 'decimal:2',
+        'numero' => 'integer',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Pista $pista) {
+            $pista->tiene_luz = $pista->precio_con_luz !== null;
+        });
+    }
+
     public function ubicacion(): BelongsTo
     {
         return $this->belongsTo(Ubicacion::class);

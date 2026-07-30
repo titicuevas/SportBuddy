@@ -6,24 +6,26 @@ use App\Http\Requests\StoreAdminUbicacionRequest;
 use App\Http\Requests\UpdateAdminUbicacionRequest;
 use App\Models\Ubicacion;
 use App\Services\StatsService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class AdminUbicacionController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $ubicaciones = Ubicacion::query()->orderBy('nombre')->paginate(10);
 
         return view('admin.ubicacion.index', compact('ubicaciones'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.ubicacion.create');
     }
 
-    public function store(StoreAdminUbicacionRequest $request)
+    public function store(StoreAdminUbicacionRequest $request): RedirectResponse
     {
         $datos = $request->safe()->except('imagen');
 
@@ -35,15 +37,15 @@ class AdminUbicacionController extends Controller
 
         StatsService::bump();
 
-        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada exitosamente.');
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación creada correctamente.');
     }
 
-    public function edit(Ubicacion $ubicacion)
+    public function edit(Ubicacion $ubicacion): View
     {
         return view('admin.ubicacion.edit', compact('ubicacion'));
     }
 
-    public function update(UpdateAdminUbicacionRequest $request, Ubicacion $ubicacion)
+    public function update(UpdateAdminUbicacionRequest $request, Ubicacion $ubicacion): RedirectResponse
     {
         $datos = $request->safe()->except('imagen');
 
@@ -56,10 +58,10 @@ class AdminUbicacionController extends Controller
 
         StatsService::bump();
 
-        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación actualizada exitosamente.');
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación actualizada correctamente.');
     }
 
-    public function destroy(Ubicacion $ubicacion)
+    public function destroy(Ubicacion $ubicacion): RedirectResponse
     {
         if ($ubicacion->pistas()->exists() || $ubicacion->partidos()->exists()) {
             return redirect()->route('admin.ubicacion.index')
@@ -71,7 +73,7 @@ class AdminUbicacionController extends Controller
 
         StatsService::bump();
 
-        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación eliminada exitosamente.');
+        return redirect()->route('admin.ubicacion.index')->with('success', 'Ubicación eliminada correctamente.');
     }
 
     private function guardarImagen(UploadedFile $imagen): string

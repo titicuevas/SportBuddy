@@ -313,7 +313,7 @@
                             const data = await res.json();
                             this.tipoSuperficie = data.tipo_superficie || '';
                             this.deporte = data.deporte || '';
-                            this.tieneLuz = !!data.tiene_luz;
+                            this.tieneLuz = !!data.tiene_luz || data.precio_con_luz != null;
                             this.precioSinLuz = parseFloat(data.precio_sin_luz) || null;
                             this.precioConLuz = parseFloat(data.precio_con_luz) || null;
                         }

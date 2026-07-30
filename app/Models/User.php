@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -32,12 +34,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'rol_id');
+    }
+
     public function asignamientos(): HasMany
     {
         return $this->hasMany(Asignamiento::class);
     }
 
-    public function partidosInscritos()
+    public function partidosInscritos(): BelongsToMany
     {
         return $this->belongsToMany(Partido::class, 'asignamientos', 'user_id', 'partido_id');
     }
@@ -49,7 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function esAdmin(): bool
     {
-        return $this->rol_id === 1;
+        return (int) $this->rol_id === 1;
     }
 
     public function mensajes(): HasMany

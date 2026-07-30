@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileUpdateFotoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -39,13 +40,8 @@ class ProfileController extends Controller
         return redirect()->route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function updateFoto(Request $request): JsonResponse|RedirectResponse
+    public function updateFoto(ProfileUpdateFotoRequest $request): JsonResponse|RedirectResponse
     {
-        $request->validate([
-            'foto' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
-            'foto_eliminada' => ['nullable', 'in:0,1'],
-        ]);
-
         $user = $request->user();
 
         if ($request->input('foto_eliminada') === '1') {

@@ -4,7 +4,7 @@
 
         <x-admin-select label="Ubicación" name="ubicacion_id" :required="true">
             @foreach ($ubicaciones as $ubicacion)
-                <option value="{{ $ubicacion->id }}" @selected(old('ubicacion_id') == $ubicacion->id)>
+                <option value="{{ $ubicacion->id }}" @selected((int) old('ubicacion_id') === $ubicacion->id)>
                     {{ $ubicacion->nombre }}
                 </option>
             @endforeach
@@ -12,7 +12,7 @@
 
         <x-admin-select label="Superficie" name="superficie_id" :required="true">
             @foreach ($superficies as $superficie)
-                <option value="{{ $superficie->id }}" @selected(old('superficie_id') == $superficie->id)>
+                <option value="{{ $superficie->id }}" @selected((int) old('superficie_id') === $superficie->id)>
                     {{ $superficie->tipo }}
                 </option>
             @endforeach
@@ -20,7 +20,7 @@
 
         <x-admin-select label="Deporte" name="deporte_id" :required="true">
             @foreach ($deportes as $deporte)
-                <option value="{{ $deporte->id }}" @selected(old('deporte_id') == $deporte->id)>
+                <option value="{{ $deporte->id }}" @selected((int) old('deporte_id') === $deporte->id)>
                     {{ $deporte->nombre }}
                 </option>
             @endforeach
